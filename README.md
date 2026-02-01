@@ -1,7 +1,7 @@
 # Hệ thống đặt lịch khám bệnh (Medical Appointment)
 
 ## Mô tả 
-[Mô tả ngắn gọn về dự án]
+Hệ thống cho phép bệnh nhân đặt lịch khám bệnh online, tìm bác sĩ theo chuyên khoa. Hỗ trợ lưu trữ và quản lý hồ sơ bệnh nhân và quản lý bác sĩ, lịch làm việc và theo dõi các lịch khám đã đặt cho các Phòng khám/bệnh viện.
 
 ## Thành viên nhóm 
 | MSSV | Họ tên | Vai trò | 
@@ -11,7 +11,12 @@
 | 2351050154 | Trương Hưng Phát | Thành viên |
 
 ## Công nghệ sử dụng
-[Mô tả công nghệ sử dụng] 
+- Quản trị CSDL: MySQL
+- Thư viện: React
+- Backend: JavaScript
+- Frontend: ViteJS
+- Message-queue: RabbitMQ
+- Container: Docker và Docker Compose
 
 ## Kiến trúc
 [Mô tả kiến trúc đã chọn] 
