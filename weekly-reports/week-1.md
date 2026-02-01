@@ -9,9 +9,9 @@
 ## 1. Công việc đã hoàn thành 
 | Thành viên | MSSV | Công việc | Link Commit/PR | 
 |------------|------|-----------|----------------| 
-| Văn Trung Thành | 2351050164 | Chuẩn bị github repository theo mẫu, viết báo cáo tuần 1, soạn chương 1 giới thiệu đề tài, kiểm tra và thống nhất nội dung đã làm của nhóm | [abc123](link) | 
-| Nguyễn Thanh Phong | 2351050133 | Phân tích kiến trúc phù hợp dự án, viết mục công nghệ sử dụng (dự kiến) và kiến trúc (dự kiến) đã chọn trong README.md | [def456](link) | 
-| Trương Hưng Phát | 2351010154 | Phân tích yêu cầu chức năng và phi chức năng, viết mô tả dự án trong README.md | [ghi789](link) | 
+| Văn Trung Thành | 2351050164 | Chuẩn bị github repository theo mẫu, viết báo cáo tuần 1, soạn chương 1 giới thiệu đề tài, kiểm tra và thống nhất nội dung đã làm của nhóm | [88beec5](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/commit/88beec59ac68afb424523da222fa9caf63e6a2e7) | 
+| Nguyễn Thanh Phong | 2351050133 | Phân tích kiến trúc phù hợp dự án, viết mục công nghệ sử dụng (dự kiến) và kiến trúc (dự kiến) đã chọn trong README.md | [030fd8c](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/commit/030fd8c4d7f5616be003ad65701900240969dbac) | 
+| Trương Hưng Phát | 2351010154 | Phân tích yêu cầu chức năng và phi chức năng, viết mô tả dự án trong README.md | [597f265](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/commit/597f265a6e46e91a4be816eaafcc3669081693a8) | 
 
 --- 
 
