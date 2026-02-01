@@ -11,7 +11,12 @@ Hệ thống cho phép bệnh nhân đặt lịch khám bệnh online, tìm bác
 | 2351050154 | Trương Hưng Phát | Thành viên |
 
 ## Công nghệ sử dụng
-[Mô tả công nghệ sử dụng] 
+- Quản trị CSDL: MySQL
+- Thư viện: React
+- Ngôn ngữ: JavaScript
+- Framework: ViteJS
+- Message-queue: RabbitMQ
+- Container: Docker và Docker Compose
 
 ## Kiến trúc
 [Mô tả kiến trúc đã chọn] 
