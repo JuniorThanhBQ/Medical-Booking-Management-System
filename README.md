@@ -13,8 +13,8 @@ Hệ thống cho phép bệnh nhân đặt lịch khám bệnh online, tìm bác
 ## Công nghệ sử dụng
 - Quản trị CSDL: MySQL
 - Thư viện: React
-- Ngôn ngữ: JavaScript
-- Framework: ViteJS
+- Backend: JavaScript
+- Frontend: ViteJS
 - Message-queue: RabbitMQ
 - Container: Docker và Docker Compose
 
