@@ -1,19 +1,17 @@
 # Hệ thống đặt lịch khám bệnh (Medical Appointment)
 
 ## Mô tả 
-Xây dựng hệ thống đặt lịch khám bệnh online cho phòng khám/bệnh viện
+[Mô tả ngắn gọn về dự án]
 
 ## Thành viên nhóm 
 | MSSV | Họ tên | Vai trò | 
-|------|--------|---------| 
-| ... | ... | ... | 
+|------|--------|---------|
+| 2351050164 | Văn Trung Thành | Nhóm trưởng | 
+| 2351050133 | Nguyễn Thanh Phong | Thành viên |
+| 2351050154 | Trương Hưng Phát | Thành viên |
 
 ## Công nghệ sử dụng
-- Backend: Node.js + Express 
-- Frontend: React 
-- Database: PostgreSQL 
-- Message Queue: RabbitMQ 
-- Container: Docker + Docker Compose 
+[Mô tả công nghệ sử dụng] 
 
 ## Kiến trúc
 [Mô tả kiến trúc đã chọn] 
@@ -23,7 +21,7 @@ Xây dựng hệ thống đặt lịch khám bệnh online cho phòng khám/bệ
 
 ### Yêu cầu
 - Docker Desktop
-- Git 
+- Git
 
 ### Chạy với Docker Compose 
 git clone https://github.com/username/project-name 
@@ -36,8 +34,9 @@ docker-compose up -d
 - RabbitMQ Management: http://localhost:15672 
 
 ## Demo 
-[Link video demo hoặc screenshots] 
+- [Medical-Appointment-Demo](https://drive.google.com/drive/u/0/folders/1DxsuBUrXGs3e7ExIcdaz8nEen7Jye9QF)
 
 ## Tài liệu
 - [ADRs](docs/adrs/) 
 - [API Documentation](docs/api/) 
+- [Architecture](docs/architecture/) 

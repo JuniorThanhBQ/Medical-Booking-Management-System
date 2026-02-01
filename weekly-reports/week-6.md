@@ -1,5 +1,5 @@
-# Báo cáo Tuần 1 
-**Tuần:** 1 (26/01/2026 - 01/02/2026)   
+# Báo cáo Tuần 6 
+**Tuần:** 6 (23/03/2026 - 29/03/2026)   
 **Nhóm:** 8
 **Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh (Medical Appointment)]   
 **Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
@@ -19,7 +19,7 @@
 | Hạng mục | Trạng thái | % | 
 |----------|------------|---| 
 | Phân tích yêu cầu | Đang làm | 0% | 
-| Thitế kế kiến trúc | Chưa bắt đầu | 0% | 
+| Thiết kế kiến trúc | Chưa bắt đầu | 0% | 
 | Backend API | Chưa bắt đầu | 0% | 
 | Frontend UI | Chưa bắt đầu | 0% | 
 | Docker | Chưa bắt đầu | 0% | 
@@ -43,5 +43,5 @@
 
 --- 
 
-*Ngày nộp: 01/02/2026*   
+*Ngày nộp: 29/03/2026*   
 *Xác nhận của Nhóm trưởng: [Văn Trung Thành]*
