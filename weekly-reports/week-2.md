@@ -1,48 +1,51 @@
 # Báo cáo Tuần 2 
 **Tuần:** 2 (02/02/2026 - 08/02/2026)   
-**Nhóm:** [MAB/8]
-**Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh]   
-**Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
+**Nhóm:** MAB/8
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
+**Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 
 
 ## 1. Công việc đã hoàn thành 
 | Thành viên | MSSV | Công việc | Link Commit/PR | 
 |------------|------|-----------|----------------| 
-| Văn Trung Thành | 2351050164 | Đang làm | [abc123](link) | 
-| Nguyễn Thanh Phong | 2351050133 | Đang làm | [def456](link) | 
-| Trương Hưng Phát | 2351010154 | Đang làm | [ghi789](link) | 
+| Văn Trung Thành | 2351050164 | Viết báo cáo tiến độ tuần 2, tạo và làm mục hệ quả trong file ADR-001-architecture-choice, xem lại, đánh giá và góp ý bổ sung cho nhóm trong phân tích yêu cầu | 
+*[abc123](link) 
+*[abc333](link)
+| 
+| Nguyễn Thanh Phong | 2351050133 | Thực hiện phân tích chức năng 6 chức năng lớn. Bao gồm: Tìm kiếm các chức năng con của 6 chức năng chính, các kịch bản, vẽ sơ đồ use case, đặc tả sơ đồ use case. Đồng thời, làm mục bối cảnh và các phương án trong ADR-001-architecture-choice | [def456](link) | 
+| Trương Hưng Phát | 2351010154 | Thực hiện phân tích các yêu cầu phi chức năng của 6 chức năng lớn. Thực hiện theo mô hình FURPS+ và quy trình 5 bước. Đồng thời, làm mục quyết định - lý do trong ADR-001-architecture-choice | [ghi789](link) | 
 
 --- 
 
 ## 2. Tiến độ tổng thể
 | Hạng mục | Trạng thái | % | 
 |----------|------------|---| 
-| Phân tích yêu cầu | Đang làm | 0% | 
-| Thiết kế kiến trúc | Chưa bắt đầu | 0% | 
+| Phân tích yêu cầu | Đang làm | 75% | 
+| Thiết kế kiến trúc | Đang làm | 15% | 
 | Backend API | Chưa bắt đầu | 0% | 
 | Frontend UI | Chưa bắt đầu | 0% | 
 | Docker | Chưa bắt đầu | 0% | 
 | Testing | Chưa bắt đầu | 0% | 
 
-**Tổng tiến độ: 0%** 
+**Tổng tiến độ: 15%** 
 
 --- 
 
 ## 3. Kế hoạch tuần tới
 | Thành viên | Công việc dự kiến | 
 |------------|-------------------| 
-| Văn Trung Thành | ... | 
-| Nguyễn Thanh Phong | ... | 
-| Trương Hưng Phát | ... | 
+| Văn Trung Thành | Tổ chức họp nhóm để thống nhất "kiến trúc hệ thống" , tiếp tục viết báo cáo chương 2, nghiên cứu thêm các lựa chọn kiến trúc | 
+| Nguyễn Thanh Phong | Xem và kiểm tra lỗi trong báo cáo chương 1 và 2| 
+| Trương Hưng Phát | Cài đặt thử các công nghệ front-end, back-end, docker mà nhóm đã thống nhất để xem mức độ khả thi | 
 
 --- 
 
 ## 4. Khó khăn / Cần hỗ trợ
-- [ ] [Mô tả khó khăn nếu có] 
-- [ ] [Câu hỏi cần GV giải đáp nếu có] 
+- [ ] [Nhóm em không gặp khó khăn trong công việc] 
+- [ ] [Nhóm em không có vấn đề cần hỗ trợ] 
 
 --- 
 
 *Ngày nộp: 08/02/2026*   
-*Xác nhận của Nhóm trưởng: [Văn Trung Thành]*
+*Xác nhận của Nhóm trưởng: Văn Trung Thành*
