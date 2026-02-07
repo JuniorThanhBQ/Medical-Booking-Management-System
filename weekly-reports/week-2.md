@@ -9,12 +9,9 @@
 ## 1. Công việc đã hoàn thành 
 | Thành viên | MSSV | Công việc | Link Commit/PR | 
 |------------|------|-----------|----------------| 
-| Văn Trung Thành | 2351050164 | Viết báo cáo tiến độ tuần 2, tạo và làm mục hệ quả trong file ADR-001-architecture-choice, xem lại, đánh giá và góp ý bổ sung cho nhóm trong phân tích yêu cầu | 
-*[abc123](link) 
-*[abc333](link)
-| 
-| Nguyễn Thanh Phong | 2351050133 | Thực hiện phân tích chức năng 6 chức năng lớn. Bao gồm: Tìm kiếm các chức năng con của 6 chức năng chính, các kịch bản, vẽ sơ đồ use case, đặc tả sơ đồ use case. Đồng thời, làm mục bối cảnh và các phương án trong ADR-001-architecture-choice | [def456](link) | 
-| Trương Hưng Phát | 2351010154 | Thực hiện phân tích các yêu cầu phi chức năng của 6 chức năng lớn. Thực hiện theo mô hình FURPS+ và quy trình 5 bước. Đồng thời, làm mục quyết định - lý do trong ADR-001-architecture-choice | [ghi789](link) | 
+| Văn Trung Thành | 2351050164 | Viết báo cáo tiến độ tuần 2, tạo và lên kiến trúc dự kiến trong file ADR-001-architecture-choice, đánh giá và hỗ trợ nhóm trong phân tích yêu cầu | [abc123](link) | 
+| Nguyễn Thanh Phong | 2351050133 | Thực hiện phân tích chức năng 6 chức năng lớn. Bao gồm: Tìm kiếm các chức năng con của 6 chức năng chính, các kịch bản, vẽ sơ đồ use case, đặc tả sơ đồ use case. Lý do không commit: phân tích yêu cầu chủ yếu thuần lý thuyết và chưa cần thiết phải commit nội dung lên github | không có | 
+| Trương Hưng Phát | 2351010154 | Thực hiện phân tích các yêu cầu phi chức năng của 6 chức năng lớn. Thực hiện theo mô hình FURPS+ và quy trình 5 bước. Lý do không commit: phân tích yêu cầu chủ yếu thuần lý thuyết và chưa cần thiết phải commit nội dung lên github | không có | 
 
 --- 
 
@@ -35,7 +32,7 @@
 ## 3. Kế hoạch tuần tới
 | Thành viên | Công việc dự kiến | 
 |------------|-------------------| 
-| Văn Trung Thành | Tổ chức họp nhóm để thống nhất "kiến trúc hệ thống" , tiếp tục viết báo cáo chương 2, nghiên cứu thêm các lựa chọn kiến trúc | 
+| Văn Trung Thành | Tổ chức họp nhóm để thống nhất "kiến trúc hệ thống", tiếp tục viết báo cáo chương 2, nghiên cứu thêm các lựa chọn kiến trúc | 
 | Nguyễn Thanh Phong | Xem và kiểm tra lỗi trong báo cáo chương 1 và 2| 
 | Trương Hưng Phát | Cài đặt thử các công nghệ front-end, back-end, docker mà nhóm đã thống nhất để xem mức độ khả thi | 
 
