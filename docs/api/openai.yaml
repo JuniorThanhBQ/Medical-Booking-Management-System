@@ -1,0 +1,407 @@
+openapi: 3.0.0
+
+info:
+  title: Appointment Booking API
+  description: API cho hệ thống đặt lịch khám bệnh
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Local server
+
+paths:
+
+  /auth/register:
+    post:
+      summary: Đăng ký tài khoản
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        "201":
+          description: Đăng ký thành công
+
+  /auth/login:
+    post:
+      summary: Đăng nhập
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /notifications:
+    get:
+      summary: Xem danh sách thông báo
+      responses:
+        "200":
+          description: Danh sách thông báo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+
+  /patients/profile:
+    get:
+      summary: Xem hồ sơ cá nhân
+      responses:
+        "200":
+          description: Thông tin bệnh nhân
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+
+    put:
+      summary: Cập nhật hồ sơ cá nhân
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        "200":
+          description: Cập nhật thành công
+
+  /patients/medical-history:
+    get:
+      summary: Xem lịch sử khám bệnh
+      responses:
+        "200":
+          description: Danh sách lịch sử khám
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MedicalRecord'
+
+  /doctors:
+    get:
+      summary: Xem danh sách bác sĩ
+      parameters:
+        - name: specialty
+          in: query
+          schema:
+            type: string
+
+        - name: name
+          in: query
+          schema:
+            type: string
+
+        - name: available_date
+          in: query
+          schema:
+            type: string
+            format: date
+
+      responses:
+        "200":
+          description: Danh sách bác sĩ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Doctor'
+
+  /doctors/{id}/available-slots:
+    get:
+      summary: Xem giờ làm việc trống của bác sĩ
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+
+      responses:
+        "200":
+          description: Danh sách giờ trống
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeSlot'
+
+  /appointments:
+    post:
+      summary: Đặt lịch khám
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+      responses:
+        "201":
+          description: Đặt lịch thành công
+
+    get:
+      summary: Xem danh sách lịch hẹn
+      responses:
+        "200":
+          description: Danh sách lịch hẹn
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+
+  /appointments/{id}:
+    delete:
+      summary: Huỷ lịch khám
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        "200":
+          description: Huỷ lịch thành công
+
+  /patients:
+    get:
+      summary: Xem danh sách bệnh nhân
+      responses:
+        "200":
+          description: Danh sách bệnh nhân
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+
+  /treatments:
+    post:
+      summary: Lập phiếu điều trị
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Treatment'
+      responses:
+        "201":
+          description: Tạo phiếu điều trị thành công
+
+  /prescriptions:
+    post:
+      summary: Lập toa thuốc
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prescription'
+      responses:
+        "201":
+          description: Tạo toa thuốc thành công
+
+  /work-schedules:
+    get:
+      summary: Xem lịch làm việc của bác sĩ
+      responses:
+        "200":
+          description: Danh sách lịch làm việc
+
+    post:
+      summary: Tạo lịch làm việc mới
+      responses:
+        "201":
+          description: Tạo lịch thành công
+
+  /admin/doctors:
+    get:
+      summary: Xem danh sách bác sĩ
+      responses:
+        "200":
+          description: Danh sách bác sĩ
+
+    post:
+      summary: Thêm bác sĩ
+      responses:
+        "201":
+          description: Thêm bác sĩ thành công
+
+  /admin/specialties:
+    get:
+      summary: Xem danh sách chuyên khoa
+      responses:
+        "200":
+          description: Danh sách chuyên khoa
+
+    post:
+      summary: Thêm chuyên khoa
+      responses:
+        "201":
+          description: Thêm chuyên khoa thành công
+
+  /admin/users:
+    get:
+      summary: Xem danh sách người dùng
+      responses:
+        "200":
+          description: Danh sách người dùng
+
+  /admin/statistics/doctors:
+    get:
+      summary: Thống kê bác sĩ
+      responses:
+        "200":
+          description: Thống kê bác sĩ
+
+  /admin/statistics/appointments:
+    get:
+      summary: Thống kê lịch hẹn
+      responses:
+        "200":
+          description: Thống kê lịch hẹn
+
+  /reminders/send:
+    post:
+      summary: Gửi nhắc lịch khám (mock email)
+      responses:
+        "200":
+          description: Đã gửi nhắc lịch
+
+components:
+
+  schemas:
+
+    RegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        specialty:
+          type: string
+
+    AppointmentRequest:
+      type: object
+      properties:
+        doctor_id:
+          type: integer
+        patient_id:
+          type: integer
+        appointment_time:
+          type: string
+          format: date-time
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        doctor_id:
+          type: integer
+        patient_id:
+          type: integer
+        appointment_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+
+    MedicalRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        diagnosis:
+          type: string
+        treatment:
+          type: string
+
+    Treatment:
+      type: object
+      properties:
+        patient_id:
+          type: integer
+        description:
+          type: string
+
+    Prescription:
+      type: object
+      properties:
+        patient_id:
+          type: integer
+        medicine:
+          type: string
+        dosage:
+          type: string
+
+    TimeSlot:
+      type: object
+      properties:
+        time:
+          type: string
