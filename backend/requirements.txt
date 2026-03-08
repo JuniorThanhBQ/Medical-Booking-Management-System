@@ -1,0 +1,1 @@
+các file requirements sau khi pip freeze
