@@ -10,17 +10,25 @@ Hệ thống cho phép bệnh nhân đặt lịch khám bệnh online, tìm bác
 | 2351050133 | Nguyễn Thanh Phong | Thành viên |
 | 2351050154 | Trương Hưng Phát | Thành viên |
 
-## Công nghệ sử dụng
-- Quản trị CSDL: MySQL
-- Thư viện: React
-- Backend: JavaScript
-- Frontend: ViteJS
-- Message-queue: RabbitMQ
-- Container: Docker và Docker Compose
+## Công nghệ sử dụng
+- Backend: Flask + RESTful API 
+- Frontend: React + Vite 
+- Database: MySQL 
+- Message Queue: RabbitMQ 
+- Container: Docker + Docker Compose 
+- Version control: Git + Github 
 
-## Kiến trúc
-[Mô tả kiến trúc đã chọn] 
-![Architecture](docs/architecture/c4-container.png) 
+## Kiến trúc 
+Hệ thống đặt lịch khám bệnh được chúng em thiết kế dựa trên mẫu kiến trúc 
+Client–Server với phong cách kiến trúc là REST. Trong đó, frontend và backend 
+hoạt động độc lập và giao tiếp với nhau dựa trên chuẩn thiết kế RESTful API. 
+Đối với phía client, chúng em sử dụng React với Vite để thiết kế và xây dựng 
+frontend. Về phía server, chúng em áp dụng kiến trúc phân tầng, công nghệ sử 
+dụng cho backend là framework Flask với thư viện Flask-RESTful. Ngoài ra, 
+chúng em còn sử dụng MySQL để lưu trữ dữ liệu, RabbitMQ để xử lý các thao 
+tác bất đồng bộ, Docker và Docker Compose để đóng gói hệ thống ứng dụng và 
+github để kiểm soát phiên bản hệ thống  
+![b3_client_server_ architecture_image](docs/architecture/c4-container.png) 
 
 ## Cài đặt và chạy 
 
