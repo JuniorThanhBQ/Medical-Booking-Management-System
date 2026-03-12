@@ -1,0 +1,27 @@
+name: Kiểm tra định dạng và cú pháp trong source code React
+
+on: 
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+
+    - name: Cài đặt Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Cài đặt gói thư viện
+      run: npm ci
+
+    - name: Kiểm tra elints
+      run: npm run lint
+
+    - name: Kiểm tra format Prettier
+      run: npm run format:check

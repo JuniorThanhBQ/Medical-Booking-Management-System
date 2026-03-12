@@ -1,0 +1,30 @@
+name: Kiểm tra định dạng và cú pháp trong source code Python
+
+on: 
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+
+    - name: Tạo môi trường python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Cài đặt gói thư viện
+      run: pip install black flake8 isort
+
+    - name: Chạy Black
+      run: black --check .
+
+    - name: Chạy Flake8
+      run: flake8 .
+
+    - name: Chạy isort
+      run: isort --check .
