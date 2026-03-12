@@ -20,7 +20,7 @@ jobs:
     - name: Cài đặt gói thư viện
       run: npm ci
 
-    - name: Kiểm tra elints
+    - name: Kiểm tra Eslint
       run: npm run lint
 
     - name: Kiểm tra format Prettier
