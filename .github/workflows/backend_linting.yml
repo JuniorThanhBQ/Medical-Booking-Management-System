@@ -21,10 +21,13 @@ jobs:
       run: pip install black flake8 isort
 
     - name: Chạy Black
+      working-directory: ./backend
       run: black --check .
 
     - name: Chạy Flake8
+      working-directory: ./backend
       run: flake8 .
 
     - name: Chạy isort
+      working-directory: ./backend
       run: isort --check .
