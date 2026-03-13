@@ -31,7 +31,7 @@ const FEATURES = [
     id: "treatment",
     imgSide: "right",
     badge: "ĐIỀU TRỊ",
-    title: "Phác Đồ Điều Trị Cá Nhân Hóa Hoàn Toàn",
+    title: "Đội Ngũ Chuyên Khoa Dày Dặn Kinh Nghiệm",
     desc: "Mỗi bệnh nhân đều được xây dựng phác đồ phù hợp với tình trạng, lối sống và mục tiêu riêng – được phối hợp chặt chẽ giữa bác sĩ thần kinh, các chuyên gia liên quan và gia đình bệnh nhân.",
     stats: [
       { value: "10K+", label: "CA ĐIỀU TRỊ ĐÃ THỰC HIỆN" },

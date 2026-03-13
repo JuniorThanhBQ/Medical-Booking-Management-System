@@ -25,11 +25,11 @@ export default function HeroSection() {
           <span className="hero__badge">Đa khoa</span>
 
           <h1 className="hero__title">
-            Hỗ trợ
+            Open 
             <br />
-            Tư vấn
+            Medical 
             <br />
-            Toàn diện
+            Appointment 
           </h1>
 
           <p className="hero__desc">
