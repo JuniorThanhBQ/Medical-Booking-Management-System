@@ -1,0 +1,28 @@
+:root {
+  --lp-primary: #2563EB;
+  --lp-primary-dark: #1D4ED8;
+  --lp-primary-light: #EFF6FF;
+  --lp-primary-border: #BFDBFE;
+  --lp-heading: #0F172A;
+  --lp-body: #1E293B;
+  --lp-muted: #64748B;
+  --lp-subtle: #94A3B8;
+  --lp-border: #E2E8F0;
+  --lp-bg-light: #F8FAFC;
+  --lp-live-bg: #D1FAE5;
+  --lp-live-text: #059669;
+  --lp-soon-bg: #FEF3C7;
+  --lp-soon-text: #D97706;
+  --lp-banner-from: #1E1B4B;
+  --lp-banner-to: #5B21B6;
+  --lp-container: 1360px;
+  --lp-section-py: 96px;
+  --lp-section-bg: #ffffff;
+  --lp-section-bg-alt: #E0EDFF;
+}
+
+.lp-container {
+  max-width: var(--lp-container);
+  margin: 0 auto;
+  padding: 0 24px;
+}

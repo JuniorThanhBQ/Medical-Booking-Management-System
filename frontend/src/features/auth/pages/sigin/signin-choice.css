@@ -1,0 +1,177 @@
+.signin-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.signin-page__header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.signin-page__back {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 160ms ease;
+}
+
+.signin-page__back:hover {
+  background-color: rgba(15, 23, 42, 0.06);
+}
+
+.signin-page__back:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.signin-page__back-icon {
+  font-size: 1.25rem;
+}
+
+.signin-page__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 32px;
+}
+
+.signin-page__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 24px 0 32px;
+  text-align: center;
+}
+
+.signin-page__cards {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signin-card {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    transform 120ms ease;
+}
+
+.signin-card:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.signin-card:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.signin-card--selected {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.2);
+}
+
+.signin-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.signin-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.signin-card__description {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.signin-card__chevron {
+  font-size: 1.25rem;
+  color: #9ca3af;
+}
+
+.signin-page__selection-hint {
+  margin-top: 20px;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.signin-page__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 16px 12px 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.signin-footer__link {
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #6366f1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 999px;
+  transition: background-color 140ms ease;
+}
+
+.signin-footer__link:hover {
+  background-color: rgba(129, 140, 248, 0.08);
+}
+
+.signin-footer__link:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.signin-footer__icon {
+  font-size: 0.875rem;
+}
+
+@media (max-width: 480px) {
+  .signin-page__footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signin-card,
+  .signin-page__back,
+  .signin-footer__link {
+    transition: none;
+  }
+}
+
