@@ -1,4 +1,4 @@
-@import './landing.css';
+@import "./landing.css";
 
 .feature-sections {
   background: #fff;
@@ -7,7 +7,7 @@
 .fb {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'content media';
+  grid-template-areas: "content media";
   align-items: center;
   gap: 80px;
   max-width: var(--lp-container);
@@ -21,7 +21,7 @@
 }
 
 .fb--img-left {
-  grid-template-areas: 'media content';
+  grid-template-areas: "media content";
 }
 
 .fb__content {
@@ -98,11 +98,16 @@
   color: var(--lp-body);
   font-weight: 500;
   font-size: 0.9375rem;
-  transition: color 180ms, gap 150ms;
+  transition:
+    color 180ms,
+    gap 150ms;
   cursor: pointer;
 }
 
-.fb__btn-link:hover { color: var(--lp-primary); gap: 10px; }
+.fb__btn-link:hover {
+  color: var(--lp-primary);
+  gap: 10px;
+}
 
 .fb__media {
   grid-area: media;
@@ -173,5 +178,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fb__btn-link,
-  .fb__img-wrap img { transition: none; }
+  .fb__img-wrap img {
+    transition: none;
+  }
 }

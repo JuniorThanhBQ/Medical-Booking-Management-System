@@ -1,4 +1,4 @@
-@import './landing.css';
+@import "./landing.css";
 
 .navbar-wrap {
   position: fixed;
@@ -32,7 +32,9 @@
     0 4px 24px rgba(15, 23, 42, 0.08),
     0 1px 4px rgba(15, 23, 42, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: box-shadow 300ms, background 300ms;
+  transition:
+    box-shadow 300ms,
+    background 300ms;
 }
 
 .navbar-wrap--scrolled .navbar-pill {
@@ -57,11 +59,16 @@
   color: #374151;
   padding: 8px 14px;
   border-radius: 10px;
-  transition: color 180ms, background 180ms;
+  transition:
+    color 180ms,
+    background 180ms;
   white-space: nowrap;
 }
 
-.navbar__link:focus-visible { outline: 2px solid var(--lp-primary); outline-offset: 2px; }
+.navbar__link:focus-visible {
+  outline: 2px solid var(--lp-primary);
+  outline-offset: 2px;
+}
 
 .navbar__actions {
   display: flex;
@@ -89,7 +96,9 @@
   cursor: pointer;
   white-space: nowrap;
   box-shadow: none;
-  transition: background 160ms, transform 120ms;
+  transition:
+    background 160ms,
+    transform 120ms;
 }
 
 .navbar__menu-trigger:focus-visible {
@@ -126,7 +135,9 @@
   color: #111827;
   padding: 8px 18px;
   cursor: pointer;
-  transition: background 140ms, color 140ms;
+  transition:
+    background 140ms,
+    color 140ms;
 }
 
 .navbar__menu-item:hover {
@@ -147,10 +158,14 @@
   border-top: 1px solid #e5e7eb;
 }
 
-:root { --navbar-height: 92px; }
+:root {
+  --navbar-height: 92px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .navbar-pill,
   .navbar__cta,
-  .navbar__link { transition: none; }
+  .navbar__link {
+    transition: none;
+  }
 }

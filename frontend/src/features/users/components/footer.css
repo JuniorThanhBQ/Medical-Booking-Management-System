@@ -1,4 +1,4 @@
-@import './landing.css';
+@import "./landing.css";
 
 .site-footer {
   background: #fff;
@@ -14,7 +14,11 @@
   padding-bottom: 64px;
 }
 
-.site-footer__brand { display: flex; flex-direction: column; gap: 16px; }
+.site-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
 .site-footer__logo {
   display: inline-flex;
@@ -38,7 +42,9 @@
   text-decoration: none;
 }
 
-.site-footer__tagline a:hover { text-decoration: underline; }
+.site-footer__tagline a:hover {
+  text-decoration: underline;
+}
 
 .site-footer__nav {
   display: grid;
@@ -58,7 +64,8 @@
 
 .site-footer__col-list {
   list-style: none;
-  padding: 0; margin: 0;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -71,8 +78,13 @@
   transition: color 200ms;
 }
 
-.site-footer__link:hover { color: var(--lp-primary); }
-.site-footer__link:focus-visible { outline: 2px solid var(--lp-primary); border-radius: 2px; }
+.site-footer__link:hover {
+  color: var(--lp-primary);
+}
+.site-footer__link:focus-visible {
+  outline: 2px solid var(--lp-primary);
+  border-radius: 2px;
+}
 
 .site-footer__bottom {
   border-top: 1px solid var(--lp-border);
@@ -106,4 +118,6 @@
   transition: color 200ms;
 }
 
-.site-footer__bottom-links a:hover { color: var(--lp-primary); }
+.site-footer__bottom-links a:hover {
+  color: var(--lp-primary);
+}

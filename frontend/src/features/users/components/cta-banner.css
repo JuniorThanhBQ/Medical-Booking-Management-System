@@ -1,4 +1,4 @@
-@import './landing.css';
+@import "./landing.css";
 
 .cta-banner {
   padding: var(--lp-section-py) 0;
@@ -29,10 +29,10 @@
   position: relative;
   background: linear-gradient(
     to right,
-    #1A1E47 0%,
-    #252E82 28%,
-    #7971C0 62%,
-    #C8C0E8 100%
+    #1a1e47 0%,
+    #252e82 28%,
+    #7971c0 62%,
+    #c8c0e8 100%
   );
 }
 
@@ -106,7 +106,7 @@
 
 .cta-banner__submit {
   background: #fff;
-  color: #1A1E47;
+  color: #1a1e47;
   border: none;
   border-radius: 7px;
   padding: 13px 22px;
@@ -115,13 +115,25 @@
   letter-spacing: 0.07em;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 200ms, transform 150ms;
+  transition:
+    background 200ms,
+    transform 150ms;
   flex-shrink: 0;
 }
 
-.cta-banner__submit:hover { background: #EEF2FF; transform: translateY(-1px); }
-.cta-banner__submit:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.cta-banner__submit:disabled { opacity: 0.65; cursor: wait; transform: none; }
+.cta-banner__submit:hover {
+  background: #eef2ff;
+  transform: translateY(-1px);
+}
+.cta-banner__submit:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.cta-banner__submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+}
 
 .cta-banner__disclaimer {
   font-size: 0.625rem;
@@ -137,19 +149,21 @@
   border-radius: 18px;
   padding: 36px 32px;
   box-shadow:
-    0 2px 0 rgba(255,255,255,0.15) inset,
+    0 2px 0 rgba(255, 255, 255, 0.15) inset,
     0 20px 60px rgba(10, 12, 45, 0.25);
 }
 
 .cta-banner__quote {
-  font-size: 1.0rem;
+  font-size: 1rem;
   line-height: 1.72;
   color: var(--lp-body);
   margin: 0 0 24px;
   font-style: normal;
 }
 
-.cta-banner__quote-footer { margin: 0; }
+.cta-banner__quote-footer {
+  margin: 0;
+}
 
 .cta-banner__quote-role {
   font-size: 0.6875rem;
@@ -168,5 +182,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cta-banner__submit,
-  .cta-banner__input-wrap { transition: none; }
+  .cta-banner__input-wrap {
+    transition: none;
+  }
 }

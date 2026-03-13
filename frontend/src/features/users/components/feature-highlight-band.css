@@ -1,4 +1,4 @@
-@import './landing.css';
+@import "./landing.css";
 
 .feature-highlight {
   padding: calc(var(--lp-section-py) * 0.9) 0;
@@ -64,7 +64,11 @@
   color: var(--lp-muted);
   display: inline-flex;
   align-items: center;
-  transition: background 200ms, border-color 200ms, color 200ms, transform 150ms;
+  transition:
+    background 200ms,
+    border-color 200ms,
+    color 200ms,
+    transform 150ms;
 }
 
 .feature-highlight__pill:hover {
@@ -126,5 +130,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .feature-highlight__pill { transition: none; }
+  .feature-highlight__pill {
+    transition: none;
+  }
 }

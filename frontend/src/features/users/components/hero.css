@@ -1,4 +1,4 @@
-@import './landing.css';
+@import "./landing.css";
 
 .hero {
   position: relative;
@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #06091E;
+  background: #06091e;
 }
 
 .hero__bg {
@@ -29,18 +29,24 @@
   background: linear-gradient(
     108deg,
     rgba(6, 9, 30, 0.94) 0%,
-    rgba(6, 9, 30, 0.80) 38%,
+    rgba(6, 9, 30, 0.8) 38%,
     rgba(6, 9, 30, 0.35) 65%,
     rgba(6, 9, 30, 0.12) 100%
   );
 }
 
 .hero__overlay::after {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 160px;
-  background: linear-gradient(to top, rgba(6, 9, 30, 0.75) 0%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(6, 9, 30, 0.75) 0%,
+    transparent 100%
+  );
 }
 
 .hero__body {
@@ -109,17 +115,25 @@
   align-items: center;
   text-decoration: none;
   background: #fff;
-  color: #06091E;
+  color: #06091e;
   font-weight: 700;
   font-size: 0.9375rem;
   padding: 14px 28px;
   border-radius: 9px;
   cursor: pointer;
-  transition: background 200ms, transform 150ms;
+  transition:
+    background 200ms,
+    transform 150ms;
 }
 
-.hero__btn-primary:hover { background: #EEF2FF; transform: translateY(-1px); }
-.hero__btn-primary:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.hero__btn-primary:hover {
+  background: #eef2ff;
+  transform: translateY(-1px);
+}
+.hero__btn-primary:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
 
 .hero__btn-ghost {
   display: inline-flex;
@@ -133,7 +147,10 @@
   padding: 13px 22px;
   border-radius: 9px;
   cursor: pointer;
-  transition: background 200ms, border-color 200ms, gap 150ms;
+  transition:
+    background 200ms,
+    border-color 200ms,
+    gap 150ms;
 }
 
 .hero__btn-ghost:hover {
@@ -163,7 +180,9 @@
   border-right: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.hero__stat:last-child { border-right: none; }
+.hero__stat:last-child {
+  border-right: none;
+}
 
 .hero__stat-value {
   display: block;
@@ -182,4 +201,3 @@
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
 }
-

@@ -1,24 +1,24 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 export function useCtaEmailForm(options = {}) {
-  const { onSubmit } = options
+  const { onSubmit } = options;
 
-  const [email, setEmail] = useState('')
-  const [submitting, setSubmitting] = useState(false)
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function handleSubmit(event) {
-    event.preventDefault()
-    if (!email) return
+    event.preventDefault();
+    if (!email) return;
 
-    setSubmitting(true)
+    setSubmitting(true);
 
-    if (typeof onSubmit === 'function') {
-      onSubmit(email)
+    if (typeof onSubmit === "function") {
+      onSubmit(email);
     }
 
     setTimeout(() => {
-      setSubmitting(false)
-    }, 1500)
+      setSubmitting(false);
+    }, 1500);
   }
 
   return {
@@ -26,6 +26,5 @@ export function useCtaEmailForm(options = {}) {
     setEmail,
     submitting,
     handleSubmit,
-  }
+  };
 }
-

@@ -1,0 +1,123 @@
+@import "./landing.css";
+
+.site-footer {
+  background: #fff;
+  border-top: 1px solid var(--lp-border);
+  padding-top: 72px;
+  position: relative;
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 64px;
+  padding-bottom: 64px;
+}
+
+.site-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.site-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: var(--lp-font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--lp-heading);
+}
+
+.site-footer__tagline {
+  font-size: 0.875rem;
+  color: var(--lp-muted);
+  margin: 0;
+}
+
+.site-footer__tagline a {
+  color: var(--lp-primary);
+  text-decoration: none;
+}
+
+.site-footer__tagline a:hover {
+  text-decoration: underline;
+}
+
+.site-footer__nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.site-footer__col-head {
+  font-family: var(--lp-font-heading);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--lp-heading);
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.site-footer__col-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.site-footer__link {
+  text-decoration: none;
+  font-size: 0.875rem;
+  color: var(--lp-muted);
+  transition: color 200ms;
+}
+
+.site-footer__link:hover {
+  color: var(--lp-primary);
+}
+.site-footer__link:focus-visible {
+  outline: 2px solid var(--lp-primary);
+  border-radius: 2px;
+}
+
+.site-footer__bottom {
+  border-top: 1px solid var(--lp-border);
+  padding: 20px 0;
+  background: var(--lp-bg-light);
+}
+
+.site-footer__bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-footer__bottom p {
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+  margin: 0;
+}
+
+.site-footer__bottom-links {
+  display: flex;
+  gap: 20px;
+}
+
+.site-footer__bottom-links a {
+  text-decoration: none;
+  font-size: 0.8125rem;
+  color: var(--lp-muted);
+  transition: color 200ms;
+}
+
+.site-footer__bottom-links a:hover {
+  color: var(--lp-primary);
+}

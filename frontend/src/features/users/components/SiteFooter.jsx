@@ -1,19 +1,27 @@
-import './footer.css'
+import "../../../css/footer.css";
 
 const NAV_COLS = {
-  'Trang web': ['Về chúng tôi'],
-  'Dịch vụ': ['MRI & Chẩn đoán hình ảnh', 'EEG & Động kinh', 'Chăm sóc đột quỵ', 'Chăm sóc trí nhớ', 'Rối loạn vận động', 'Phòng khám đau đầu', 'Phẫu thuật thần kinh', 'Thần kinh nhi'],
-  'Thông tin bệnh nhân': ['Đặt lịch hẹn', 'Bảo hiểm', 'Hồ sơ y tế'],
-  'Câu hỏi thường gặp': ['Giới thiệu', 'Quyền riêng tư', 'Bảo mật', 'Liên hệ'],
-}
+  "Trang web": ["Về chúng tôi"],
+  "Dịch vụ": [
+    "MRI & Chẩn đoán hình ảnh",
+    "EEG & Động kinh",
+    "Chăm sóc đột quỵ",
+    "Chăm sóc trí nhớ",
+    "Rối loạn vận động",
+    "Phòng khám đau đầu",
+    "Phẫu thuật thần kinh",
+    "Thần kinh nhi",
+  ],
+  "Thông tin bệnh nhân": ["Đặt lịch hẹn", "Bảo hiểm", "Hồ sơ y tế"],
+  "Câu hỏi thường gặp": ["Giới thiệu", "Quyền riêng tư", "Bảo mật", "Liên hệ"],
+};
 
 export default function SiteFooter() {
-  const year = new Date().getFullYear()
+  const year = new Date().getFullYear();
 
   return (
     <footer className="site-footer" id="footer">
       <div className="site-footer__inner lp-container">
-
         <div className="site-footer__brand">
           <a href="#hero" className="site-footer__logo">
             <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
@@ -22,7 +30,7 @@ export default function SiteFooter() {
               <circle cx="14" cy="14" r="2" fill="#2563EB" />
             </svg>
             <span className="site-footer__tagline">
-              Được tạo bởi <a href="#team">XXX Team</a>
+              Được tạo bởi <span href="#team">XXX Team</span>
             </span>
           </a>
         </div>
@@ -32,16 +40,17 @@ export default function SiteFooter() {
             <div key={col} className="site-footer__col">
               <h4 className="site-footer__col-head">{col}</h4>
               <ul className="site-footer__col-list">
-                {links.map(link => (
+                {links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="site-footer__link">{link}</a>
+                    <a href="#" className="site-footer__link">
+                      {link}
+                    </a>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </nav>
-
       </div>
 
       <div className="site-footer__bottom">
@@ -55,5 +64,5 @@ export default function SiteFooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
