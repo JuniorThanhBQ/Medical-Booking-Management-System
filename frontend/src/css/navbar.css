@@ -78,6 +78,36 @@
   margin-left: 32px;
 }
 
+.navbar__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #111827;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.navbar__icon-button:hover {
+  background: #f3f4f6;
+}
+
+.navbar__icon-button:focus-visible {
+  outline: 2px solid var(--lp-primary);
+  outline-offset: 3px;
+}
+
+.navbar__icon {
+  width: 20px;
+  height: 20px;
+}
+
 .navbar__menu-wrapper {
   position: relative;
 }

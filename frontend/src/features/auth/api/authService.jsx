@@ -17,3 +17,9 @@ import Apis from "../../../configs/Apis";
 //   const response = await Apis.post(endpoints.auth_register, payload);
 //   return response.data;
 // }
+
+export function handleLogout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.href = "/";
+}

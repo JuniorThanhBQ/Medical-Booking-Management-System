@@ -23,9 +23,9 @@ export default function AuthPage() {
   const { setRole } = useAuthStore.getState();
   const [selected, setSelected] = useState(null);
 
-  const handleAuthenticated = (user) => {
-    console.log(user);
-    localStorage.setItem("token", user.token);
+  const handleAuthenticated = (data) => {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
     navigate("/dashboard");
   };
 
