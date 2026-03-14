@@ -10,6 +10,10 @@ export const endpoints = {
   auth_check_email: "/auth/check-email/",
   auth_login_password: "/auth/login-with-password/",
   auth_register: "/auth/register-with-profile/",
+  // checking for available time slots by using derived query params: ?doctor_id=1&date=2024-06-30 / month=2024-06 
+  // if date is not provided, it will return all available time slots in that month, 
+  // appointments_available_slots: "/appointments/available-slots/",
+  // appointments: "/appointments/",
 };
 
 const Apis = axios.create({

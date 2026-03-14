@@ -6,7 +6,9 @@ import EmailStep from "../../components/EmailStep";
 import ProfileStep from "../../components/ProfileStep";
 import PasswordStep from "../../components/PasswordStep";
 import "../../../../css/email-authorization.css";
-import { isValidEmail } from "../../utils/validation";
+import { isValidEmail, isValidPassword } from "../../utils/validation";
+import { ROLE } from "../../../../configs/const";
+
 
 export default function EmailAuthorizationPage({ onAuthenticated }) {
   const navigate = useNavigate();
@@ -79,7 +81,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     event.preventDefault();
     setError("");
 
-    if (!password || password.length < 6) {
+    if (!isValidPassword(password)) {
       setError("Mật khẩu cần ít nhất 6 ký tự.");
       return;
     }
@@ -90,7 +92,13 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
       if (mode === "login") {
         // const result = await loginWithPassword({ email, password })
         if (onAuthenticated) {
-          onAuthenticated("LOGIN");
+          onAuthenticated({
+            token: "TOKEN AFTER LOGIN",
+            user: {
+              role: ROLE.Patient,
+              email,
+            },
+          });
         }
       } else {
         const payload = {
@@ -105,7 +113,13 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
         };
         // const result = await registerWithProfile(payload)
         if (onAuthenticated) {
-          onAuthenticated("REGISTER");
+          onAuthenticated({
+            token: "TOKEN AFTER REGISTER",
+            user: {
+              role: ROLE.Patient,
+              email,
+            },
+          });
         }
       }
     } catch (err) {

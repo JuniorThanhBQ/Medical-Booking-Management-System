@@ -39,7 +39,7 @@ export default function HeroSection() {
           </p>
 
           <div className="hero__ctas">
-            <a href="#schedule" className="hero__btn-primary">
+            <a href="/dashboard" className="hero__btn-primary">
               Đặt lịch tư vấn
             </a>
             <a href="#services" className="hero__btn-ghost">
