@@ -1,4 +1,4 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .booking {
   min-height: 100vh;
@@ -474,4 +474,3 @@
   gap: 10px;
   margin-top: 8px;
 }
-

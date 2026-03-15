@@ -1,4 +1,4 @@
-import { OPEN_HOURS } from "../../../configs/const";
+import { OPEN_HOURS } from "@/configs/const";
 
 export const STEPS = [
   { id: "day", label: "Ngày" },

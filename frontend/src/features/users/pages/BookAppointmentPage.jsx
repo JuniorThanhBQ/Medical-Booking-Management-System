@@ -1,11 +1,11 @@
-import "../../../css/booking.css";
+import "@/assets/css/users/booking.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
-import { SPECIALTIES } from "../../../data/specialties";
-import { DOCTORS } from "../../../data/doctors";
+import { SPECIALTIES } from "@/data/specialties";
+import { DOCTORS } from "@/data/doctors";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { STEPS, toISODate, buildTimeSlots } from "../utils/booking-utils";
-import { AVAILABLE_BOOKING_DAYS } from "../../../configs/const";
+import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
 import {
   BookingNotFoundView,
   BookingSuccessView,
@@ -42,7 +42,7 @@ export default function BookAppointmentPage() {
 
   const doctorsForSpecialty = useMemo(
     () => DOCTORS.filter((d) => d.specialtyId === specialtyId),
-    [specialtyId]
+    [specialtyId],
   );
 
   const availableDays = useMemo(() => {
@@ -62,7 +62,7 @@ export default function BookAppointmentPage() {
 
   const selectedDoctor = useMemo(
     () => doctorsForSpecialty.find((d) => d.id === selectedDoctorId) ?? null,
-    [doctorsForSpecialty, selectedDoctorId]
+    [doctorsForSpecialty, selectedDoctorId],
   );
 
   const handleConfirm = () => {
@@ -79,9 +79,7 @@ export default function BookAppointmentPage() {
 
   if (!specialty) {
     return (
-      <BookingNotFoundView
-        onBrowseSpecialties={() => navigate("/dashboard")}
-      />
+      <BookingNotFoundView onBrowseSpecialties={() => navigate("/dashboard")} />
     );
   }
 
@@ -117,6 +115,10 @@ export default function BookAppointmentPage() {
 
           <div className="booking__grid">
             <div className="booking__panel" aria-label="Nội dung đặt lịch">
+              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
+              {/* Giải thích lỗi: Nếu những dữ liệu bên dưới là dữ liệu do người dùng nhập vào sẽ dẫn đến lỗi bảo mật Generic Object Injection Sink 
+                 . Nếu các dữ liệu bên dưới chắc chắn là tĩnh thì có thể bỏ hai dòng comment đầu này, ngược lại bắt buộc phải lọc đầu vào nhé. */}
+              {/* eslint-disable-next-line security/detect-object-injection*/}
               {STEPS[stepIndex]?.id === "day" && (
                 <BookingDayStep
                   availableDays={availableDays}
@@ -125,6 +127,8 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
+              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
+              {/* eslint-disable-next-line security/detect-object-injection*/}
               {STEPS[stepIndex]?.id === "time" && (
                 <BookingTimeStep
                   timeSlots={timeSlots}
@@ -134,6 +138,8 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
+              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
+              {/* eslint-disable-next-line security/detect-object-injection*/}
               {STEPS[stepIndex]?.id === "doctor" && (
                 <BookingDoctorStep
                   doctorsForSpecialty={doctorsForSpecialty}
@@ -144,6 +150,8 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
+              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
+              {/* eslint-disable-next-line security/detect-object-injection*/}
               {STEPS[stepIndex]?.id === "confirm" && (
                 <BookingConfirmStep
                   specialtyName={specialty.name}
@@ -154,13 +162,11 @@ export default function BookAppointmentPage() {
                   onPatientNotesChange={setPatientNotes}
                   onConfirm={handleConfirm}
                   onGoToStep={goToStep}
-                  canConfirm={
-                    Boolean(selectedDate && selectedTime && selectedDoctorId)
-                  }
+                  canConfirm={Boolean(
+                    selectedDate && selectedTime && selectedDoctorId,
+                  )}
                 />
               )}
-
-
             </div>
 
             <BookingSummary

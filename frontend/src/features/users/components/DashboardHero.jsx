@@ -13,7 +13,8 @@ const DashboardHero = ({ onSearch }) => {
         </p>
 
         <p className="dashboard__description">
-          Chăm sóc sức khỏe chất lượng, được cá nhân hóa theo nhu cầu của bạn, chỉ cách một cú nhấp chuột.
+          Chăm sóc sức khỏe chất lượng, được cá nhân hóa theo nhu cầu của bạn,
+          chỉ cách một cú nhấp chuột.
         </p>
       </div>
 

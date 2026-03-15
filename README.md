@@ -42,7 +42,7 @@ cd project-name
 docker-compose up -d 
 
 ### Truy cập
-- Frontend: http://localhost:3000 
+- Frontend: http://localhost:5173 
 - Backend API: http://localhost:8000 
 - RabbitMQ Management: http://localhost:15672 
 

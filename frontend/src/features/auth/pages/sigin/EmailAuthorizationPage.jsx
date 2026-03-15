@@ -5,10 +5,9 @@ import { useAuthStore } from "../../hooks/useAuthStore";
 import EmailStep from "../../components/EmailStep";
 import ProfileStep from "../../components/ProfileStep";
 import PasswordStep from "../../components/PasswordStep";
-import "../../../../css/email-authorization.css";
+import "@/assets/css/auth/email-authorization.css";
 import { isValidEmail, isValidPassword } from "../../utils/validation";
-import { ROLE } from "../../../../configs/const";
-
+import { ROLE } from "@/configs/const";
 
 export default function EmailAuthorizationPage({ onAuthenticated }) {
   const navigate = useNavigate();
@@ -101,16 +100,16 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
           });
         }
       } else {
-        const payload = {
-          email,
-          password,
-          first_name: profile.firstName,
-          last_name: profile.lastName,
-          phone: profile.phone,
-          date_of_birth: profile.dateOfBirth,
-          gender: profile.gender,
-          role,
-        };
+        // const payload = {
+        //   email,
+        //   password,
+        //   first_name: profile.firstName,
+        //   last_name: profile.lastName,
+        //   phone: profile.phone,
+        //   date_of_birth: profile.dateOfBirth,
+        //   gender: profile.gender,
+        //   role,
+        // };  ==> Lỗi eslint được đánh dấu ngày 15/03/2026
         // const result = await registerWithProfile(payload)
         if (onAuthenticated) {
           onAuthenticated({

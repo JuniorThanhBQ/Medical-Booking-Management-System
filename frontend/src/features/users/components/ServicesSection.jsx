@@ -1,4 +1,4 @@
-import "../../../css/services.css";
+import "@/assets/css/users/services.css";
 
 const SERVICES = [
   {

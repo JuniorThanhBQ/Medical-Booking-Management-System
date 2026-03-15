@@ -15,7 +15,10 @@ export default function AppRoute() {
       <Route element={<RoleRoute allowedRoles={["Patient", "Admin"]} />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/specialties/:specialtyId" element={<SpecialtyPage />} />
-        <Route path="/specialties/:specialtyId/book" element={<BookAppointmentPage />} />
+        <Route
+          path="/specialties/:specialtyId/book"
+          element={<BookAppointmentPage />}
+        />
       </Route>
     </Routes>
   );

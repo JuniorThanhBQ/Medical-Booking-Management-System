@@ -1,4 +1,4 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .specialty__rules-list {
   list-style: none;
@@ -34,7 +34,6 @@
     padding: 12px 14px;
   }
 }
-
 
 .specialty {
   min-height: 100vh;
@@ -236,5 +235,3 @@
     grid-template-columns: 1fr;
   }
 }
-
-
