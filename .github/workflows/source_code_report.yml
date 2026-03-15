@@ -5,7 +5,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  generate-stats:
+  generate-report:
     runs-on: ubuntu-latest
     
     permissions:
@@ -23,7 +23,7 @@ jobs:
           python-version: '3.13'
 
       - name: Chạy script 
-        run: python scripts/folder_evaluate_scripts.py
+        run: python .github/workflows/scripts/folder_evaluate_scripts.py
 
       - name: Tạo GitHub Issue
         env:
