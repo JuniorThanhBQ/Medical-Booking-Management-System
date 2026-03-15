@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='admin/index.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Admin</h2>
+
+        <ul>
+            <li><a href="/admin">Dashboard</a></li>
+            <li><a href="/admin/users">Quản lý User</a></li>
+            <li><a href="/admin/doctors">Quản lý Bác sĩ</a></li>
+            <li><a href="/admin/appointments">Quản lý Lịch khám</a></li>
+            <li><a href="/logout">Đăng xuất</a></li>
+        </ul>
+    </div>
+    <div class="main">
+
+        <div class="header">
+            <h1>Trang quản trị hệ thống</h1>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Người dùng</h3>
+                <p>{{ user_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Bác sĩ</h3>
+                <p>{{ doctor_count }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Lịch khám</h3>
+                <p>{{ appointment_count }}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
