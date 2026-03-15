@@ -1,4 +1,4 @@
-import Apis from "../../../configs/Apis";
+import Apis from "@/configs/Apis";
 
 // export async function checkEmailExists(email) {
 //   const response = await Apis.post(endpoints.auth_check_email, { email });

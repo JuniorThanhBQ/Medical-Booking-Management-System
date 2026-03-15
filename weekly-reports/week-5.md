@@ -1,8 +1,8 @@
 # Báo cáo Tuần 5 
 **Tuần:** 5 (16/03/2026 - 22/03/2026)   
-**Nhóm:** 8
-**Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh (Medical Appointment)]   
-**Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
+**Nhóm:** MAB/8 </br> 
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
+**Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 
 

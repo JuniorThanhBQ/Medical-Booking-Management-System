@@ -1,4 +1,4 @@
-import "../../../css/hero.css";
+import "@/assets/css/users/hero.css";
 
 const STATS = [
   { value: "24/7", label: "Cấp cứu thần kinh 24/7" },
@@ -25,11 +25,11 @@ export default function HeroSection() {
           <span className="hero__badge">Đa khoa</span>
 
           <h1 className="hero__title">
-            Open 
+            Open
             <br />
-            Medical 
+            Medical
             <br />
-            Appointment 
+            Appointment
           </h1>
 
           <p className="hero__desc">

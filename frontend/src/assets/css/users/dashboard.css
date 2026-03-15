@@ -1,12 +1,8 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    var(--lp-section-bg-alt),
-    #ffffff
-  );
+  background: linear-gradient(135deg, var(--lp-section-bg-alt), #ffffff);
 }
 
 .dashboard__hero {
@@ -229,9 +225,7 @@
   cursor: pointer;
   text-align: left;
   color: var(--lp-body);
-
 }
-
 
 .dashboard-specialty-card:hover {
   border-color: var(--lp-primary-border);
@@ -319,4 +313,3 @@
     grid-template-columns: 1fr;
   }
 }
-

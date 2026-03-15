@@ -54,9 +54,7 @@ const SearchCard = ({ onSearch }) => {
         />
 
         <div className="dashboard__field">
-          <label className="dashboard__label">
-            Ngày khám
-          </label>
+          <label className="dashboard__label">Ngày khám</label>
 
           <div className="dashboard__input-wrap">
             <svg viewBox="0 0 24 24">
@@ -87,7 +85,7 @@ const SearchCard = ({ onSearch }) => {
 
         <button className="dashboard__search-btn" type="submit">
           Search
-          <svg viewBox="0 0 24 24" >
+          <svg viewBox="0 0 24 24">
             <path
               d="M5 12h12.586l-3.293-3.293a1 1 0 0 1 1.414-1.414l5 5a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414-1.414L17.586 13H5a1 1 0 0 1 0-2Z"
               fill="currentColor"

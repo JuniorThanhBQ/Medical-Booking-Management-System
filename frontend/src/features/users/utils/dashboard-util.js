@@ -1,5 +1,4 @@
-
-import { AVAILABLE_BOOKING_DAYS } from "../../../configs/const";
+import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
 export function validateAppointmentDate(date) {
   if (!date) return { isValid: false, error: "Vui lòng chọn ngày khám." };
 
