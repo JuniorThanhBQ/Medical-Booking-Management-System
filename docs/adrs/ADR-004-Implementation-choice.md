@@ -1,10 +1,10 @@
-# ADR-003: Lựa chọn cấu trúc hiện thực là coding module
+# ADR-004: Lựa chọn quy chuẩn coding module
 
 ## Trạng thái
 Pending
 
 ## Bối cảnh
-Sau khi lựa chọn mẫu kiến trúc cho client - server, nhóm chia 3 thành viên ra làm 3 công việc, một bạn CI/CD, một bạn Backend và một bạn Frontend. Dựa trên quyết định pattern cho Server là phân lớp, nhóm cần đưa ra quyết định cách tổ chức source code sao cho phù hợp.
+Sau quá trình chọn thiết kế kiến trúc, nhóm chia 3 thành viên ra làm 3 công việc, một bạn CI/CD, một bạn Backend và một bạn Frontend. Dựa trên quyết định pattern cho Server là phân lớp, nhóm cần đưa ra quyết định cách tổ chức source code sao cho phù hợp.
 
 ## Quyết định
 Sau khi so sánh hai cách thức là tổ chức theo tính năng/module hoặc theo lớp kỹ thuật gộp chung. Nhóm đưa ra quyết định sử dụng cấu trúc hiện thực là coding module.
