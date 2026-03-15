@@ -1,14 +1,18 @@
 from datetime import datetime
-from src import db
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Enum, Date
-from sqlalchemy.orm import relationship
-from flask_login import UserMixin
 from enum import Enum
+
+from flask_login import UserMixin
+from sqlalchemy import Column, Date, DateTime, Integer, String
+from sqlalchemy.orm import relationship
+
+from src import db
+
 
 class UserRole(Enum):
     PATIENT = 1
     DOCTOR = 2
     ADMINISTRATOR = 3
+
 
 class GenderRole(Enum):
     MALE = 1
@@ -20,7 +24,7 @@ class Base(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(200), nullable=False, default='')
+    name = Column(String(200), nullable=False, default="")
     created_date = Column(DateTime, default=datetime.utcnow)
 
     def __str__(self):
@@ -28,11 +32,13 @@ class Base(db.Model):
 
 
 class User(Base, UserMixin):
-    __tablename__ = 'user'
+    __tablename__ = "user"
 
     address = Column(String(500))
-    avatar = Column(String(500),
-        default="https://diemchuan.net/uploads/worigin/2022/07/13/truongdaihocmotphcm_1.png")
+    avatar = Column(
+        String(500),
+        default="https://shorturl.at/KNuMX",
+    )
 
     birthday = Column(Date)
     email = Column(String(200), unique=True)
@@ -42,7 +48,7 @@ class User(Base, UserMixin):
 
     password = Column(String(255), nullable=False)
 
-    account = relationship('Account', backref='user', lazy=True, uselist=False)
+    account = relationship("Account", backref="user", lazy=True, uselist=False)
 
     @property
     def is_patient(self):
