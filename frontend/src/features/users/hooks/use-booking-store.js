@@ -13,7 +13,6 @@ const initialState = {
 export const useBookingStore = create((set) => ({
   ...initialState,
 
-
   setSelectedDate: (value) => set({ selectedDate: value }),
 
   setSelectedTime: (value) => set({ selectedTime: value }),
@@ -27,7 +26,7 @@ export const useBookingStore = create((set) => ({
   increaseStepIndex: () => set((state) => ({ stepIndex: state.stepIndex + 1 })),
 
   goToStep: (nextIndex) =>
-    set((state) => ({
+    set((/*state ==> Lỗi eslint được đánh dấu ngày 15/03/2026*/) => ({
       stepIndex: Math.max(0, Math.min(nextIndex, STEPS.length - 1)),
     })),
 
@@ -39,7 +38,7 @@ export const useBookingStore = create((set) => ({
       ...payload,
       createdAt: new Date().toISOString(),
     };
-    console.log("appointment",appointment);
+    console.log("appointment", appointment);
     // saveAppointment(appointment);
     set({ confirmed: true });
   },

@@ -1,4 +1,4 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .site-footer {
   background: #fff;
@@ -15,8 +15,7 @@
 }
 
 .site-footer__inner.lp-container {
-    padding-bottom: 64px;
-
+  padding-bottom: 64px;
 }
 
 .site-footer__brand {

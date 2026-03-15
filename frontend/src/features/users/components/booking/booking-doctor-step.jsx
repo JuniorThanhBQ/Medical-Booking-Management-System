@@ -1,10 +1,10 @@
-import { toISODate } from "../../utils/booking-utils";
+// import { toISODate } from "../../utils/booking-utils";  ==> Lỗi eslint được đánh dấu ngày 15/03/2026
 import { BookingPanelHeader } from "./booking-panel-header";
 
 export function BookingDoctorStep({
   doctorsForSpecialty,
-  selectedDate,
-  selectedTime,
+  // selectedDate,
+  // selectedTime,  ==> Lỗi eslint được đánh dấu ngày 15/03/2026
   selectedDoctorId,
   onSelectDoctor,
   onNext,

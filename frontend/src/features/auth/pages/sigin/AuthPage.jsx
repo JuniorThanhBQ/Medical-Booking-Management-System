@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import EmailAuthorizationPage from "./EmailAuthorizationPage";
-import "../../../../css/auth-page.css";
+import "@/assets/css/auth/auth-page.css";
 
 const OPTIONS = [
   {

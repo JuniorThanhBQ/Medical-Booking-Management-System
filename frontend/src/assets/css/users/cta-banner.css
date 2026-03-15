@@ -1,4 +1,4 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .cta-banner {
   padding: var(--lp-section-py) 0;
