@@ -1,4 +1,4 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .hero {
   position: relative;

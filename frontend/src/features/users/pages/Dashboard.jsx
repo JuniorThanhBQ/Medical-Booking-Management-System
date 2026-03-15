@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
-import "../../../css/dashboard.css";
+import "@/assets/css/users/dashboard.css";
 import Navbar from "../components/Navbar";
-import { SPECIALTIES } from "../../../data/specialties";
-import { DOCTORS } from "../../../data/doctors";
-import { DEFAULT_NAV_LINKS } from "../../../configs/const";
-import { getRoleMenuItems } from "../../../utils/utils";
+import { SPECIALTIES } from "@/data/specialties";
+import { DOCTORS } from "@/data/doctors";
+import { DEFAULT_NAV_LINKS } from "@/configs/const";
+import { getRoleMenuItems } from "@/utils/utils";
 import SpecialtyCard from "../components/SpecialtyCard";
 import DashboardHero from "../components/DashboardHero";
 import { useNavigate } from "react-router-dom";
@@ -60,11 +60,11 @@ const Dashboard = () => {
     });
 
     const specialtyIds = new Set(
-      matchingDoctors.map((doctor) => doctor.specialtyId)
+      matchingDoctors.map((doctor) => doctor.specialtyId),
     );
 
     const results = SPECIALTIES.filter((specialty) =>
-      specialtyIds.has(specialty.id)
+      specialtyIds.has(specialty.id),
     );
 
     setSearchResults(results);
@@ -102,9 +102,7 @@ const Dashboard = () => {
                     <SpecialtyCard
                       key={specialty.id}
                       specialty={specialty}
-                      onClick={() =>
-                        navigate(`/specialties/${specialty.id}`)
-                      }
+                      onClick={() => navigate(`/specialties/${specialty.id}`)}
                     />
                   ))}
                 </div>
@@ -125,8 +123,8 @@ const Dashboard = () => {
                   Dịch vụ theo khoa
                 </h2>
                 <p className="dashboard__specialties-subtitle">
-                  Chọn một chuyên khoa để xem các bác sĩ được đánh giá cao
-                  trong lĩnh vực đó.
+                  Chọn một chuyên khoa để xem các bác sĩ được đánh giá cao trong
+                  lĩnh vực đó.
                 </p>
               </div>
             </div>
@@ -136,9 +134,7 @@ const Dashboard = () => {
                 <SpecialtyCard
                   key={specialty.id}
                   specialty={specialty}
-                  onClick={() =>
-                    navigate(`/specialties/${specialty.id}`)
-                  }
+                  onClick={() => navigate(`/specialties/${specialty.id}`)}
                 />
               ))}
             </div>

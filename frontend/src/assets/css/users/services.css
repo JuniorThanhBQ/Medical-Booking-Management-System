@@ -1,4 +1,4 @@
-@import "./landing.css";
+@import "@/assets/css/auth/landing.css";
 
 .services {
   padding: calc(var(--lp-section-py) + 16px) 0 56px;

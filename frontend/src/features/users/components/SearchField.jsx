@@ -6,9 +6,7 @@ const SearchField = ({ label, placeholder, icon, name, value, onChange }) => {
       </label>
 
       <div className="dashboard__input-wrap">
-        <svg viewBox="0 0 24 24">
-          {icon}
-        </svg>
+        <svg viewBox="0 0 24 24">{icon}</svg>
 
         <input
           id={name}

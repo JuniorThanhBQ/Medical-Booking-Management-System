@@ -1,10 +1,6 @@
 import { useNavbarMenu } from "../hooks/use-navbar-menu";
-import "../../../css/navbar.css";
-import {
-  ROLE,
-  DEFAULT_MENU_ITEMS,
-  DEFAULT_NAV_LINKS,
-} from "../../../configs/const";
+import "@/assets/css/users/navbar.css";
+import { ROLE, DEFAULT_MENU_ITEMS, DEFAULT_NAV_LINKS } from "@/configs/const";
 import { handleLogout } from "../../auth/api/authService";
 
 const PATIENT_NAV_LINKS = [

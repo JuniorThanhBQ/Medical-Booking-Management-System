@@ -1,5 +1,5 @@
 import { useCtaEmailForm } from "../hooks/use-cta-email-form";
-import "../../../css/cta-banner.css";
+import "@/assets/css/users/cta-banner.css";
 
 export default function CtaBanner() {
   const { email, setEmail, submitting, handleSubmit } = useCtaEmailForm();

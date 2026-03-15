@@ -1,4 +1,4 @@
-import "../../../css/footer.css";
+import "@/assets/css/users/footer.css";
 
 const NAV_COLS = {
   "Trang web": ["Về chúng tôi"],
@@ -12,8 +12,7 @@ export default function SiteFooter() {
   return (
     <footer className="site-footer" id="footer">
       <div className="site-footer__inner lp-container">
-        <div className="site-footer__brand">
-        </div>
+        <div className="site-footer__brand"></div>
 
         <nav className="site-footer__nav">
           {Object.entries(NAV_COLS).map(([col, links]) => (
