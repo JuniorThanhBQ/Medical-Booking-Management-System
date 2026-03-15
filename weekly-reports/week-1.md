@@ -1,8 +1,8 @@
 # Báo cáo Tuần 1 
 **Tuần:** 1 (26/01/2026 - 01/02/2026)   
-**Nhóm:** [MAB/8]
-**Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh]   
-**Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
+**Nhóm:** MAB/8 </br> 
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
+**Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 
 
@@ -58,4 +58,4 @@
 --- 
 
 *Ngày nộp: 01/02/2026*   
-*Xác nhận của Nhóm trưởng: [Văn Trung Thành]*
+*Xác nhận của Nhóm trưởng: Văn Trung Thành*

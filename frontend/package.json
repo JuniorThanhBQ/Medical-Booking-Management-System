@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "format:check": "prettier --check \"src/**/*.{js,jsx,css,md}\""
+    "format:check": "prettier --check \"src/**/*.{js,jsx,css,md}\"",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "axios": "^1.13.6",
@@ -26,6 +27,7 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "eslint-plugin-security": "^4.0.0",
     "globals": "^16.5.0",
     "prettier": "^3.8.1",
     "vite": "^7.3.1"

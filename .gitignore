@@ -205,42 +205,5 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-
-# Logs 
-logs 
-*.log 
-npm-debug.log* 
-yarn-debug.log* 
-yarn-error.log* 
-pnpm-debug.log* 
-# Dependency directories 
-node_modules/ 
-venv/ 
-# Build output 
-dist/ 
-dist-ssr/ 
-# Vite temporary files 
-vite 
-# Editor-specific files 
-vscode/ 
-idea/ 
-*.suo 
-*.ntvs* 
-*.njsproj 
-*.sln 
-*.sw? 
-# System files 
-DS_Store 
-Thumbs.db 
-# ESLint cache 
-eslintcache 
-# Optional npm/yarn/pnpm files 
-npm/ 
-yarn-integrity 
-# Output of `npm pack` 
-*.tgz 
-# Local environment files 
-env.local 
-env.*.local 
-# Coverage reports (if using testing tools like Jest) 
-coverage/
+folder_code.txt
+issue.md

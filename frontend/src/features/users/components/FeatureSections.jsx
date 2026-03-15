@@ -1,4 +1,4 @@
-import "../../../css/feature-sections.css";
+import "@/assets/css/users/feature-sections.css";
 
 const FEATURES = [
   {
