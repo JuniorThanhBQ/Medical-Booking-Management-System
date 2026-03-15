@@ -1,0 +1,42 @@
+name: Thống kê mã nguồn
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Chạy script 
+        run: python .github/workflows/scripts/folder_evaluate_scripts.py
+
+      - name: Tạo GitHub Issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Thống kê mã nguồn PR #${{ github.event.pull_request.number || 'Local' }}" \
+            --body-file issue.md \
+            --assignee "${{ github.actor }}" \
+            --label "Documentation"
+
+      - name: Đính kèm file
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-code-bundle
+          path: folder_code.txt

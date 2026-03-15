@@ -3,9 +3,11 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import security from 'eslint-plugin-security'
 
 export default defineConfig([
   globalIgnores(['dist']),
+  security.configs.recommended,
   {
     files: ['**/*.{js,jsx}'],
     extends: [
