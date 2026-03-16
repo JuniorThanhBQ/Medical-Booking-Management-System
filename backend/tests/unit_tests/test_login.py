@@ -1,9 +1,4 @@
-import os
-import sys
-
 from modules.users.services import login
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../src")))
 
 
 def test_login_success():
