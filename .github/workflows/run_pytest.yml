@@ -53,4 +53,4 @@ jobs:
           ACTOR: ${{ github.actor }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
-        run: ./scripts/create_pytest_issue.sh
+        run: python .github/workflows/scripts/pytest_issue_create.sh
