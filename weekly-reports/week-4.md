@@ -23,25 +23,27 @@
 | Backend API | Đang làm | 5% | 
 | Frontend UI | Đang làm | 18% | 
 | Docker | Chưa bắt đầu | 0% | 
-| Testing | Chưa bắt đầu | 0% | 
-**Tổng tiến độ: 0%** 
+| Testing | Đang làm | 5% | 
+**Tổng tiến độ: ~36,7%** 
 
 --- 
 
 ## 3. Kế hoạch tuần tới
 | Thành viên | Công việc dự kiến | 
 |------------|-------------------| 
-| Văn Trung Thành | ... | 
-| Nguyễn Thanh Phong | ... | 
-| Trương Hưng Phát | ... | 
+| Văn Trung Thành | Hoàn thiện chương 3-4-5 trong báo cáo. Hỗ trợ Phong trong phát triển chức năng và viết unit-test. Refactor code nếu có vấn đề xảy ra | 
+| Nguyễn Thanh Phong | Phát triển API tìm kiếm bác sĩ chuyên khoa, đặt lịch khám, xem lịch hẹn, quản lý hồ sơ cá nhân và tra cứu hồ sơ bệnh nhân. Ngoài ra, phát triển dashboard quản lý bác sĩ và chuyên khoa cho admin | 
+| Trương Hưng Phát | Thiết kế giao diện đặt lịch khám, xem lịch hẹn, xem nhắc hẹn thông báo và quản lý lịch làm việc của bác sĩ. | 
 
 --- 
 
 ## 4. Khó khăn / Cần hỗ trợ
-- [ ] [Mô tả khó khăn nếu có] 
-- [ ] [Câu hỏi cần GV giải đáp nếu có] 
+- [X] [
+    Hiện tại, các khó khăn của nhóm xuất phát từ việc thiếu thời gian để thực hiện đồ án và tương tác của nhóm dần bị trì trệ. Ngoài ra, một số vấn đề liên quan đến nợ kiến trúc đang được giải quyết tạm thời thay vì xem xét một cách triệt để.
+] 
+- [ ] [Nhóm không có câu hỏi dành cho giảng viên] 
 
 --- 
 
 *Ngày nộp: 15/03/2026*   
-*Xác nhận của Nhóm trưởng: [Văn Trung Thành]*
+*Xác nhận của Nhóm trưởng: Văn Trung Thành*
