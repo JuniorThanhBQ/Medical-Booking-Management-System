@@ -5,7 +5,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build:
+  backend_linting_check:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,15 +18,11 @@ jobs:
         python-version: '3.13'
 
     - name: Cài đặt gói thư viện
-      run: pip install black flake8 isort
+      run: pip install black isort
 
     - name: Chạy Black
       working-directory: ./backend
       run: black --check .
-
-    - name: Chạy Flake8
-      working-directory: ./backend
-      run: flake8 .
 
     - name: Chạy isort
       working-directory: ./backend

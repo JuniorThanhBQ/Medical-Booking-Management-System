@@ -5,7 +5,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build:
+  frontend_linting_check:
     runs-on: ubuntu-latest
 
     steps:
