@@ -9,8 +9,7 @@ import SpecialtyCard from "../components/SpecialtyCard";
 import DashboardHero from "../components/DashboardHero";
 import { useNavigate } from "react-router-dom";
 import { validateAppointmentDate } from "../utils/dashboard-util";
-const normalizeQuery = (value) => value.trim().toLowerCase();
-
+import { normalizeQuery } from "@/utils/utils";
 const Dashboard = () => {
   const navigate = useNavigate();
 

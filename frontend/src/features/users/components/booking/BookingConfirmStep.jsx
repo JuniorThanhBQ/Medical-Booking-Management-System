@@ -8,7 +8,6 @@ export function BookingConfirmStep({
   patientNotes,
   onPatientNotesChange,
   onConfirm,
-  // onGoToStep,  ==> Lỗi eslint được đánh dấu ngày 15/03/2026
   canConfirm,
 }) {
   return (

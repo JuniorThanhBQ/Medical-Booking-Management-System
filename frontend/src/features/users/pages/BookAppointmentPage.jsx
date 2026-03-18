@@ -114,10 +114,8 @@ export default function BookAppointmentPage() {
           </div>
 
           <div className="booking__grid">
-            <div className="booking__panel" aria-label="Nội dung đặt lịch">
-              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
-              {/* Giải thích lỗi: Nếu những dữ liệu bên dưới là dữ liệu do người dùng nhập vào sẽ dẫn đến lỗi bảo mật Generic Object Injection Sink 
-                 . Nếu các dữ liệu bên dưới chắc chắn là tĩnh thì có thể bỏ hai dòng comment đầu này, ngược lại bắt buộc phải lọc đầu vào nhé. */}
+            <div className="booking__panel">
+              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 False Positive*/}
               {/* eslint-disable-next-line security/detect-object-injection*/}
               {STEPS[stepIndex]?.id === "day" && (
                 <BookingDayStep

@@ -1,14 +1,8 @@
 import { useNavbarMenu } from "../hooks/use-navbar-menu";
 import "@/assets/css/users/navbar.css";
-import { ROLE, DEFAULT_MENU_ITEMS, DEFAULT_NAV_LINKS } from "@/configs/const";
+import { DEFAULT_MENU_ITEMS, DEFAULT_NAV_LINKS } from "@/configs/const";
 import { handleLogout } from "../../auth/api/authService";
-
-const PATIENT_NAV_LINKS = [
-  { label: "Trang chủ", href: "/" },
-  { label: "Tìm bác sĩ", href: "/dashboard" },
-  { label: "Lịch hẹn của tôi", href: "/appointments" },
-  { label: "Hồ sơ bệnh án", href: "/medical-records" },
-];
+import { getRoleNavLinks } from "@/utils/utils";
 
 export default function Navbar({
   navLinks = DEFAULT_NAV_LINKS,
@@ -18,12 +12,8 @@ export default function Navbar({
     useNavbarMenu();
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-  const role = user?.role;
 
-  const resolvedNavLinks =
-    isLoggedIn && role === ROLE.Patient ? PATIENT_NAV_LINKS : navLinks;
-
+  const resolvedNavLinks = getRoleNavLinks();
   const resolvedMenuItems = isLoggedIn
     ? [
         { label: "Hồ sơ", href: "/profile" },

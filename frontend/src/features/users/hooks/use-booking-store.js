@@ -26,7 +26,7 @@ export const useBookingStore = create((set) => ({
   increaseStepIndex: () => set((state) => ({ stepIndex: state.stepIndex + 1 })),
 
   goToStep: (nextIndex) =>
-    set((/*state ==> Lỗi eslint được đánh dấu ngày 15/03/2026*/) => ({
+    set((_) => ({
       stepIndex: Math.max(0, Math.min(nextIndex, STEPS.length - 1)),
     })),
 

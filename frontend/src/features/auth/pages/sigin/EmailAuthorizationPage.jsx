@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../hooks/useAuthStore";
+import { useAuthStore } from "../../hooks/use-auth-store";
 // import { checkEmailExists, loginWithPassword, registerWithProfile } from '../../../configs/Apis.jsx'
 import EmailStep from "../../components/EmailStep";
 import ProfileStep from "../../components/ProfileStep";
@@ -8,6 +8,8 @@ import PasswordStep from "../../components/PasswordStep";
 import "@/assets/css/auth/email-authorization.css";
 import { isValidEmail, isValidPassword } from "../../utils/validation";
 import { ROLE } from "@/configs/const";
+import users from "../../../users/data";
+
 
 export default function EmailAuthorizationPage({ onAuthenticated }) {
   const navigate = useNavigate();
@@ -93,10 +95,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
         if (onAuthenticated) {
           onAuthenticated({
             token: "TOKEN AFTER LOGIN",
-            user: {
-              role: ROLE.Patient,
-              email,
-            },
+            user: users[0]
           });
         }
       } else {
@@ -115,7 +114,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
           onAuthenticated({
             token: "TOKEN AFTER REGISTER",
             user: {
-              role: ROLE.Patient,
+              role: ROLE.Doctor,
               email,
             },
           });

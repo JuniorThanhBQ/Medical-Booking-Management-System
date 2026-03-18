@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 
 export function BookingSuccessView({
   specialtyId,
-  // specialtyName,  ==> Lỗi eslint được đánh dấu ngày 15/03/2026
   onBookAnother,
 }) {
   return (
