@@ -1,0 +1,149 @@
+name: Chạy các bước kiểm tra tĩnh tổng hợp
+
+on: 
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  backend-linting-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+
+    - name: Cài đặt Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        cache: 'pip'
+
+    - name: Cài đặt gói thư viện
+      run: pip install black isort
+
+    - name: Chạy Black
+      working-directory: ./backend
+      run: black --check .
+
+    - name: Chạy isort
+      working-directory: ./backend
+      run: isort --check .
+
+  frontend-linting-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+    
+    - name: Cài đặt Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' 
+        cache: 'npm'
+        cache-dependency-path: './frontend/package-lock.json'
+
+    - name: Cài đặt gói thư viện
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: Kiểm tra Eslint
+      working-directory: ./frontend
+      run: npm run lint
+
+    - name: Kiểm tra format Prettier
+      working-directory: ./frontend
+      run: npm run format:check
+
+  backend-security-check:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Cài đặt Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'        
+
+      - name: Cài đặt Bandit
+        run: pip install bandit
+
+      - name: Chạy Bandit
+        run: bandit -c .github/configs/bandit.yaml -r backend -f sarif -o bandit-results.sarif
+      
+      - name: Phân tích sarif trên codeql 
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bandit-results.sarif
+  
+  frontend-security-check:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+
+      - name: Cài đặt dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Chạy npm audit
+        working-directory: ./frontend
+        run: npm audit --audit-level=high
+
+  static-analysis-report:
+    runs-on: ubuntu-latest
+    needs: [backend-linting-check, frontend-linting-check, backend-security-check, frontend-security-check]
+    if: always()
+    
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      
+      - name: Cài đặt Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Chạy script 
+        env:
+          BACKEND_LINT: ${{ needs.backend-linting-check.result }}
+          FRONTEND_LINT: ${{ needs.frontend-linting-check.result }}
+          SECURITY_CHECK: ${{ needs.security-check.result }}
+        run: python .github/workflows/scripts/folder_evaluate_scripts.py
+
+      - name: Tạo GitHub Issue
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Báo cáo kiểm tĩnh cho pull request #${{ github.event.pull_request.number || 'Local' }}" \
+            --body-file issue.md \
+            --assignee "${{ github.actor }}" \
+            --label "Documentation"
+

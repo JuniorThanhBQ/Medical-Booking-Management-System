@@ -1,11 +1,11 @@
-name: Chạy các kiểm tra pytest
+name: Chạy các bài kiểm tra chất lượng QA
 
 on:
   pull_request:
     branches: [ main, develop ]
 
 jobs:
-  run_pytest:
+  pytest-test:
     runs-on: ubuntu-latest
     
     permissions:
