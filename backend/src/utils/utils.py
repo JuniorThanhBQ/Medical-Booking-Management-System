@@ -1,6 +1,20 @@
 import hashlib
 from datetime import datetime
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
+GOOGLE_CLIENT_ID = "1234567890-abcxyz.apps.googleusercontent.com"
+
+def verify_google_token(token):
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            requests.Request(),
+            GOOGLE_CLIENT_ID
+        )
+        return idinfo
+    except Exception:
+        return None
 
 def hashlib_password(password):
     return hashlib.md5(password.strip().encode("utf-8")).hexdigest()
