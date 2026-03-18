@@ -1,6 +1,8 @@
 name: Chạy các bước kiểm tra tĩnh tổng hợp
 
 on: 
+  push:
+    branches: [ "main", "master" ]
   pull_request:
     branches: [ main, develop ]
   schedule:
@@ -141,4 +143,38 @@ jobs:
             --body-file issue.md \
             --assignee "${{ github.actor }}" \
             --label "Documentation"
+
+  docker-static-test:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create mock .env file
+        run: cp .env.example .env
+
+      - name: Build container qua compose
+        run: docker compose up -d --build
+
+      - name: Đợi container sẵn sàng sau 30 giây
+        run: sleep 30 
+
+      - name: Kiểm tra tình trạng docker
+        run: |
+          docker compose ps
+
+          EXITED_CONTAINERS=$(docker ps -a | grep Exit | wc -l)
+          
+          if [ "$EXITED_CONTAINERS" -gt 0 ]; then
+            echo "Một trong số container chạy thất bại"
+            docker ps -a
+            exit 1 
+          else
+            echo "Không có lỗi xảy ra"
+          fi
+
+      - name: Dọn dẹp container
+        if: always()
+        run: docker compose down -v
 
