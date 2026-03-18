@@ -61,6 +61,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      actions: read
       contents: read
       security-events: write
 
@@ -75,14 +76,14 @@ jobs:
           cache: 'pip'        
 
       - name: Cài đặt Bandit
-        run: pip install bandit
+        run: pip install bandit bandit[sarif]
 
       - name: Chạy Bandit
         run: bandit -c .github/configs/bandit.yaml -r backend -f sarif -o bandit-results.sarif
       
       - name: Phân tích sarif trên codeql 
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: bandit-results.sarif
   
@@ -134,7 +135,7 @@ jobs:
           BACKEND_LINT: ${{ needs.backend-linting-check.result }}
           FRONTEND_LINT: ${{ needs.frontend-linting-check.result }}
           SECURITY_CHECK: ${{ needs.security-check.result }}
-        run: python .github/workflows/scripts/folder_evaluate_scripts.py
+        run: python .github/workflows/scripts/static_report_scripts.py
 
       - name: Tạo GitHub Issue
         if: github.event_name == 'pull_request'
