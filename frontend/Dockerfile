@@ -2,7 +2,12 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-COPY . .
+COPY public/ ./public/
+COPY src/ ./src/
+COPY index.html ./
+COPY vite.config.js ./
+COPY eslint.config.js ./
+COPY .eslintrc.json ./
 RUN npm run build
 
 FROM nginx:1.28.2-alpine
