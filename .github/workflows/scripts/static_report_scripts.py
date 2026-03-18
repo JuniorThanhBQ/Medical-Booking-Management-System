@@ -45,18 +45,18 @@ def format_status(status):
     if status == 'skipped': return '**Đã bỏ qua**'
     return f'Có lỗi xảy ra {status}'
 
-md_content = "## Báo cáo kiểm tra tĩnh cho pull request \n\n"
+md_content = "## Báo cáo kiểm tra tĩnh \n\n"
 
 md_content += "### 1. Trạng thái các jobs:\n"
 md_content += "| Hạng mục  | Kết quả |\n|---|---|\n"
 md_content += f"| kiểm tra format backend: | {format_status(backend_status)} |\n"
 md_content += f"| Kiểm tra format frontend: | {format_status(frontend_status)} |\n"
-md_content += f"| **Kiểm tra bảo mật: ** | {format_status(security_status)} |\n\n"
-md_content += f"*(Xem chi tiết: [Action]({run_url}))*\n\n"
+md_content += f"| Kiểm tra bảo mật: | {format_status(security_status)} |\n\n"
+md_content += f"*(Xem chi tiết: [link]({run_url}))*\n\n"
 md_content += "---\n\n"
 
 md_content += "### 2. Thống kê về mã nguồn:\n"
-md_content += f"- **Tổng số file hợp lệ:** `{len(file_stats)}` files\n"
+md_content += f"- **Tổng số file:** `{len(file_stats)}` files\n"
 md_content += f"- **Tổng số dòng code:** `{total_lines}` dòng\n\n"
 
 md_content += "| Tên File | Số dòng |\n|---|---|\n"

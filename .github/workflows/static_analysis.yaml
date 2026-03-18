@@ -76,17 +76,11 @@ jobs:
           cache: 'pip'        
 
       - name: Cài đặt Bandit
-        run: pip install bandit bandit[sarif]
+        run: pip install bandit
 
       - name: Chạy Bandit
-        run: bandit -c .github/configs/bandit.yaml -r backend -f sarif -o bandit-results.sarif
-      
-      - name: Phân tích sarif trên codeql 
-        if: always()
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: bandit-results.sarif
-  
+        run: bandit -c .github/configs/bandit.yaml -r backend
+
   frontend-security-check:
     runs-on: ubuntu-latest
 
@@ -143,7 +137,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue create \
-            --title "Báo cáo kiểm tĩnh cho pull request #${{ github.event.pull_request.number || 'Local' }}" \
+            --title "Báo cáo kiểm tra tĩnh cho pull request ${{ github.event.pull_request.number || 'Local' }}" \
             --body-file issue.md \
             --assignee "${{ github.actor }}" \
             --label "Documentation"
