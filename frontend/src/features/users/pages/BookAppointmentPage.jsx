@@ -1,8 +1,8 @@
 import "@/assets/css/users/booking.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
-import { SPECIALTIES } from "@/data/specialties";
-import { DOCTORS } from "@/data/doctors";
+import { SPECIALTIES } from "@/data/mocks/specialties";
+import { DOCTORS } from "@/data/mocks/doctors";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { STEPS, toISODate, buildTimeSlots } from "../utils/booking-utils";
 import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
@@ -70,7 +70,7 @@ export default function BookAppointmentPage() {
       specialtyId,
       specialtyName: specialty?.name ?? specialtyId,
       date: selectedDate ? toISODate(selectedDate) : null,
-      time: selectedTime,
+      startTime: selectedTime,
       doctorId: selectedDoctor?.id ?? null,
       doctorName: selectedDoctor?.name ?? null,
       notes: patientNotes.trim() || null,

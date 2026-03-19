@@ -1,5 +1,5 @@
 import Apis from "@/configs/Apis";
-import { mockAvailableAppointmentsInLeave } from "../data";
+import { mockAvailableAppointmentsInLeave } from "@/data/mocks/doctor-schedule";
 
 export async function fetchAppointmentsInDay({ date }) {
   if (!date) return [];

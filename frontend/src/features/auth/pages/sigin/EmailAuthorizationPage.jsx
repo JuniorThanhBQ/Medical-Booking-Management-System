@@ -8,7 +8,7 @@ import PasswordStep from "../../components/PasswordStep";
 import "@/assets/css/auth/email-authorization.css";
 import { isValidEmail, isValidPassword } from "../../utils/validation";
 import { ROLE } from "@/configs/const";
-import users from "../../../users/data";
+import users from "@/data/mocks/users";
 
 
 export default function EmailAuthorizationPage({ onAuthenticated }) {
@@ -95,7 +95,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
         if (onAuthenticated) {
           onAuthenticated({
             token: "TOKEN AFTER LOGIN",
-            user: users[0]
+            user: users[1]
           });
         }
       } else {
@@ -113,10 +113,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
         if (onAuthenticated) {
           onAuthenticated({
             token: "TOKEN AFTER REGISTER",
-            user: {
-              role: ROLE.Doctor,
-              email,
-            },
+            user: users[0]
           });
         }
       }

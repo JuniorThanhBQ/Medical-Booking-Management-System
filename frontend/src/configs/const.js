@@ -57,10 +57,19 @@ export const OPEN_HOURS = {
 export const AVAILABLE_BOOKING_DAYS = 15;
 
 export const APPOINTMENT_STATUS = {
-  SCHEDULED: "scheduled",
+  PENDING: "pending",
+  CONFIRMED: "confirmed",
   IN_PROGRESS: "in_progress",
   COMPLETED: "completed",
   CANCELLED: "cancelled",
+};
+
+export const STATUS_LABELS = {
+  pending: "Chờ xác nhận",
+  confirmed: "Đã xác nhận",
+  in_progress: "Đang khám",
+  completed: "Hoàn thành",
+  cancelled: "Đã hủy",
 };
 
 export const REASON_OPTIONS = [
@@ -75,18 +84,7 @@ export const TYPE_OPTIONS = [
 ];
 
 export function getStatusLabel(status) {
-  switch (status) {
-    case APPOINTMENT_STATUS.SCHEDULED:
-      return "Sắp khám";
-    case APPOINTMENT_STATUS.IN_PROGRESS:
-      return "Đang khám";
-    case APPOINTMENT_STATUS.COMPLETED:
-      return "Đã khám";
-    case APPOINTMENT_STATUS.CANCELLED:
-      return "Đã hủy";
-    default:
-      return status;
-  }
+  return STATUS_LABELS[status] || status;
 }
 
 export const DAY_LABELS = {
@@ -102,12 +100,20 @@ export const DAY_LABELS = {
 export const INITIAL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export const PROFILE_MENU_ITEMS = [
-    { label: 'Profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', active: true },
-    { label: 'Settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
-  ];
+  {
+    key: "profile",
+    label: "Hồ sơ",
+    icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
+  },
+  {
+    key: "activity",
+    label: "Hoạt động",
+    icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
+  },
+];
 
 export const SUPPORTED_COUNTRIES = [
-  { code: "VN", label: "Vietnam", phoneCode: "+84" },
+  { code: "VN", label: "Việt Nam", phoneCode: "+84" },
 ];
 
 export const GENDER_OPTIONS = [
@@ -115,3 +121,8 @@ export const GENDER_OPTIONS = [
   { value: "FEMALE", label: "Nữ" },
   { value: "OTHER", label: "Khác" },
 ];
+
+export const EXAM_STATUS = {
+  DRAFT: "draft",
+  COMPLETED: "completed",
+};

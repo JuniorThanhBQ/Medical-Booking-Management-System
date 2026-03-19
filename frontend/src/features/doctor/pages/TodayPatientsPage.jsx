@@ -1,90 +1,74 @@
+import { useState, useMemo } from "react";
 import "@/assets/css/users/today-patients.css";
-import Navbar from "@/features/users/components/Navbar";
+import Navbar from "../../users/components/Navbar";
 import { getRoleMenuItems } from "@/utils/utils";
-import { DEFAULT_NAV_LINKS } from "@/configs/const";
-import { getStatusLabel } from "@/configs/const";
-import { APPOINTMENT_STATUS } from "@/configs/const";
-import { mockTodayAppointments } from "../data";
+import { DEFAULT_NAV_LINKS, APPOINTMENT_STATUS } from "@/configs/const";
+import { mockTodayAppointments } from "@/data/mocks/doctor-schedule";
+import { mockPatients } from "@/data/mocks/patients";
+import { useExamStore } from "../hooks/use-exam-store";
+import PatientCard from "../components/PatientCard";
+
+const FILTER_TABS = [
+  { key: "all", label: "Tất cả" },
+  { key: APPOINTMENT_STATUS.PENDING, label: "Chờ khám" },
+  { key: APPOINTMENT_STATUS.IN_PROGRESS, label: "Đang khám" },
+  { key: APPOINTMENT_STATUS.COMPLETED, label: "Đã khám" },
+];
 
 export default function TodayPatientsPage() {
-  
-  const hasAppointments = mockTodayAppointments.length > 0;
+  const [activeFilter, setActiveFilter] = useState("all");
+  const getPatientHistory = useExamStore((s) => s.getPatientHistory);
+
+  const filtered = useMemo(() => {
+    if (activeFilter === "all") return mockTodayAppointments;
+    return mockTodayAppointments.filter((a) => a.status === activeFilter);
+  }, [activeFilter]);
 
   return (
     <>
       <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
 
       <main className="today-patients">
-        <section className="today-patients__header">
-          <div className="today-patients__header-inner">
-            <div>
-              <p className="today-patients__eyebrow">Lịch hẹn hôm nay</p>
-              <h1 className="today-patients__title">Bệnh nhân hôm nay</h1>
-              <p className="today-patients__subtitle">
-                Xem nhanh danh sách bệnh nhân và khung giờ khám trong ngày hôm nay.
-              </p>
-            </div>
-          </div>
-        </section>
+        <header className="today-patients__header">
+          <p className="today-patients__eyebrow">Bệnh nhân hôm nay</p>
+          <h1 className="today-patients__title">Danh sách khám</h1>
+          <p className="today-patients__subtitle">
+            {mockTodayAppointments.length} bệnh nhân · {new Date().toLocaleDateString("vi-VN")}
+          </p>
+        </header>
 
-        <section className="today-patients__section">
-          <div className="today-patients__section-inner">
-            {!hasAppointments ? (
-              <div className="today-patients__empty">
-                <h2 className="today-patients__empty-title">
-                  Hôm nay bạn chưa có lịch hẹn nào
-                </h2>
-                <p className="today-patients__empty-subtitle">
-                  Khi bệnh nhân đặt lịch khám, lịch hẹn trong ngày sẽ hiển thị tại đây.
-                </p>
-              </div>
-            ) : (
-              <div className="today-patients__list">
-                {mockTodayAppointments.map((appointment, index) => {
-                  const isNext = index === 0 || appointment.status === APPOINTMENT_STATUS.IN_PROGRESS;
+        <div className="today-patients__filters">
+          {FILTER_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={`today-patients__filter-tab${activeFilter === tab.key ? " today-patients__filter-tab--active" : ""}`}
+              onClick={() => setActiveFilter(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-                  return (
-                    <article
-                      key={appointment.id}
-                      className={`today-patients__item${
-                        isNext ? " today-patients__item--next" : ""
-                      }`}
-                    >
-                      <div className="today-patients__item-main">
-                        <div>
-                          <h2 className="today-patients__patient-name">
-                            {appointment.patientName}
-                          </h2>
-                          {appointment.notes && (
-                            <p className="today-patients__notes">
-                              {appointment.notes}
-                            </p>
-                          )}
-                        </div>
-                        <div className="today-patients__meta">
-                          <span className="today-patients__time">
-                            {appointment.startTime} - {appointment.endTime}
-                          </span>
-                          <span
-                            className={`today-patients__status today-patients__status--${appointment.status}`}
-                          >
-                            {getStatusLabel(appointment.status)}
-                          </span>
-                        </div>
-                      </div>
+        <div className="today-patients__list">
+          {filtered.length === 0 && (
+            <p className="today-patients__empty">Không có bệnh nhân nào.</p>
+          )}
+          {filtered.map((appointment) => {
+            const patient = mockPatients.find((p) => p.id === appointment.patientId);
+            const history = getPatientHistory(appointment.patientId);
+            const lastRecord = history.length > 0 ? history[history.length - 1] : null;
 
-                      {isNext && (
-                        <p className="today-patients__hint">
-                          Đây là bệnh nhân tiếp theo mà bạn sẽ khám.
-                        </p>
-                      )}
-                    </article>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </section>
+            return (
+              <PatientCard
+                key={appointment.id}
+                appointment={appointment}
+                patient={patient}
+                lastRecord={lastRecord}
+              />
+            );
+          })}
+        </div>
       </main>
     </>
   );

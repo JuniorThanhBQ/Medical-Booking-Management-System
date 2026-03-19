@@ -21,3 +21,15 @@ export const getRoleNavLinks = () => {
 };
 
 export const normalizeQuery = (value) => value.trim().toLowerCase();
+
+export const getAge = (dateOfBirth) => {
+  if (!dateOfBirth) return null;
+  const today = new Date();
+  const birth = new Date(dateOfBirth);
+  let age = today.getFullYear() - birth.getFullYear();
+  const beforeBirthday =
+    today.getMonth() < birth.getMonth() ||
+    (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate());
+  if (beforeBirthday) age -= 1;
+  return age;
+};

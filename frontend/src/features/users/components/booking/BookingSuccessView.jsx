@@ -10,21 +10,20 @@ export function BookingSuccessView({
         <div className="booking__success-container">
           <div className="booking__success">
             <div className="booking__success-badge">✓</div>
-            <h1 className="booking__title">Appointment requested</h1>
+            <h1 className="booking__title">Yêu cầu đặt lịch thành công</h1>
             <p className="booking__subtitle">
-              We saved your booking details. You can review it in your history
-              later.
+              Thông tin đặt lịch đã được lưu. Bạn có thể xem lại trong lịch sử.
             </p>
             <div className="booking__success-actions">
               <Link to="/dashboard" className="booking__primary">
-                Back to dashboard
+                Về trang chủ
               </Link>
               <Link
                 to={`/specialties/${specialtyId}/book`}
                 className="booking__secondary"
                 onClick={onBookAnother}
               >
-                Book another
+                Đặt tiếp
               </Link>
             </div>
           </div>

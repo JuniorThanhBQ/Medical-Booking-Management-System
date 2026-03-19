@@ -1,6 +1,6 @@
 import { PROFILE_MENU_ITEMS } from '@/configs/const';
 
-const ProfileSidebar = ({ userName }) => {
+const ProfileSidebar = ({ userName, activeKey = "profile", onSelect }) => {
 
   return (
     <aside className="profile-sidebar">
@@ -9,7 +9,9 @@ const ProfileSidebar = ({ userName }) => {
         {PROFILE_MENU_ITEMS.map((item) => (
           <button
             key={item.label}
-            className={`profile-sidebar__item ${item.active ? 'profile-sidebar__item--active' : ''}`}
+            type="button"
+            className={`profile-sidebar__item ${item.key === activeKey ? 'profile-sidebar__item--active' : ''}`}
+            onClick={() => onSelect?.(item.key)}
           >
             <svg
               className="profile-sidebar__icon"

@@ -46,7 +46,7 @@ const EditProfileForm = ({ profile, onSave }) => {
       <form className="profile-form" onSubmit={handleSubmit}>
         <div className="profile-form__row">
           <div className="profile-form__group">
-            <label className="profile-form__label">First name</label>
+            <label className="profile-form__label">Họ</label>
             <input
               type="text"
               name="firstName"
@@ -56,7 +56,7 @@ const EditProfileForm = ({ profile, onSave }) => {
             />
           </div>
           <div className="profile-form__group">
-            <label className="profile-form__label">Last name</label>
+            <label className="profile-form__label">Tên</label>
             <input
               type="text"
               name="lastName"
@@ -68,7 +68,7 @@ const EditProfileForm = ({ profile, onSave }) => {
         </div>
 
         <div className="profile-form__group">
-          <label className="profile-form__label">Mobile number</label>
+          <label className="profile-form__label">Số điện thoại</label>
           <div className="profile-form__phone-container">
             <select className="profile-form__select profile-form__country-select">
               {SUPPORTED_COUNTRIES.map((country) => (
@@ -89,7 +89,7 @@ const EditProfileForm = ({ profile, onSave }) => {
         </div>
 
         <div className="profile-form__group">
-          <label className="profile-form__label">Email address</label>
+          <label className="profile-form__label">Địa chỉ email</label>
           <input
             type="email"
             name="email"
@@ -100,12 +100,12 @@ const EditProfileForm = ({ profile, onSave }) => {
         </div>
 
         <div className="profile-form__group">
-          <label className="profile-form__label">Date of birth</label>
+          <label className="profile-form__label">Ngày sinh</label>
           <div className="profile-form__date-row">
             <input
               type="number"
               name="birthDay"
-              placeholder="Day"
+              placeholder="Ngày"
               className="profile-form__input"
               value={formData.birthDay}
               onChange={handleChange}
@@ -118,7 +118,7 @@ const EditProfileForm = ({ profile, onSave }) => {
               value={formData.birthMonth}
               onChange={handleChange}
             >
-              <option value="">Month</option>
+              <option value="">Tháng</option>
               {MONTH_OPTIONS.map((month) => (
                 <option key={month.value} value={month.value}>
                   {month.label}
@@ -128,7 +128,7 @@ const EditProfileForm = ({ profile, onSave }) => {
             <input
               type="number"
               name="birthYear"
-              placeholder="Year"
+              placeholder="Năm"
               className="profile-form__input"
               value={formData.birthYear}
               onChange={handleChange}
@@ -139,14 +139,14 @@ const EditProfileForm = ({ profile, onSave }) => {
         </div>
 
         <div className="profile-form__group">
-          <label className="profile-form__label">Gender</label>
+          <label className="profile-form__label">Giới tính</label>
           <select
             name="gender"
             className="profile-form__select"
             value={formData.gender}
             onChange={handleChange}
           >
-            <option value="">Select Option</option>
+            <option value="">Chọn</option>
             {GENDER_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -156,7 +156,7 @@ const EditProfileForm = ({ profile, onSave }) => {
         </div>
 
         <button type="submit" className="profile-form__submit">
-          Save Changes
+          Lưu thay đổi
         </button>
       </form>
     </section>

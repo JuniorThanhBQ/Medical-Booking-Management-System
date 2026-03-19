@@ -1,3 +1,4 @@
+import { EditPenIcon } from "@/assets/icons";
 
 const ProfileCard = ({ profile }) => {
   console.log("profile card",profile);
@@ -10,12 +11,12 @@ const ProfileCard = ({ profile }) => {
   };
 
   const infoItems = [
-    { label: 'First name', value: profile.name.split(' ')[0] },
-    { label: 'Last name', value: profile.name.split(' ').slice(1).join(' ') },
-    { label: 'Mobile number', value: profile.phone },
+    { label: 'Họ', value: profile.name.split(' ')[0] },
+    { label: 'Tên', value: profile.name.split(' ').slice(1).join(' ') },
+    { label: 'Số điện thoại', value: profile.phone },
     { label: 'Email', value: profile.email },
-    { label: 'Date of birth', value: profile.birthday || '-' },
-    { label: 'Gender', value: profile.gender || '-' },
+    { label: 'Ngày sinh', value: profile.birthday || '-' },
+    { label: 'Giới tính', value: profile.gender || '-' },
   ];
 
   return (
@@ -29,10 +30,8 @@ const ProfileCard = ({ profile }) => {
             getInitials(profile.name)
           )}
         </div>
-        <button className="profile-card__avatar-edit" aria-label="Edit avatar">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
+        <button className="profile-card__avatar-edit" aria-label="Chỉnh sửa ảnh đại diện">
+          <EditPenIcon size={16} className="w-4 h-4" />
         </button>
       </div>
 

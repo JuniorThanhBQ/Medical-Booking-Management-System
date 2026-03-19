@@ -33,5 +33,55 @@ export function formatProfileUpdate(formData) {
 
 export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
   value: i + 1,
-  label: new Date(0, i).toLocaleString("default", { month: "long" }),
+  label: new Date(0, i).toLocaleString("vi-VN", { month: "long" }),
 }));
+
+export function normalizeActivity(item, doctorMap = {}) {
+  if (item.type === "medical_records") {
+    return {
+      ...item,
+      title: item.diagnosis || "Hồ sơ bệnh án",
+      meta: [item.doctorName, item.specialty].filter(Boolean).join(" · "),
+    };
+  }
+  if (item.type === "appointments") {
+    const doctor = doctorMap[item.doctorId];
+    return {
+      ...item,
+      title: doctor?.name || "Lịch hẹn",
+      meta: [item.date, item.startTime].filter(Boolean).join(" "),
+    };
+  }
+  return { ...item, title: item.title ?? "", meta: item.meta ?? "" };
+}
+
+export function getActivityStatusLabel(status) {
+  switch (status) {
+    case "cancelled":
+      return "Đã hủy";
+    case "completed":
+      return "Hoàn thành";
+    case "active":
+      return "Đang hoạt động";
+    default:
+      return status || "Trạng thái";
+  }
+}
+
+export function getStatusClassName(status) {
+  switch (status) {
+    case "cancelled":
+      return "profile-activity__pill--cancelled";
+    case "completed":
+      return "profile-activity__pill--completed";
+    case "active":
+    case "confirmed":
+      return "profile-activity__pill--active";
+    case "pending":
+      return "profile-activity__pill--pending";
+    case "in_progress":
+      return "profile-activity__pill--in-progress";
+    default:
+      return "";
+  }
+}

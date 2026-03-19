@@ -35,8 +35,15 @@ export const useBookingStore = create((set) => ({
   confirmBooking: (payload) => {
     const appointment = {
       id: `apt_${Date.now()}`,
-      ...payload,
+      patientId: payload.patientId || null,
+      doctorId: payload.doctorId,
+      date: payload.date,
+      startTime: payload.startTime || payload.time,  // support both canonical and legacy field
+      endTime: null,
+      status: "pending",
+      notes: payload.notes || "",
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     console.log("appointment", appointment);
     // saveAppointment(appointment);

@@ -271,11 +271,6 @@
   color: var(--lp-subtle);
 }
 
-.booking__rating {
-  font-weight: 600;
-  color: #f97316;
-}
-
 .booking__muted {
   color: var(--lp-subtle);
 }
