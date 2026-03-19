@@ -1,13 +1,11 @@
 from datetime import datetime
-from enum import Enum
-
-from flask_login import UserMixin
-from sqlalchemy import Column, Date, DateTime, Integer, String
+import enum
+from src.modules.users.models import PatientProfile, DoctorProfile
+from sqlalchemy import Column, Date, DateTime, Integer, String, Boolean, Enum, ForeignKey
 from sqlalchemy.orm import relationship
-
 from src import db
 
-class StatusRole(Enum):
+class StatusRole(enum.Enum):
     COMPLETED = 1
     APPROVED = 2
     PENDING = 3
@@ -26,6 +24,15 @@ class Appointment(Base):
     description = db.Column(db.String(500), nullable=False)
     status = db.Column(Enum(StatusRole), default=StatusRole.APPROVED)
     updated_date = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
+
+    doctorprofile_id = Column(Integer, ForeignKey("doctor_profile.id"), nullable=False)
+    doctor = relationship("DoctorProfile", backref="appointment")
+
+    patientprofile_id = Column(Integer, ForeignKey("patient_profile.id"), nullable=False)
+    patient = relationship("PatientProfile", backref="appointment")
+
+    medicalrecord_id = Column(Integer, ForeignKey("medical_record.id"), nullable=True)
+    medicalrecord = relationship("MedicalRecord", backref="appointment")
 
 class MedicalRecord(Base):
     __tablename__ = "medical_record"
