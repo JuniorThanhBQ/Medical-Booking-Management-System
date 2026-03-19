@@ -1,8 +1,8 @@
 # Báo cáo Tuần 6 
 **Tuần:** 6 (23/03/2026 - 29/03/2026)   
-**Nhóm:** MAB/8 </br> 
-**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
-**Nhóm trưởng:** Văn Trung Thành - 2351050164 
+**Nhóm:** 8
+**Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh (Medical Appointment)]   
+**Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
 
 --- 
 
