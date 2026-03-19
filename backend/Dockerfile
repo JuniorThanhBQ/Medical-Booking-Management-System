@@ -11,6 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/home/appuser/.local/bin:${PATH}"
 WORKDIR /app
 RUN groupadd -r appuser && useradd -r -g appuser -m appuser
+RUN mkdir -p /app/instance && chown -R appuser:appuser /app
 USER appuser
 COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
 COPY --chown=appuser:appuser ./src .

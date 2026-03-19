@@ -1,22 +1,24 @@
-from flask import Flask, redirect, render_template, url_for
+import os
 
-from modules.users.views import users_bp
+from dotenv import load_dotenv
+from flask import Flask
+
+from src.modules.users.models import db
+from src.modules.users.views import api
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "abc123"
 
-app.register_blueprint(users_bp)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"  # sẽ update migrate sau
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+db.init_app(app)
+app.register_blueprint(api)
 
-@app.route("/")
-def index():
-    return redirect(url_for("users.login_view"))
-
-
-@app.route("/admin")
-def admin():
-    return render_template("admin/index.html")
-
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port="5050")  # nosec B201

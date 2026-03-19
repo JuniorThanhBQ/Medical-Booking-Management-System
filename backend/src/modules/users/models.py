@@ -1,20 +1,22 @@
+import enum
 from datetime import datetime
-from enum import Enum
 
 from flask_login import UserMixin
-from sqlalchemy import Column, Date, DateTime, Integer, String
+from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
+                        Integer, String)
 from sqlalchemy.orm import relationship
 
 from src import db
 
 
-class UserRole(Enum):
-    PATIENT = 1
-    DOCTOR = 2
-    ADMINISTRATOR = 3
+class UserRole(enum.Enum):
+    DOCTOR = 1
+    RECEPTIONIST = 2
+    PATIENT = 3
+    ADMIN = 4
 
 
-class GenderRole(Enum):
+class GenderRole(enum.Enum):
     MALE = 1
     FEMALE = 2
     OTHER = 3
@@ -24,40 +26,46 @@ class Base(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(200), nullable=False, default="")
     created_date = Column(DateTime, default=datetime.utcnow)
-
-    def __str__(self):
-        return self.name
 
 
 class User(Base, UserMixin):
     __tablename__ = "user"
 
-    address = Column(String(500))
-    avatar = Column(
-        String(500),
-        default="https://shorturl.at/KNuMX",
-    )
-
-    birthday = Column(Date)
-    email = Column(String(200), unique=True)
-    gender = Column(Enum(GenderRole), default=GenderRole.OTHER)
-    phone = Column(String(20))
+    username = Column(String(100), unique=True, nullable=False, default="")
+    password = Column(String(100), nullable=False, default="")
+    first_name = Column(String(100), nullable=False, default="")
+    last_name = Column(String(100), nullable=False, default="")
+    email = Column(String(200), unique=True, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.PATIENT)
+    is_active = Column(Boolean, default=True, nullable=False)
 
-    password = Column(String(255), nullable=False)
 
-    account = relationship("Account", backref="user", lazy=True, uselist=False)
+class Profile(db.Model):
+    __tablename__ = "profile"
 
-    @property
-    def is_patient(self):
-        return self.role == UserRole.PATIENT
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    address = Column(String(100), nullable=False, default="")
+    birthday = Column(DateTime, default=datetime.utcnow)
+    phone = Column(String(100), nullable=False, default="")
+    idenfication = Column(String(100), nullable=False, default="")
+    avatar = Column(String(100), nullable=False, default="")
+    updated_date = Column(DateTime, default=datetime.utcnow)
 
-    @property
-    def is_doctor(self):
-        return self.role == UserRole.DOCTOR
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False, unique=True)
+    user = relationship("User", backref="profile")
 
-    @property
-    def is_administrator(self):
-        return self.role == UserRole.ADMINISTRATOR
+
+class DoctorProfile(Profile):
+    __tablename__ = "doctor_profile"
+
+    id = Column(Integer, ForeignKey("profile.id"), primary_key=True)
+    about = Column(String(100), nullable=False, default="")
+    year_of_experience = Column(String(100), nullable=False, default="")
+
+
+class PatientProfile(Profile):
+    __tablename__ = "patient_profile"
+
+    id = Column(Integer, ForeignKey("profile.id"), primary_key=True)
+    medical_history = Column(String(100), nullable=False, default="")
