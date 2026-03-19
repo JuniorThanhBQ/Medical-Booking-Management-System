@@ -1,34 +1,43 @@
-import jwt
 import datetime
 from functools import wraps
-from flask import request, jsonify, current_app
+
+import jwt
+from flask import current_app, jsonify, request
+
+from src.modules.users.models import User, db
 from src.utils.utils import verify_google_token
-from src.modules.users.models import db, User
+
 
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        token = request.headers.get('Authorization')
+        token = request.headers.get("Authorization")
         if not token:
-            return jsonify({'message': 'Thiếu token'}), 401
+            return jsonify({"message": "Thiếu token"}), 401
         try:
             token_val = token.split(" ")[1] if " " in token else token
-            data = jwt.decode(token_val, current_app.config['SECRET_KEY'], algorithms=['HS256'])
-            current_user = db.session.get(User, data['user_id'])
+            data = jwt.decode(
+                token_val, current_app.config["SECRET_KEY"], algorithms=["HS256"]
+            )
+            current_user = db.session.get(User, data["user_id"])
             if not current_user:
-                return jsonify({'message': 'User không tồn tại'}), 401
+                return jsonify({"message": "User không tồn tại"}), 401
         except Exception:
-            return jsonify({'message': 'Token không hợp lệ hoặc đã hết hạn'}), 401
+            return jsonify({"message": "Token không hợp lệ hoặc đã hết hạn"}), 401
         return f(current_user, *args, **kwargs)
+
     return decorator
+
 
 def create_token(user_id):
     payload = {
-        'user_id': user_id,
-        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
+        "user_id": user_id,
+        "exp": datetime.datetime.now(datetime.timezone.utc)
+        + datetime.timedelta(hours=1),
     }
-    token = jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
-    return token.decode('utf-8') if isinstance(token, bytes) else token
+    token = jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
+    return token.decode("utf-8") if isinstance(token, bytes) else token
+
 
 def login_google(google_token):
     user_info = verify_google_token(google_token)

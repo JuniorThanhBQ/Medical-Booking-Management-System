@@ -2,11 +2,11 @@ import os
 import subprocess
 import sys
 
-extensions = ['.py', '.js', '.jsx', '.sql']
+extensions = [".py", ".js", ".jsx", ".sql"]
 
 try:
-    git_output = subprocess.check_output(['git', 'ls-files', '-z']).decode('utf-8')
-    all_files = [f for f in git_output.split('\0') if f]
+    git_output = subprocess.check_output(["git", "ls-files", "-z"]).decode("utf-8")
+    all_files = [f for f in git_output.split("\0") if f]
 except Exception:
     sys.exit(1)
 
@@ -14,12 +14,12 @@ target_files = [f for f in all_files if any(f.endswith(ext) for ext in extension
 total_lines = 0
 file_stats = []
 
-with open('folder_code.txt', 'w', encoding='utf-8') as out_file:
+with open("folder_code.txt", "w", encoding="utf-8") as out_file:
     for filepath in target_files:
         if not os.path.exists(filepath):
             continue
-            
-        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+
+        with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
             lines = f.readlines()
             count = len(lines)
             total_lines += count
@@ -30,20 +30,26 @@ with open('folder_code.txt', 'w', encoding='utf-8') as out_file:
 
 file_stats.sort(key=lambda x: x[1], reverse=True)
 
-repo = os.environ.get('GITHUB_REPOSITORY', 'unknown-repo')
-run_id = os.environ.get('GITHUB_RUN_ID', 'unknown-run')
+repo = os.environ.get("GITHUB_REPOSITORY", "unknown-repo")
+run_id = os.environ.get("GITHUB_RUN_ID", "unknown-run")
 run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
 
-backend_status = os.environ.get('BACKEND_LINT', 'unknown')
-frontend_status = os.environ.get('FRONTEND_LINT', 'unknown')
-security_status = os.environ.get('SECURITY_CHECK', 'unknown')
+backend_status = os.environ.get("BACKEND_LINT", "unknown")
+frontend_status = os.environ.get("FRONTEND_LINT", "unknown")
+security_status = os.environ.get("SECURITY_CHECK", "unknown")
+
 
 def format_status(status):
-    if status == 'success': return '**Thành công**'
-    if status == 'failure': return '**Thất bại**'
-    if status == 'cancelled': return '**Đã hủy**'
-    if status == 'skipped': return '**Đã bỏ qua**'
-    return f'Có lỗi xảy ra {status}'
+    if status == "success":
+        return "**Thành công**"
+    if status == "failure":
+        return "**Thất bại**"
+    if status == "cancelled":
+        return "**Đã hủy**"
+    if status == "skipped":
+        return "**Đã bỏ qua**"
+    return f"Có lỗi xảy ra {status}"
+
 
 md_content = "## Báo cáo kiểm tra tĩnh \n\n"
 
@@ -68,5 +74,5 @@ for filepath, count in file_stats:
 
 md_content += "\n---\n"
 
-with open('issue.md', 'w', encoding='utf-8') as f:
+with open("issue.md", "w", encoding="utf-8") as f:
     f.write(md_content)
