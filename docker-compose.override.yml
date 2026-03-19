@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:   
+  frontend:
+    ports:
+      - "${VITE_PORT}:8080"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+
+  backend:
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    environment:
+      - FLASK_MODE=development
+      - BACKEND_PORT=${BACKEND_PORT}
+      - DATABASE_URL=mysql+pymysql://${MYSQL_USERNAME}:${MYSQL_ROOT_PASSWORD}@db:${DB_PORT}/${DB_NAME}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:${RABBITMQ_PORT}/
+    volumes:
+      - ./backend/src:/app/src
+
+  db:
+    ports:
+      - "${DB_PORT}:3306" 
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    volumes:
+      - redis-data:/data
+
+  rabbitmq:
+    ports:
+      - "${RABBITMQ_WEB_PORT}:15672"
+      - "${RABBITMQ_PORT}:5672"
+ 
+  adminer:
+    image: adminer
+    ports:
+      - "${ADMINER_PORT}:8080"
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
