@@ -5,9 +5,13 @@ from flask_login import UserMixin
 from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
                         Integer, String)
 from sqlalchemy.orm import relationship
-
 from src import db
 
+class UserRole(enum.Enum):
+    DOCTOR = 1
+    RECEPTIONIST = 2
+    PATIENT = 3
+    ADMIN = 4
 
 class UserRole(enum.Enum):
     DOCTOR = 1
@@ -20,7 +24,6 @@ class GenderRole(enum.Enum):
     MALE = 1
     FEMALE = 2
     OTHER = 3
-
 
 class Base(db.Model):
     __abstract__ = True

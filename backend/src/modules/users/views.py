@@ -7,6 +7,9 @@ from src.modules.users.services import (create_token, login_google,
 
 api = Blueprint("api", __name__)
 
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
 
 @api.route("/register", methods=["POST"])
 def register():
