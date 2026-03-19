@@ -6,18 +6,18 @@ export function BookingNotFoundView({ onBrowseSpecialties }) {
       <section className="booking__shell">
         <div className="booking__container">
           <Link to="/dashboard" className="booking__back">
-            <span aria-hidden="true">←</span> Back to Dashboard
+            <span aria-hidden="true">←</span> Về trang chủ
           </Link>
-          <h1 className="booking__title">Specialty not found</h1>
+          <h1 className="booking__title">Không tìm thấy chuyên khoa</h1>
           <p className="booking__subtitle">
-            Please start from the dashboard and choose a specialty.
+            Vui lòng quay lại trang chủ và chọn chuyên khoa.
           </p>
           <button
             type="button"
             className="booking__primary"
             onClick={onBrowseSpecialties}
           >
-            Browse specialties
+            Xem chuyên khoa
           </button>
         </div>
       </section>

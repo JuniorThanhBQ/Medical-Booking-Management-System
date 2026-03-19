@@ -7,6 +7,7 @@
     <title>Trang chủ - OU Dental Clinic</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -30,7 +31,20 @@
 
     <a href="/appointments" class="btn">Đặt lịch ngay</a>
 
+    <div id="g_id_onload"
+         data-client_id="YOUR_CLIENT_ID"
+         data-callback="handleCredentialResponse">
+    </div>
+
+    <div class="g_id_signin"></div>
+
+    <script>
+    function handleCredentialResponse(response) {
+        console.log("ID TOKEN:", response.credential); // 👈 đây là cái bạn cần
+    }
+    </script>
 </section>
+
 
 
 <section class="about">

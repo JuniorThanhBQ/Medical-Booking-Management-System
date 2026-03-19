@@ -1,5 +1,5 @@
 import { formatDayLabel, toISODate } from "../../utils/booking-utils";
-import { BookingPanelHeader } from "./booking-panel-header";
+import { BookingPanelHeader } from "./BookingPanelHeader";
 
 export function BookingDayStep({
   availableDays,

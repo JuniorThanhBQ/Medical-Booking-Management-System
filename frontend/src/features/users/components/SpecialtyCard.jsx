@@ -1,3 +1,5 @@
+import { ArrowRightFilledIcon } from "@/assets/icons";
+
 const SpecialtyCard = ({ specialty, onClick }) => {
   const { id, level, name, description, ctaLabel } = specialty;
 
@@ -18,12 +20,7 @@ const SpecialtyCard = ({ specialty, onClick }) => {
 
       <div className="dashboard-specialty-card__cta">
         {ctaLabel}
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M5 12h12.586l-3.293-3.293a1 1 0 0 1 1.414-1.414l5 5a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414-1.414L17.586 13H5a1 1 0 0 1 0-2Z"
-            fill="currentColor"
-          />
-        </svg>
+        <ArrowRightFilledIcon size={24} aria-hidden="true" />
       </div>
     </button>
   );

@@ -125,12 +125,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   margin-top: 4px;
 }
 
 .dashboard__hint {
   font-size: 0.75rem;
+  width: 70%;
   color: var(--lp-subtle);
 }
 

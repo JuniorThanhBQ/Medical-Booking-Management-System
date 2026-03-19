@@ -26,7 +26,7 @@ export const useBookingStore = create((set) => ({
   increaseStepIndex: () => set((state) => ({ stepIndex: state.stepIndex + 1 })),
 
   goToStep: (nextIndex) =>
-    set((/*state ==> Lỗi eslint được đánh dấu ngày 15/03/2026*/) => ({
+    set((_) => ({
       stepIndex: Math.max(0, Math.min(nextIndex, STEPS.length - 1)),
     })),
 
@@ -35,8 +35,15 @@ export const useBookingStore = create((set) => ({
   confirmBooking: (payload) => {
     const appointment = {
       id: `apt_${Date.now()}`,
-      ...payload,
+      patientId: payload.patientId || null,
+      doctorId: payload.doctorId,
+      date: payload.date,
+      startTime: payload.startTime || payload.time,  // support both canonical and legacy field
+      endTime: null,
+      status: "pending",
+      notes: payload.notes || "",
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     console.log("appointment", appointment);
     // saveAppointment(appointment);

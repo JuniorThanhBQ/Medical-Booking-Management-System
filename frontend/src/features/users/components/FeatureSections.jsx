@@ -1,3 +1,4 @@
+import { ArrowRightIcon, BadgeCheckIcon } from "@/assets/icons";
 import "@/assets/css/users/feature-sections.css";
 
 const FEATURES = [
@@ -72,15 +73,7 @@ function FeatureBlock({ f }) {
         <div className="fb__ctas">
           <a href={f.secondaryCta.href} className="fb__btn-link">
             {f.secondaryCta.label}
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M5 12h14M13 6l6 6-6 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ArrowRightIcon size={15} />
           </a>
         </div>
       </div>
@@ -102,9 +95,7 @@ function FeatureBlock({ f }) {
           className={`fb__card fb__card--${f.imgSide === "left" ? "right" : "left"}`}
         >
           <div className="fb__card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-              <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-            </svg>
+            <BadgeCheckIcon size={20} className="fb__card-badge" />
           </div>
           <div>
             <p className="fb__card-title">{f.card.title}</p>

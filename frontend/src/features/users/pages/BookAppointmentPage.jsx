@@ -1,8 +1,8 @@
 import "@/assets/css/users/booking.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMemo } from "react";
-import { SPECIALTIES } from "@/data/specialties";
-import { DOCTORS } from "@/data/doctors";
+import { SPECIALTIES } from "@/data/mocks/specialties";
+import { DOCTORS } from "@/data/mocks/doctors";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { STEPS, toISODate, buildTimeSlots } from "../utils/booking-utils";
 import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
@@ -70,7 +70,7 @@ export default function BookAppointmentPage() {
       specialtyId,
       specialtyName: specialty?.name ?? specialtyId,
       date: selectedDate ? toISODate(selectedDate) : null,
-      time: selectedTime,
+      startTime: selectedTime,
       doctorId: selectedDoctor?.id ?? null,
       doctorName: selectedDoctor?.name ?? null,
       notes: patientNotes.trim() || null,
@@ -114,10 +114,8 @@ export default function BookAppointmentPage() {
           </div>
 
           <div className="booking__grid">
-            <div className="booking__panel" aria-label="Nội dung đặt lịch">
-              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
-              {/* Giải thích lỗi: Nếu những dữ liệu bên dưới là dữ liệu do người dùng nhập vào sẽ dẫn đến lỗi bảo mật Generic Object Injection Sink 
-                 . Nếu các dữ liệu bên dưới chắc chắn là tĩnh thì có thể bỏ hai dòng comment đầu này, ngược lại bắt buộc phải lọc đầu vào nhé. */}
+            <div className="booking__panel">
+              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 False Positive*/}
               {/* eslint-disable-next-line security/detect-object-injection*/}
               {STEPS[stepIndex]?.id === "day" && (
                 <BookingDayStep

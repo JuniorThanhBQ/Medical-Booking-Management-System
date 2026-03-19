@@ -1,16 +1,15 @@
 import { useMemo, useState } from "react";
 import "@/assets/css/users/dashboard.css";
 import Navbar from "../components/Navbar";
-import { SPECIALTIES } from "@/data/specialties";
-import { DOCTORS } from "@/data/doctors";
+import { SPECIALTIES } from "@/data/mocks/specialties";
+import { DOCTORS } from "@/data/mocks/doctors";
 import { DEFAULT_NAV_LINKS } from "@/configs/const";
 import { getRoleMenuItems } from "@/utils/utils";
 import SpecialtyCard from "../components/SpecialtyCard";
 import DashboardHero from "../components/DashboardHero";
 import { useNavigate } from "react-router-dom";
 import { validateAppointmentDate } from "../utils/dashboard-util";
-const normalizeQuery = (value) => value.trim().toLowerCase();
-
+import { normalizeQuery } from "@/utils/utils";
 const Dashboard = () => {
   const navigate = useNavigate();
 
