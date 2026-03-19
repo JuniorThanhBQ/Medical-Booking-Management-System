@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import SearchField from "./SearchField";
+import { CalendarIcon, ArrowRightFilledIcon } from "@/assets/icons";
 import { toISODate } from "../utils/booking-utils";
 
 const SearchCard = ({ onSearch }) => {
@@ -57,12 +58,7 @@ const SearchCard = ({ onSearch }) => {
           <label className="dashboard__label">Ngày khám</label>
 
           <div className="dashboard__input-wrap">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M7 2a1 1 0 0 0-1 1v1H5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3h-1V3a1 1 0 1 0-2 0v1H9V3A1 1 0 0 0 7 2Zm0 6h10a1 1 0 1 1 0 2H7a1 1 0 1 1 0-2Z"
-                fill="currentColor"
-              />
-            </svg>
+            <CalendarIcon size={24} />
 
             <input
               name="date"
@@ -84,13 +80,7 @@ const SearchCard = ({ onSearch }) => {
         </p>
 
         <button className="dashboard__search-btn" type="submit">
-          Search
-          <svg viewBox="0 0 24 24">
-            <path
-              d="M5 12h12.586l-3.293-3.293a1 1 0 0 1 1.414-1.414l5 5a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414-1.414L17.586 13H5a1 1 0 0 1 0-2Z"
-              fill="currentColor"
-            />
-          </svg>
+          Tìm kiếm
         </button>
       </div>
     </form>

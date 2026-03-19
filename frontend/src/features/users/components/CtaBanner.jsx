@@ -1,4 +1,5 @@
 import { useCtaEmailForm } from "../hooks/use-cta-email-form";
+import { EmailIcon } from "@/assets/icons";
 import "@/assets/css/users/cta-banner.css";
 
 export default function CtaBanner() {
@@ -26,15 +27,7 @@ export default function CtaBanner() {
               noValidate
             >
               <div className="cta-banner__input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M3 8l9 5 9-5M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <EmailIcon size={15} />
                 <input
                   id="cta-email"
                   type="email"

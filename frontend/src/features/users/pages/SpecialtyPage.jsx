@@ -1,6 +1,6 @@
 import "@/assets/css/users/specialty.css";
 import { Link, useParams } from "react-router-dom";
-import { SPECIALTIES } from "@/data/specialties";
+import { SPECIALTIES } from "@/data/mocks/specialties";
 
 export default function SpecialtyPage() {
   const { specialtyId } = useParams();

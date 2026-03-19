@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../hooks/useAuthStore";
+import { useAuthStore } from "../../hooks/use-auth-store";
 import EmailAuthorizationPage from "./EmailAuthorizationPage";
 import "@/assets/css/auth/auth-page.css";
 
