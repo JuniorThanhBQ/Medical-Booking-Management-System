@@ -1,8 +1,8 @@
 # Báo cáo Tuần 5 
 **Tuần:** 5 (16/03/2026 - 22/03/2026)   
-**Nhóm:** 8
-**Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh (Medical Appointment)]   
-**Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
+**Nhóm:** MAB/8 </br> 
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
+**Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 
 
@@ -18,13 +18,13 @@
 ## 2. Tiến độ tổng thể
 | Hạng mục | Trạng thái | % | 
 |----------|------------|---| 
-| Phân tích yêu cầu | Đang làm | 0% | 
-| Thiết kế kiến trúc | Chưa bắt đầu | 0% | 
-| Backend API | Chưa bắt đầu | 0% | 
-| Frontend UI | Chưa bắt đầu | 0% | 
+| Phân tích yêu cầu | Đã hoàn thành | 100% | 
+| Thiết kế kiến trúc | Đang làm | 100% | 
+| Backend API | Đang làm | 5% | 
+| Frontend UI | Đang làm | 18% | 
 | Docker | Chưa bắt đầu | 0% | 
-| Testing | Chưa bắt đầu | 0% | 
-**Tổng tiến độ: 0%** 
+| Testing | Đang làm | 5% | 
+**Tổng tiến độ: ~36,7%** 
 
 --- 
 

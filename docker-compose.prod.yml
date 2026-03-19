@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  frontend:
+    restart: always
+    ports:
+      - "${FRONTEND_PORT_PROD}:8080"
+
+  backend:
+    restart: always
+    environment:
+      - FLASK_MODE=production
+      - BACKEND_PORT=${BACKEND_PORT:-3000}
+      - DATABASE_URL=${DATABASE_URL_PROD}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USERNAME_PROD}:${RABBITMQ_PASSWORD_PROD}@rabbitmq:${RABBITMQ_PORT_PROD}/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  db:
+    restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_USERNAME=${MYSQL_USERNAME_PROD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD_PROD}
+      - MYSQL_DATABASE=${DB_NAME_PROD}
+
+  rabbitmq:
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+  
+  adminer:
+    deploy:
+      replicas: 0 
