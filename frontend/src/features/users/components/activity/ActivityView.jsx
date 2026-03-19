@@ -3,29 +3,15 @@ import ActivityFilters from "./ActivityFilters";
 import UpcomingActivityCard from "./UpcomingActivityCard";
 import PastActivityList from "./PastActivityList";
 import ActivityDetailPanel from "./ActivityDetailPanel";
-import { medicalRecords, appointments } from "@/data/mocks/users";
-import { DOCTORS } from "@/data/mocks/doctors";
-import { normalizeActivity } from "@/features/users/utils/profile-utils";
 
-const FILTERS = [
-  { key: "all", label: "Tất cả" },
-  { key: "appointments", label: "Lịch hẹn" },
-  { key: "medical_records", label: "Hồ sơ bệnh án" },
-];
-
-const doctorMap = Object.fromEntries(DOCTORS.map((d) => [d.id, d]));
-const MOCK_ITEMS = [...medicalRecords, ...appointments].map((it) =>
-  normalizeActivity(it, doctorMap)
-);
-
-const ActivityView = () => {
+const ActivityView = ({ filters = [], items = [] }) => {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [selectedId, setSelectedId] = useState(MOCK_ITEMS[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState(items[0]?.id ?? null);
 
   const filteredItems = useMemo(() => {
-    if (activeFilter === "all") return MOCK_ITEMS;
-    return MOCK_ITEMS.filter((it) => it.type === activeFilter);
-  }, [activeFilter]);
+    if (activeFilter === "all") return items;
+    return items.filter((it) => it.type === activeFilter);
+  }, [activeFilter, items]);
 
   const effectiveSelectedId = useMemo(() => {
     if (!filteredItems.length) return null;
@@ -40,15 +26,23 @@ const ActivityView = () => {
 
   const handleFilterChange = (nextFilter) => {
     setActiveFilter(nextFilter);
-    const nextItems = nextFilter === "all" ? MOCK_ITEMS : MOCK_ITEMS.filter((it) => it.type === nextFilter);
+    const nextItems = nextFilter === "all" ? items : items.filter((it) => it.type === nextFilter);
     setSelectedId(nextItems[0]?.id ?? null);
   };
+
+  if (!items.length) {
+    return (
+      <section className="profile-activity">
+        <p className="profile-activity__muted">Tính năng đang phát triển</p>
+      </section>
+    );
+  }
 
   return (
     <section className="profile-activity">
       <div className="profile-activity__left">
         <ActivityFilters
-          filters={FILTERS}
+          filters={filters}
           activeKey={activeFilter}
           onChange={handleFilterChange}
         />

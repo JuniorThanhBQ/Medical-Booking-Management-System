@@ -9,6 +9,7 @@ import RoleRoute from "./RoleRoute.jsx";
 import SpecialtyPage from "../features/users/pages/SpecialtyPage.jsx";
 import BookAppointmentPage from "../features/users/pages/BookAppointmentPage.jsx";
 import ProfilePage from "../features/users/pages/ProfilePage.jsx";
+import ActivityPage from "../features/users/pages/ActivityPage.jsx";
 import AppointmentRecordPage from "../features/users/pages/AppointmentRecordPage.jsx";
 
 export default function AppRoute() {
@@ -16,10 +17,11 @@ export default function AppRoute() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/auth" element={<AuthPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/activity" element={<ActivityPage />} />
 
       <Route element={<RoleRoute allowedRoles={["Patient", "Admin"]} />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/specialties/:specialtyId" element={<SpecialtyPage />} />
         <Route
           path="/specialties/:specialtyId/book"

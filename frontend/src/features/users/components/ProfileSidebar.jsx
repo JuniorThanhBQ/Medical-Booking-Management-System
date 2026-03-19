@@ -1,17 +1,19 @@
-import { PROFILE_MENU_ITEMS } from '@/configs/const';
+import { useNavigate } from 'react-router-dom';
+import { PROFILE_SIDEBAR_ITEMS } from '@/configs/const';
 
 const ProfileSidebar = ({ userName, activeKey = "profile", onSelect }) => {
+  const navigate = useNavigate();
 
   return (
     <aside className="profile-sidebar">
       <h2 className="profile-sidebar__user-name">{userName}</h2>
       <nav className="profile-sidebar__nav">
-        {PROFILE_MENU_ITEMS.map((item) => (
+        {PROFILE_SIDEBAR_ITEMS.map((item) => (
           <button
             key={item.label}
             type="button"
             className={`profile-sidebar__item ${item.key === activeKey ? 'profile-sidebar__item--active' : ''}`}
-            onClick={() => onSelect?.(item.key)}
+            onClick={() => item.path ? navigate(item.path) : onSelect?.(item.key)}
           >
             <svg
               className="profile-sidebar__icon"

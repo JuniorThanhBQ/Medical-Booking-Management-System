@@ -1,49 +1,38 @@
 import { useNavbarMenu } from "../hooks/use-navbar-menu";
 import { BellIcon } from "@/assets/icons";
 import "@/assets/css/users/navbar.css";
-import { DEFAULT_MENU_ITEMS, DEFAULT_NAV_LINKS } from "@/configs/const";
+import { DEFAULT_MENU_ITEMS } from "@/configs/const";
 import { handleLogout } from "../../auth/api/authService";
 import { getRoleNavLinks } from "@/utils/utils";
 
-export default function Navbar({
-  navLinks = DEFAULT_NAV_LINKS,
-  menuItems = DEFAULT_MENU_ITEMS,
-}) {
+export default function Navbar() {
   const { scrolled, menuOpen, menuRef, toggleMenu, closeMenu } =
     useNavbarMenu();
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
-  const resolvedNavLinks = getRoleNavLinks();
-  const resolvedMenuItems = isLoggedIn
+  const allNavLinks = getRoleNavLinks();
+  // Home stays visible on the left; remaining links go into dropdown
+  const homeLink = allNavLinks[0];
+  const dropdownNavItems = allNavLinks.slice(1).map(({ label, href }) => ({ label, href }));
+  const divider = dropdownNavItems.length > 0 ? [{ type: "divider" }] : [];
+  const actionItems = isLoggedIn
     ? [
         { label: "Hồ sơ", href: "/profile" },
-        { type: "divider" },
-        {
-          label: "Đăng xuất",
-          isLogout: true,
-          danger: true,
-          onClick: handleLogout,
-        },
+        { label: "Đăng xuất", isLogout: true, danger: true, onClick: handleLogout },
       ]
-    : menuItems;
+    : DEFAULT_MENU_ITEMS;
+
+  const resolvedMenuItems = [...dropdownNavItems, ...divider, ...actionItems];
 
   return (
     <div className={`navbar-wrap${scrolled ? " navbar-wrap--scrolled" : ""}`}>
       <header className="navbar-pill">
-        <nav className="navbar__nav">
-          {resolvedNavLinks.map(({ label, href, onClick }) => (
-            <a
-              key={href ?? label}
-              href={href}
-              className="navbar__link"
-              onClick={onClick}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-
+        {homeLink && (
+          <nav className="navbar__nav">
+            <a href={homeLink.href} className="navbar__link">{homeLink.label}</a>
+          </nav>
+        )}
         <div className="navbar__actions">
           {isLoggedIn && (
             <button
