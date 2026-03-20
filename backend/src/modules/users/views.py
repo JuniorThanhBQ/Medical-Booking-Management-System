@@ -1,100 +1,131 @@
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt_identity
+from flask import Blueprint, request
+from flask_restful import Api, Resource
+from src.modules.users.services import (get_user_information,
+                                        login_google_service,
+                                        login_user_service,
+                                        register_user_service, token_required,
+                                        update_patient_profile_service)
 
-from src.modules.users.models import Profile, User, db
-from src.modules.users.services import (create_token, login_google,
-                                        token_required)
-
-api = Blueprint("api", __name__)
-
-    username = data.get('username')
-    password = data.get('password')
-    email = data.get('email')
-
-@api.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "Thiếu dữ liệu"}), 400
-
-    username = data.get("username")
-    password = data.get("password")
-    email = data.get("email")
-
-    if not username:
-        return jsonify({"message": "username bị bỏ trống."}), 400
-
-    if not password:
-        return jsonify({"message": "password bị bỏ trống."}), 400
-
-    if not email:
-        return jsonify({"message": "Email bị bỏ trống."}), 400
-
-    if User.query.filter_by(username=username).first():
-        return jsonify({"message": "User đã tồn tại"}), 400
-
-    new_user = User(username=username, password=password, email=email)
-
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "Đăng ký thành công"}), 201
+auth_bp = Blueprint("auth_v1", __name__, url_prefix="/api/v1/auth")
+api = Api(auth_bp)
 
 
-@api.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
-    username = data.get("username")
-    password = data.get("password")
+class RegisterAPI(Resource):
+    # noinspection PyMethodMayBeStatic
+    def post(self):
+        data = request.get_json(silent=True) or request.form
+        username = data.get("username")
+        password = data.get("password")
+        email = data.get("email")
+        first_name = data.get("first_name")
+        last_name = data.get("last_name")
+        birthday = data.get("birthday")
+        gender = data.get("gender")
+        phone = data.get("phone")
+        avatar = request.files.get("avatar") or data.get("avatar")
 
-    if not username:
-        return jsonify({"message": "username bị trống."}), 400
-    if not password:
-        return jsonify({"message": "password bị trống."}), 400
+        if not all(
+            [username, password, email, first_name, last_name, gender, phone, birthday]
+        ):
+            return {"message": "Vui lòng điền đầy đủ thông tin bắt buộc"}, 400
 
-    user = User.query.filter_by(username=username, password=password).first()
+        user_data, message, status_type = register_user_service(
+            username,
+            password,
+            email,
+            first_name,
+            last_name,
+            avatar,
+            birthday,
+            gender,
+            phone,
+        )
 
-    if not user:
-        return jsonify({"message": "Sai username hoặc password"}), 401
+        if not user_data:
+            status = 500 if status_type == "SERVER_INTERNAL_ERROR" else 400
+            return {"message": message}, status
 
-    token = create_token(user.id)
-    return jsonify({"token": token})
-
-
-@api.route("/login/google", methods=["POST"])
-def login_google_api():
-    data = request.get_json()
-
-    token, error = login_google(data.get("token"))
-
-    if error:
-        return jsonify({"message": error}), 401
-
-    return jsonify({"token": token})
-
-
-@api.route("/protected")
-@token_required
-def protected(current_user):
-    return jsonify(
-        {"message": f"Xin chào {current_user.username}, bạn đã qua xác thực!"}
-    )
+        return {
+            "message": message,
+            "user": user_data,
+        }, 201
 
 
-@api.route("/profile", methods=["GET"])
-@token_required
-def get_profile():
-    user_id = get_jwt_identity()
+class LoginAPI(Resource):
+    # noinspection PyMethodMayBeStatic
+    def post(self):
+        data = request.get_json(silent=True) or request.form
+        login_type = data.get("username") or data.get("email")
+        password = data.get("password")
 
-    profile = Profile.query.filter_by(user_id=user_id).first()
+        if not login_type or not password:
+            return {"message": "Username/Email và password không được để trống"}, 400
 
-    if not profile:
-        return {"message": "Profile không tồn tại"}, 404
+        token, message, status_type = login_user_service(login_type, password)
 
-    return {
-        "address": profile.address,
-        "birthday": profile.birthday,
-        "phone": profile.phone,
-        "idenfication": profile.idenfication,
-        "avatar": profile.avatar,
-        "updated_date": profile.updated_date,
-    }
+        if not token:
+            status = 403 if status_type == "FORBIDDEN" else 401
+            return {"message": message}, status
+
+        return {
+            "message": message,
+            "token": token,
+        }, 200
+
+
+class GoogleLoginAPI(Resource):
+    # noinspection PyMethodMayBeStatic
+    def post(self):
+        data = request.get_json(silent=True) or request.form
+        token = data.get("token")
+
+        if not token:
+            return {"message": "Google token không được để trống"}, 400
+
+        result, error = login_google_service(token)
+
+        if error:
+            return {"message": error}, 401
+
+        return {
+            "message": "Đăng nhập Google thành công",
+            "token": result["token"],
+        }, 200
+
+
+class CurrentUserAPI(Resource):
+    method_decorators = [token_required]
+
+    # noinspection PyMethodMayBeStatic
+    def get(self, current_user):
+        return {
+            "message": "Lấy thông tin thành công",
+            "data": get_user_information(current_user),
+        }, 200
+
+    # noinspection PyMethodMayBeStatic
+    def patch(self, current_user):
+        data = request.get_json(silent=True) or request.form
+        user_data, message, status_type = update_patient_profile_service(
+            current_user, data
+        )
+
+        if not user_data:
+            if status_type == "SERVER_INTERNAL_ERROR":
+                status_code = 500
+            elif status_type == "FORBIDDEN":
+                status_code = 403
+            else:
+                status_code = 400
+            return {"message": message}, status_code
+
+        return {
+            "message": message,
+            "data": user_data,
+        }, 200
+
+
+api.add_resource(RegisterAPI, "/register")
+api.add_resource(LoginAPI, "/login")
+api.add_resource(GoogleLoginAPI, "/google-login")
+api.add_resource(CurrentUserAPI, "/current-user")
