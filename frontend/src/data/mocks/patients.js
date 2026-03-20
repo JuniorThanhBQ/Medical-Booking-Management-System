@@ -8,7 +8,7 @@ export const mockPatients = [
 ];
 
 
-export const mockMedicalHistory = [
+export const mockMedicalRecords = [
   {
     id: "rec_hist_1",
     appointmentId: "past-1",
@@ -17,7 +17,7 @@ export const mockMedicalHistory = [
     doctorName: "BS. Trần Văn Hùng",
     diagnosis: "Viêm họng cấp",
     notes: "Bệnh nhân ho nhiều, sốt nhẹ 37.5°C",
-    prescriptionText: "Amoxicillin 500mg x 3 lần/ngày, Paracetamol khi sốt",
+    prescriptionText: "Amoxicillin 500mg x 3 lần/ngày\nParacetamol khi sốt",
     treatmentOrders: "",
     createdAt: "2026-02-15T09:30:00",
     updatedAt: "2026-02-15T10:30:00",
@@ -30,7 +30,7 @@ export const mockMedicalHistory = [
     doctorName: "BS. Trần Văn Hùng",
     diagnosis: "Đau dạ dày",
     notes: "Đau vùng thượng vị, ợ chua, buồn nôn",
-    prescriptionText: "Omeprazole 20mg x 2 lần/ngày, Domperidone 10mg trước ăn",
+    prescriptionText: "Omeprazole 20mg x 2 lần/ngày\nDomperidone 10mg trước ăn",
     treatmentOrders: "Nội soi dạ dày",
     createdAt: "2026-03-01T14:00:00",
     updatedAt: "2026-03-01T15:00:00",
@@ -56,7 +56,7 @@ export const mockMedicalHistory = [
     doctorName: "BS. Trần Văn Hùng",
     diagnosis: "Viêm da tiếp xúc",
     notes: "Phát ban đỏ vùng cánh tay, ngứa nhiều",
-    prescriptionText: "Cetirizine 10mg x 1 lần/ngày, kem bôi Hydrocortisone 1%",
+    prescriptionText: "Cetirizine 10mg x 1 lần/ngày\nkem bôi Hydrocortisone 1%",
     treatmentOrders: "",
     createdAt: "2026-03-05T10:00:00",
     updatedAt: "2026-03-05T11:00:00",

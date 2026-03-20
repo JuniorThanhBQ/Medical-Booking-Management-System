@@ -3,7 +3,7 @@ import { BellIcon } from "@/assets/icons";
 import "@/assets/css/users/navbar.css";
 import { DEFAULT_MENU_ITEMS } from "@/configs/const";
 import { handleLogout } from "../../auth/api/authService";
-import { getRoleNavLinks } from "@/utils/utils";
+import { getRoleNavLinks, getRoleMenuItems } from "@/utils/utils";
 
 export default function Navbar() {
   const { scrolled, menuOpen, menuRef, toggleMenu, closeMenu } =
@@ -12,18 +12,13 @@ export default function Navbar() {
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
   const allNavLinks = getRoleNavLinks();
-  // Home stays visible on the left; remaining links go into dropdown
   const homeLink = allNavLinks[0];
-  const dropdownNavItems = allNavLinks.slice(1).map(({ label, href }) => ({ label, href }));
-  const divider = dropdownNavItems.length > 0 ? [{ type: "divider" }] : [];
+  const menuItems = isLoggedIn ? getRoleMenuItems() : [];
+  const divider = menuItems.length > 0 ? [{ type: "divider" }] : [];
   const actionItems = isLoggedIn
-    ? [
-        { label: "Hồ sơ", href: "/profile" },
-        { label: "Đăng xuất", isLogout: true, danger: true, onClick: handleLogout },
-      ]
+    ? [{ label: "Đăng xuất", isLogout: true, danger: true, onClick: handleLogout }]
     : DEFAULT_MENU_ITEMS;
-
-  const resolvedMenuItems = [...dropdownNavItems, ...divider, ...actionItems];
+  const resolvedMenuItems = [...menuItems, ...divider, ...actionItems];
 
   return (
     <div className={`navbar-wrap${scrolled ? " navbar-wrap--scrolled" : ""}`}>

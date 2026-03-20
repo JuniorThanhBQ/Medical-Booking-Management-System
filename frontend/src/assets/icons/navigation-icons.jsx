@@ -50,3 +50,22 @@ export const SearchIcon = ({ size = 24, className, ...rest }) => (
     <line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 );
+
+// User / profile person silhouette icon
+export const UserProfileIcon = ({ size = 24, className, ...rest }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    {...rest}
+  >
+    <circle cx="12" cy="8" r="4" />
+    <path d="M5 20a7 7 0 0 1 14 0" />
+  </svg>
+);

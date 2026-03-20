@@ -3,8 +3,6 @@ import ProfileSidebar from '../components/ProfileSidebar';
 import ProfileCard from '../components/ProfileCard';
 import EditProfileForm from '../components/EditProfileForm';
 import Navbar from '../components/Navbar';
-import { getRoleMenuItems } from '@/utils/utils';
-import { DEFAULT_NAV_LINKS } from '@/configs/const';
 import '@/assets/css/users/profile.css';
 
 export const TABS = { PROFILE: 'profile', ACTIVITY: 'activity' };
@@ -20,7 +18,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
+      <Navbar />
 
       <div className="profile-layout">
         <ProfileSidebar userName={user?.name || "User"} activeKey={TABS.PROFILE} />

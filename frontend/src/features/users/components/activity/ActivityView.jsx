@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import ActivityFilters from "./ActivityFilters";
 import UpcomingActivityCard from "./UpcomingActivityCard";
 import PastActivityList from "./PastActivityList";
 import ActivityDetailPanel from "./ActivityDetailPanel";
 
-const ActivityView = ({ filters = [], items = [] }) => {
+const ActivityView = ({ filters = [], items = [], upcomingItems = [] }) => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedId, setSelectedId] = useState(items[0]?.id ?? null);
 
@@ -13,16 +13,7 @@ const ActivityView = ({ filters = [], items = [] }) => {
     return items.filter((it) => it.type === activeFilter);
   }, [activeFilter, items]);
 
-  const effectiveSelectedId = useMemo(() => {
-    if (!filteredItems.length) return null;
-    if (selectedId && filteredItems.some((it) => it.id === selectedId)) return selectedId;
-    return filteredItems[0].id;
-  }, [filteredItems, selectedId]);
-
-  const selectedItem = useMemo(
-    () => filteredItems.find((it) => it.id === effectiveSelectedId) ?? null,
-    [filteredItems, effectiveSelectedId]
-  );
+  const selectedItem = filteredItems.find((it) => it.id === selectedId) ?? null;
 
   const handleFilterChange = (nextFilter) => {
     setActiveFilter(nextFilter);
@@ -50,16 +41,16 @@ const ActivityView = ({ filters = [], items = [] }) => {
         <div className="profile-activity__section-title-row">
           <h3 className="profile-activity__section-title">Sắp tới</h3>
           <span className="profile-activity__count">
-            0
+            {upcomingItems.length}
           </span>
         </div>
 
-        <UpcomingActivityCard onSearchVenues={() => console.log("search venues")} />
+        <UpcomingActivityCard items={upcomingItems} />
 
         <h3 className="profile-activity__section-title">Đã qua</h3>
         <PastActivityList
           items={filteredItems}
-          selectedId={effectiveSelectedId}
+          selectedId={selectedId}
           onSelect={setSelectedId}
         />
       </div>

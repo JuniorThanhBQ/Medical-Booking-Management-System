@@ -54,7 +54,7 @@ export default function ExamForm({
         <textarea
           id="prescription"
           className="exam__textarea"
-          placeholder="Tên thuốc, liều lượng, cách dùng..."
+          placeholder={"Mỗi thuốc một dòng. Ví dụ:\nParacetamol 500mg (2 lần/ngày)"}
           rows={3}
           value={formData.prescriptionText}
           onChange={handleChange("prescriptionText")}

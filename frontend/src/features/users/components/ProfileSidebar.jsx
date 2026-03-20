@@ -15,20 +15,7 @@ const ProfileSidebar = ({ userName, activeKey = "profile", onSelect }) => {
             className={`profile-sidebar__item ${item.key === activeKey ? 'profile-sidebar__item--active' : ''}`}
             onClick={() => item.path ? navigate(item.path) : onSelect?.(item.key)}
           >
-            <svg
-              className="profile-sidebar__icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d={item.icon}
-              />
-            </svg>
+            <item.Icon className="profile-sidebar__icon" />
             {item.label}
           </button>
         ))}

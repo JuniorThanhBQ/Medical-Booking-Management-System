@@ -4,7 +4,6 @@ const initialState = {
   loading: false,
   role: null,
   email: "",
-  authMode: "register",
   authStep: "email",
   mode: null,
   profile: {
@@ -27,8 +26,6 @@ export const useAuthStore = create((set) => ({
   setRole: (value) => set({ role: value }),
 
   setEmail: (value) => set({ email: value }),
-
-  setAuthMode: (value) => set({ authMode: value }),
 
   setAuthStep: (value) => set({ authStep: value }),
 
