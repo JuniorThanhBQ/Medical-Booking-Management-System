@@ -1,8 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import "@/assets/css/users/appointment-record.css";
 import Navbar from "../components/Navbar";
-import { getRoleMenuItems } from "@/utils/utils";
-import { DEFAULT_NAV_LINKS } from "@/configs/const";
 import { useExamStore } from "../../doctor/hooks/use-exam-store";
 
 export default function AppointmentRecordPage() {
@@ -14,7 +12,7 @@ export default function AppointmentRecordPage() {
 
   return (
     <>
-      <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
+      <Navbar />
 
       <main className="record-page">
         <button
@@ -55,7 +53,7 @@ export default function AppointmentRecordPage() {
 
             <section className="record-page__section">
               <h2 className="record-page__section-title">Đơn thuốc</h2>
-              <p className="record-page__section-content">
+              <p className="record-page__section-content" style={{ whiteSpace: "pre-line" }}>
                 {record.prescriptionText || "—"}
               </p>
             </section>

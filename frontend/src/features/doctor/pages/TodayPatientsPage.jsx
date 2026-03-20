@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import "@/assets/css/users/today-patients.css";
 import Navbar from "../../users/components/Navbar";
-import { getRoleMenuItems } from "@/utils/utils";
-import { DEFAULT_NAV_LINKS, APPOINTMENT_STATUS } from "@/configs/const";
+import { APPOINTMENT_STATUS } from "@/configs/const";
 import { mockTodayAppointments } from "@/data/mocks/doctor-schedule";
 import { mockPatients } from "@/data/mocks/patients";
 import { useExamStore } from "../hooks/use-exam-store";
@@ -10,7 +9,7 @@ import PatientCard from "../components/PatientCard";
 
 const FILTER_TABS = [
   { key: "all", label: "Tất cả" },
-  { key: APPOINTMENT_STATUS.PENDING, label: "Chờ khám" },
+  { key: APPOINTMENT_STATUS.CONFIRMED, label: "Chờ khám" },
   { key: APPOINTMENT_STATUS.IN_PROGRESS, label: "Đang khám" },
   { key: APPOINTMENT_STATUS.COMPLETED, label: "Đã khám" },
 ];
@@ -19,21 +18,26 @@ export default function TodayPatientsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const getPatientHistory = useExamStore((s) => s.getPatientHistory);
 
+  const visibleAppointments = useMemo(
+    () => mockTodayAppointments.filter((a) => a.status !== APPOINTMENT_STATUS.PENDING),
+    []
+  );
+
   const filtered = useMemo(() => {
-    if (activeFilter === "all") return mockTodayAppointments;
-    return mockTodayAppointments.filter((a) => a.status === activeFilter);
-  }, [activeFilter]);
+    if (activeFilter === "all") return visibleAppointments;
+    return visibleAppointments.filter((a) => a.status === activeFilter);
+  }, [activeFilter, visibleAppointments]);
 
   return (
     <>
-      <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
+      <Navbar />
 
       <main className="today-patients">
         <header className="today-patients__header">
           <p className="today-patients__eyebrow">Bệnh nhân hôm nay</p>
           <h1 className="today-patients__title">Danh sách khám</h1>
           <p className="today-patients__subtitle">
-            {mockTodayAppointments.length} bệnh nhân · {new Date().toLocaleDateString("vi-VN")}
+            {visibleAppointments.length} bệnh nhân · {new Date().toLocaleDateString("vi-VN")}
           </p>
         </header>
 

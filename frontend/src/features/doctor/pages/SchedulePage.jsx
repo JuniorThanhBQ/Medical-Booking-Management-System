@@ -1,7 +1,5 @@
 import "@/assets/css/users/schedule.css";
 import Navbar from "../../users/components/Navbar";
-import { getRoleMenuItems } from "@/utils/utils";
-import { DEFAULT_NAV_LINKS } from "@/configs/const";
 import { useScheduleStore } from "../hooks/use-schedule-store";
 import SchedulePageHeader from "../components/SchedulePageHeader";
 import WeeklyScheduleCard from "../components/WeeklyScheduleCard";
@@ -26,7 +24,7 @@ export default function SchedulePage() {
 
   return (
     <>
-      <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
+      <Navbar />
 
       <main className="schedule-page">
         <SchedulePageHeader />

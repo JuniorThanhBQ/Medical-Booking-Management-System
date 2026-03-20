@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "@/assets/css/users/examination.css";
 import Navbar from "../../users/components/Navbar";
-import { getRoleMenuItems } from "@/utils/utils";
-import { DEFAULT_NAV_LINKS, EXAM_STATUS } from "@/configs/const";
+import { EXAM_STATUS } from "@/configs/const";
 import { mockTodayAppointments } from "@/data/mocks/doctor-schedule";
 import { mockPatients } from "@/data/mocks/patients";
 import { useExamStore } from "../hooks/use-exam-store";
@@ -52,7 +51,7 @@ export default function ExaminationPage() {
   if (!appointment) {
     return (
       <>
-        <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
+        <Navbar />
         <main className="exam-page">
           <p className="exam-page__error">
             Không tìm thấy lịch hẹn. <a href="/doctor/today">Quay lại</a>
@@ -83,7 +82,7 @@ export default function ExaminationPage() {
 
   return (
     <>
-      <Navbar menuItems={getRoleMenuItems()} navLinks={DEFAULT_NAV_LINKS} />
+      <Navbar />
 
       <main className="exam-page">
         <button

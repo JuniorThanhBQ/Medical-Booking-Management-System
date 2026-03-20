@@ -50,7 +50,7 @@ export default function PatientHistoryPanel({ patient, notes, history }) {
               {expandedId === record.id && (
                 <div className="exam__history-detail">
                   <p><strong>Ghi chú:</strong> {record.notes || "—"}</p>
-                  <p><strong>Đơn thuốc:</strong> {record.prescriptionText || "—"}</p>
+                  <p style={{ whiteSpace: "pre-line" }}><strong>Đơn thuốc:</strong> {record.prescriptionText || "—"}</p>
                   {record.treatmentOrders && (
                     <p><strong>Chỉ định:</strong> {record.treatmentOrders}</p>
                   )}

@@ -23,6 +23,9 @@ export default function AuthPage() {
 
   const handleAuthenticated = (data) => {
     const { password: _, ...safeUser } = data.user;
+
+
+    
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(safeUser));
     const isDoctor = data.user.role === "Doctor";

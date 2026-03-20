@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { EXAM_STATUS, APPOINTMENT_STATUS } from "@/configs/const";
-import { mockMedicalHistory } from "@/data/mocks/patients";
+import { mockMedicalRecords } from "@/data/mocks/patients";
 
 const STORAGE_KEY = "exam-store";
 
@@ -69,7 +69,7 @@ export const useExamStore = create((set, get) => ({
     const savedRecords = Object.values(get().records).filter(
       (r) => r.patientId === patientId && r.status === EXAM_STATUS.COMPLETED
     );
-    const mockRecords = mockMedicalHistory.filter(
+    const mockRecords = mockMedicalRecords.filter(
       (r) => r.patientId === patientId
     );
     return [...mockRecords, ...savedRecords].sort(

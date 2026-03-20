@@ -8,8 +8,6 @@ const PastActivityList = ({ items, selectedId, onSelect }) => {
       </div>
     );
   }
-  console.log("past acitivty",items)
-
   return (
     <div className="profile-activity__list">
       {items.map((item) => {
