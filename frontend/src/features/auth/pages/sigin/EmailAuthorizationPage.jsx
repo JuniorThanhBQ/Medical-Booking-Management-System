@@ -1,13 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../hooks/use-auth-store";
-// import { checkEmailExists, loginWithPassword, registerWithProfile } from '../../../configs/Apis.jsx'
 import EmailStep from "../../components/EmailStep";
 import ProfileStep from "../../components/ProfileStep";
 import PasswordStep from "../../components/PasswordStep";
 import "@/assets/css/auth/email-authorization.css";
-import { isValidEmail, isValidPassword } from "../../utils/validation";
-import { ROLE } from "@/configs/const";
+import { isValidEmail } from "../../utils/validation";
 import users from "@/data/mocks/users";
 
 
@@ -24,7 +22,6 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     loading,
     error,
     touchedEmail,
-    setAuthMode,
     setEmail,
     setAuthStep,
     setMode,
@@ -35,6 +32,8 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     setTouchedEmail,
     resetAuthFlow,
   } = useAuthStore();
+
+  const matchedUserRef = useRef(null);
 
   useEffect(() => {
     resetAuthFlow();
@@ -49,12 +48,12 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
 
     try {
       setLoading(true);
-      // const result = await checkEmailExists(email)
-      const exists = true;
+      const matchedUser = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+      matchedUserRef.current = matchedUser;
+      const exists = !!matchedUser;
 
       const nextMode = exists ? "login" : "register";
       setMode(nextMode);
-      setAuthMode(nextMode);
       setEmail(email);
 
       setAuthStep(exists ? "password" : "profile");
@@ -82,41 +81,42 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     event.preventDefault();
     setError("");
 
-    if (!isValidPassword(password)) {
-      setError("Mật khẩu cần ít nhất 6 ký tự.");
+    if (!password.trim()) {
+      setError("Vui lòng nhập mật khẩu.");
       return;
     }
 
     try {
       setLoading(true);
 
+      let result;
       if (mode === "login") {
-        // const result = await loginWithPassword({ email, password })
-        if (onAuthenticated) {
-          onAuthenticated({
-            token: "TOKEN AFTER LOGIN",
-            user: users[1]
-          });
+        const matchedUser = matchedUserRef.current;
+        if (!matchedUser || matchedUser.password !== password) {
+          setError("Email hoặc mật khẩu không đúng.");
+          return;
         }
+        if (matchedUser.role.toLowerCase() !== role) {
+          setError("Tài khoản không được đăng ký với role này.");
+          return;
+        }
+        result = { token: "TOKEN AFTER LOGIN", user: matchedUser };
       } else {
-        // const payload = {
-        //   email,
-        //   password,
-        //   first_name: profile.firstName,
-        //   last_name: profile.lastName,
-        //   phone: profile.phone,
-        //   date_of_birth: profile.dateOfBirth,
-        //   gender: profile.gender,
-        //   role,
-        // };  ==> Lỗi eslint được đánh dấu ngày 15/03/2026
-        // const result = await registerWithProfile(payload)
-        if (onAuthenticated) {
-          onAuthenticated({
-            token: "TOKEN AFTER REGISTER",
-            user: users[0]
-          });
-        }
+        result = {
+          token: "TOKEN AFTER REGISTER",
+          user: {
+            id: `usr_${Date.now()}`,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            name: `${profile.lastName} ${profile.firstName}`,
+            email,
+            phone: profile.phone,
+            role: role === "patient" ? "Patient" : "Doctor",
+            password,
+          },
+        };
       }
+      onAuthenticated?.(result);
     } catch (err) {
       console.error("password submit error", err);
       setError("Không thể tiếp tục. Vui lòng kiểm tra thông tin và thử lại.");
@@ -131,6 +131,17 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     setError("");
     setTouchedEmail(false);
     setAuthStep("email");
+  };
+
+  const handleBack = () => {
+    if (authStep === "email") return navigate("/auth");
+    if (authStep === "profile") return handleChangeEmail();
+    if (authStep === "password" && mode === "register") {
+      setAuthStep("profile");
+      setError("");
+      return;
+    }
+    handleChangeEmail();
   };
 
   const title =
@@ -200,7 +211,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
         <button
           type="button"
           className="auth-page__back"
-          onClick={() => navigate("/auth")}
+          onClick={handleBack}
         >
           <span className="auth-page__back-icon">&#8592;</span>
         </button>

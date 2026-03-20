@@ -5,7 +5,7 @@ export function isValidEmail(value) {
 }
 
 export function isValidPassword(value) {
-  return value.length >= 6;
+  return value.length >= 1;
 }
 
 export function isValidName(value) {
