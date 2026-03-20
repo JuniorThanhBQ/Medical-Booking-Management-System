@@ -9,7 +9,6 @@ class Config:
     CLOUDINARY_API_NAME = os.getenv("CLOUDINARY_API_NAME")
     CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
     CLOUDINARY_API_SECRETKEY = os.getenv("CLOUDINARY_API_SECRETKEY")
-    SWAGGER = {"title": "Medical Appointment B3-8 API", "uiversion": 3}
 
 
 class DevelopmentConfig(Config):

@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 from sqlalchemy.exc import IntegrityError
+
 from src.modules.users.models import (GenderRole, PatientProfile, Profile,
                                       SlotStatus, User, UserRole)
 from tests.unit_tests.test_base import test_app, test_session

@@ -1,4 +1,5 @@
 from flask import render_template
+
 from src import create_app, login
 from src.modules.users.services import get_user_loader
 

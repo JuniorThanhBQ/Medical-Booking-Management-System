@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from flask_restful import Api, Resource
+
 from src.modules.users.services import (get_user_information,
                                         login_google_service,
                                         login_user_service,
@@ -55,13 +56,13 @@ class LoginAPI(Resource):
     # noinspection PyMethodMayBeStatic
     def post(self):
         data = request.get_json(silent=True) or request.form
-        login_type = data.get("username") or data.get("email")
+        login_email = data.get("email")
         password = data.get("password")
 
-        if not login_type or not password:
-            return {"message": "Username/Email và password không được để trống"}, 400
+        if not login_email or not password:
+            return {"message": "Email và password không được để trống"}, 400
 
-        token, message, status_type = login_user_service(login_type, password)
+        token, message, status_type = login_user_service(login_email, password)
 
         if not token:
             status = 403 if status_type == "FORBIDDEN" else 401

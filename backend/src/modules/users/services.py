@@ -5,9 +5,10 @@ from functools import wraps
 import cloudinary.uploader
 import jwt
 from flask import current_app, request
-from src.modules.users.models import GenderRole, PatientProfile, User, db
-from src.utils.utils import verify_google_token
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from src.modules.users.models import GenderRole, PatientProfile, User, db
+from src.utils.utils import cloudinary_upload_process, verify_google_token
 
 
 def get_user_loader(user_id):
@@ -36,8 +37,7 @@ def register_user_service(
 
         avatar_url = None
         if avatar:
-            upload_result = cloudinary.uploader.upload(avatar)
-            avatar_url = upload_result.get("secure_url")
+            avatar_url = cloudinary_upload_process(avatar)
 
         parsed_gender = GenderRole.NOT_SET
         if gender:
@@ -87,10 +87,8 @@ def create_token(user):
     return token
 
 
-def login_user_service(login_identifier, password):
-    user = User.query.filter(
-        (User.username == login_identifier) | (User.email == login_identifier)
-    ).first()
+def login_user_service(login_email, password):
+    user = User.query.filter(User.email == login_email).first()
 
     if not user or not (check_password_hash(user.password, password)):
         return None, "Tài khoản hoặc mật khẩu có thể không đúng", "ERROR_UNAUTHORIZED"
@@ -247,8 +245,7 @@ def update_patient_profile_service(current_user, data):
 
         avatar_url = None
         if "avatar" in data:
-            upload_result = cloudinary.uploader.upload(data["avatar"])
-            avatar_url = upload_result.get("secure_url")
+            avatar_url = cloudinary_upload_process(data["avatar"])
             profile.avatar = avatar_url
 
         if "medical_history" in data and profile.profile_type == "patient":

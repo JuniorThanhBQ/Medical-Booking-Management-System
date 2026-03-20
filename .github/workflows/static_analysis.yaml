@@ -158,7 +158,7 @@ jobs:
         run: docker compose up -d --build
 
       - name: Đợi container sẵn sàng sau 30 giây
-        run: sleep 30 
+        run: sleep 20 
 
       - name: Kiểm tra tình trạng docker
         run: |

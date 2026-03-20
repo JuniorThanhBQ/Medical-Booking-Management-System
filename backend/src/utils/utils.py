@@ -1,6 +1,7 @@
 import logging
 import os
 
+import cloudinary.uploader
 from google.auth.transport import requests
 from google.oauth2 import id_token
 
@@ -15,3 +16,8 @@ def verify_google_token(token):
     except Exception as ex:
         logging.error(f"Lỗi trong xác thực google token: {ex}")
         return None
+
+
+def cloudinary_upload_process(avatar):
+    upload_result = cloudinary.uploader.upload(avatar)
+    return upload_result.get("secure_url")

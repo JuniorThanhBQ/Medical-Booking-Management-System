@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity
+
 from src.modules.booking.models import (Appointment, MedicalRecord, StatusRole,
                                         db)
 from src.modules.users.services import create_token, token_required

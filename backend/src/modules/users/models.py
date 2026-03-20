@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
                         Integer, String, Text, Time, func)
 from sqlalchemy.orm import backref, relationship
+
 from src import db
 
 

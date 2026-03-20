@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
                         Integer, String)
 from sqlalchemy.orm import relationship
+
 from src import db
 from src.modules.users.models import DoctorProfile, PatientProfile
 

@@ -3,13 +3,14 @@ from pathlib import Path
 
 import cloudinary
 from dotenv import load_dotenv
-from flasgger import Swagger
 from flask import Flask
+
 from src.extensions import db, login, migrate
 from src.modules.users import models
 from src.modules.users.views import auth_bp
 
-env_path = Path(__file__).resolve().parent.parent / ".env"
+env_path = Path(__file__).resolve().parent.parent/ ".env"
+
 if env_path.exists():
     load_dotenv(env_path)
 else:
@@ -19,7 +20,6 @@ else:
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(auth_bp)
-    swagger = Swagger(app)
 
     mode = os.getenv("FLASK_MODE")
     if mode == "production":

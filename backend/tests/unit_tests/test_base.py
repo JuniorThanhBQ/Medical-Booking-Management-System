@@ -1,5 +1,6 @@
 import pytest
 from flask import Flask
+
 from src.extensions import db
 from src.modules.users.views import auth_bp
 
