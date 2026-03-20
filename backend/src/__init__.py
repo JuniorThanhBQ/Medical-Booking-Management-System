@@ -1,12 +1,40 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+import os
+from pathlib import Path
 
-db = SQLAlchemy()
+import cloudinary
+from dotenv import load_dotenv
+from flasgger import Swagger
+from flask import Flask
+from src.extensions import db, login, migrate
+from src.modules.users import models
+from src.modules.users.views import auth_bp
+
+env_path = Path(__file__).resolve().parent.parent / ".env"
+if env_path.exists():
+    load_dotenv(env_path)
+else:
+    print("Lỗi: Chưa tồn tại file env!")
 
 
 def create_app():
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+    app.register_blueprint(auth_bp)
+    swagger = Swagger(app)
+
+    mode = os.getenv("FLASK_MODE")
+    if mode == "production":
+        app.config.from_object("src.config.ProductionConfig")
+    else:
+        app.config.from_object("src.config.DevelopmentConfig")
 
     db.init_app(app)
+    migrate.init_app(app, db)
+    login.init_app(app)
+
+    cloudinary.config(
+        cloud_name=app.config["CLOUDINARY_API_NAME"],
+        api_key=app.config["CLOUDINARY_API_KEY"],
+        api_secret=app.config["CLOUDINARY_API_SECRETKEY"],
+    )
+
     return app

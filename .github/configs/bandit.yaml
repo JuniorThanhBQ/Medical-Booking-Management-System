@@ -1,2 +1,2 @@
-exclude_dirs: ['tests']
+exclude_dirs: ['venv','tests']
 skips: ['B101'] 
