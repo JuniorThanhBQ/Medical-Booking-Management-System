@@ -1,24 +1,20 @@
-import os
+from flask import render_template
 
-from dotenv import load_dotenv
-from flask import Flask
+from src import create_app, login
+from src.modules.auth_profile.services import get_user_loader
 
-from src.modules.users.models import db
-from src.modules.users.views import api
+app = create_app()
 
-load_dotenv()
 
-app = Flask(__name__)
+@login.user_loader
+def load_user(user_id):
+    return get_user_loader(user_id)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"  # sẽ update migrate sau
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db.init_app(app)
-app.register_blueprint(api)
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-with app.app_context():
-    db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True, port="5050")  # nosec B201
+    app.run(host=app.config.get("HOST"), port=app.config.get("PORT"), debug=app.config.get("RUN_MODE"))

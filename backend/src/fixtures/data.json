@@ -1,0 +1,137 @@
+{
+  "specialties": [
+    {
+      "id": 1,
+      "name": "Nội khoa",
+      "description": "Chuyên khám và điều trị các bệnh nội tạng",
+      "level": "Cơ sở",
+      "cta_label": "CK1"
+    },
+    {
+      "id": 2,
+      "name": "Ngoại khoa",
+      "description": "Chuyên phẫu thuật và xử lý chấn thương",
+      "level": "Chuyên sâu",
+      "cta_label": "CK2"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "Password123@",
+      "first_name": "Quản",
+      "last_name": "Trị",
+      "email": "admin@clinic.com",
+      "role": "ADMIN"
+    },
+    {
+      "id": 2,
+      "username": "letan1",
+      "password": "Password123@",
+      "first_name": "Lễ",
+      "last_name": "Tân",
+      "email": "reception@clinic.com",
+      "role": "RECEPTIONIST"
+    },
+    {
+      "id": 3,
+      "username": "doctor_a",
+      "password": "Password123@",
+      "first_name": "Nguyễn",
+      "last_name": "Văn A",
+      "email": "dr_a@clinic.com",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 4,
+      "username": "patient_x",
+      "password": "Password123@",
+      "first_name": "Trần",
+      "last_name": "Thị X",
+      "email": "patient_x@mail.com",
+      "role": "PATIENT"
+    }
+  ],
+  "doctor_profiles": [
+    {
+      "id": 1,
+      "user_id": 3,
+      "phone": "0901234567",
+      "gender": "MALE",
+      "title": "Tiến sĩ Bác sĩ",
+      "bio": "Bác sĩ chuyên khoa với nhiều năm kinh nghiệm",
+      "specialty_id": 1
+    }
+  ],
+  "patient_profiles": [
+    {
+      "id": 1,
+      "user_id": 4,
+      "phone": "0987654321",
+      "gender": "FEMALE",
+      "medical_history": "Dị ứng hải sản"
+    }
+  ],
+  "work_schedules": [
+    {
+      "id": 1,
+      "title": "Lịch làm việc ca sáng",
+      "description": "Khám tổng quát buổi sáng",
+      "start_time": "08:00:00",
+      "end_time": "12:00:00",
+      "doctor_id": 1
+    }
+  ],
+  "work_dates": [
+    {
+      "id": 1,
+      "day_of_week": "MONDAY",
+      "work_schedule_id": 1
+    },
+    {
+      "id": 2,
+      "day_of_week": "WEDNESDAY",
+      "work_schedule_id": 1
+    },
+    {
+      "id": 3,
+      "day_of_week": "FRIDAY",
+      "work_schedule_id": 1
+    }
+  ],
+  "medical_records": [
+    {
+      "id": 1,
+      "note": "Bệnh nhân có biểu hiện mệt mỏi",
+      "type": "DONE",
+      "diagnosis": "Cảm cúm thông thường",
+      "prescription_text": "Paracetamol 500mg x 10 viên",
+      "treatment_orders": "Nghỉ ngơi, uống nhiều nước",
+      "doctor_id": 1,
+      "patient_id": 1
+    }
+  ],
+  "appointments": [
+    {
+      "id": 1,
+      "name": "Khám tổng quát",
+      "note": "Khám định kỳ",
+      "status": "COMPLETED",
+      "appointment_date": "2026-03-23T08:30:00",
+      "doctor_id": 1,
+      "patient_id": 1,
+      "medical_record_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Tái khám",
+      "note": "Tái khám sau 1 tuần",
+      "status": "APPROVED",
+      "appointment_date": "2026-03-30T09:00:00",
+      "doctor_id": 1,
+      "patient_id": 1,
+      "medical_record_id": null
+    }
+  ]
+}
