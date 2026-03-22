@@ -23,15 +23,32 @@ jobs:
         cache: 'pip'
 
     - name: Cài đặt gói thư viện
-      run: pip install black isort
-
-    - name: Chạy Black
-      working-directory: ./backend
-      run: black --check .
+      run: pip install isort
 
     - name: Chạy isort
       working-directory: ./backend
       run: isort --check .
+
+  backend-layered-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+
+    - name: Cài đặt Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        cache: 'pip'
+
+    - name: Cài đặt gói thư viện
+      run: pip install lint-imports
+
+    - name: Chạy lint-imports
+      working-directory: ./backend
+      run: lint-imports
+
 
   frontend-linting-check:
     runs-on: ubuntu-latest
