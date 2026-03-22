@@ -5,7 +5,7 @@ import { MedicalFileIcon, DoctorIcon } from "@/assets/icons";
 
 const MedicalDetailPanel = ({ item }) => {
   const rxItems = item.prescriptionText
-    ? item.prescriptionText.split(",").map((s) => s.trim()).filter(Boolean)
+    ? item.prescriptionText.split("\n").map((s) => s.trim()).filter(Boolean)
     : [];
 
   return (
@@ -57,6 +57,13 @@ const MedicalDetailPanel = ({ item }) => {
                 <li key={i} className="profile-activity__medical-rx-item">{rx}</li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {item.treatmentOrders && (
+          <div className="profile-activity__medical-section">
+            <p className="profile-activity__medical-section-label">Chỉ định điều trị</p>
+            <p className="profile-activity__medical-notes">{item.treatmentOrders}</p>
           </div>
         )}
       </div>

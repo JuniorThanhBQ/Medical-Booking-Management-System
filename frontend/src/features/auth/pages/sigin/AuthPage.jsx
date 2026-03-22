@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../hooks/use-auth-store";
 import EmailAuthorizationPage from "./EmailAuthorizationPage";
@@ -20,16 +19,20 @@ const OPTIONS = [
 export default function AuthPage() {
   const navigate = useNavigate();
 
-  const { setRole } = useAuthStore.getState();
-  const [selected, setSelected] = useState(null);
+  const { role, setRole } = useAuthStore();
 
   const handleAuthenticated = (data) => {
+    const { password: _, ...safeUser } = data.user;
+
+
+    
     localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    navigate("/dashboard");
+    localStorage.setItem("user", JSON.stringify(safeUser));
+    const isDoctor = data.user.role === "Doctor";
+    navigate(isDoctor ? "/doctor/today" : "/dashboard");
   };
 
-  if (selected) {
+  if (role) {
     return <EmailAuthorizationPage onAuthenticated={handleAuthenticated} />;
   }
 
@@ -53,11 +56,8 @@ export default function AuthPage() {
             <button
               key={option.id}
               type="button"
-              className={`signin-card${selected === option.id ? " signin-card--selected" : ""}`}
-              onClick={() => {
-                setSelected(option.id);
-                setRole(option.id);
-              }}
+              className={`signin-card${role === option.id ? " signin-card--selected" : ""}`}
+              onClick={() => setRole(option.id)}
             >
               <div className="signin-card__text">
                 <div className="signin-card__title">{option.title}</div>

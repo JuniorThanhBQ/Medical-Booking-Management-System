@@ -5,12 +5,11 @@ import FeatureHighlightBand from "../components/FeatureHighlightBand";
 import ServicesSection from "../components/ServicesSection";
 import CtaBanner from "../components/CtaBanner";
 import SiteFooter from "../components/SiteFooter";
-import { getRoleMenuItems } from "@/utils/utils";
 
 export default function LandingPage() {
   return (
     <>
-      <Navbar menuItems={getRoleMenuItems()} />
+      <Navbar />
       <main>
         <HeroSection />
         <FeatureHighlightBand />
