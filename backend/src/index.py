@@ -1,6 +1,7 @@
 from flask import render_template
+
 from src import create_app, login
-from src.modules.users.services import get_user_loader
+from src.modules.auth_profile.services import get_user_loader
 
 app = create_app()
 
@@ -16,8 +17,4 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(
-        host=app.config.get("HOST"),
-        port=app.config.get("PORT"),
-        debug=app.config.get("RUN_MODE"),
-    )
+    app.run(host=app.config.get("HOST"), port=app.config.get("PORT"), debug=app.config.get("RUN_MODE"))

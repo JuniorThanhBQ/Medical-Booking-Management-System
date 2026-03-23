@@ -1,7 +1,6 @@
 import pytest
 from flask import Flask
 from src.extensions import db
-from src.modules.users.views import auth_bp
 
 
 def create_app():
@@ -12,8 +11,6 @@ def create_app():
     @app.route("/")
     def index():
         return "OK", 200
-
-    app.register_blueprint(auth_bp)
 
     return app
 

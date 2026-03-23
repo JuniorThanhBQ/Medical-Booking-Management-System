@@ -1,0 +1,34 @@
+[MASTER]
+ignore=venv
+jobs=0
+
+[MESSAGES CONTROL]
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    C0103,  # invalid-name
+    R0903,  # too-few-public-methods
+    R0913,  # too-many-arguments
+    R0914,  # too-many-locals
+    R0915,  # too-many-statements
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=8
+max-locals=20
+max-returns=6
+max-branches=15
+
+[BASIC]
+good-names=i,j,k,ex,Run,_
+
+[TYPECHECK]
+disable=import-error
+
+[REPORTS]
+output-format=colorized
+reports=no
+score=no

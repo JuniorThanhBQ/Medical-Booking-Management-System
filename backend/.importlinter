@@ -1,0 +1,12 @@
+[importlinter]
+root_package = src
+
+[importlinter:contract:layered-structure]
+name = "Check layered structure"
+type = layers
+layers =
+    views
+    services
+    models
+containers =
+    src.modules.auth_profile

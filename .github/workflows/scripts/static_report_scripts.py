@@ -67,7 +67,7 @@ md_content += f"- **Tổng số dòng code:** `{total_lines}` dòng\n\n"
 
 md_content += "| Tên File | Số dòng |\n|---|---|\n"
 for filepath, count in file_stats:
-    if count > 250:
+    if count > 300:
         md_content += f"| Cần xem lại: `{filepath}` | **{count}** |\n"
     else:
         md_content += f"| `{filepath}` | {count} |\n"
