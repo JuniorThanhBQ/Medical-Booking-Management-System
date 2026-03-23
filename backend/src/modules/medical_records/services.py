@@ -1,6 +1,6 @@
-from src import db
+from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.medical_records.models import MedicalRecord
+from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
 from src.utils.decorator import handle_db_errors
 
 
@@ -41,6 +41,7 @@ def get_detail_medical_record_service(current_user, record_id):
     }
     return result, "SUCCESS"
 
+
 @handle_db_errors(parameter=2)
 def create_medical_record_service(current_user, appointment_id, data):
     if current_user.role.name != "DOCTOR":
@@ -53,31 +54,41 @@ def create_medical_record_service(current_user, appointment_id, data):
     if appointment.doctor_profile_id != current_user.profile.id:
         return {"message": "Không có quyền trên lịch hẹn này"}, "FORBIDDEN"
 
-    record = appointment.medical_record
-    if not record:
-        record = MedicalRecord(
-            doctor_profile_id=appointment.doctor_profile_id,
-            patient_profile_id=appointment.patient_profile_id,
-            diagnosis=data.get("diagnosis", ""),
-            prescription_text=data.get("prescriptionText", ""),
-            treatment_orders=data.get("treatmentOrders", ""),
-            note=data.get("notes", ""),
-        )
-        db.session.add(record)
-        db.session.flush()
-        appointment.medical_record_id = record.id
+    if appointment.medical_record:
+        return {"message": "Lịch hẹn này đã có hồ sơ bệnh án."}, "BAD_REQUEST"
 
-    record.diagnosis = data.get("diagnosis", record.diagnosis)
-    record.prescription_text = data.get("prescriptionText", record.prescription_text)
-    record.treatment_orders = data.get("treatmentOrders", record.treatment_orders)
-    record.note = data.get("notes", record.note)
+    payload_status = data.get("status", "DONE")
+    if payload_status not in ["DONE", "FOLLOW_UP"]:
+        return {"message": "Trạng thái không hợp lệ"}, "BAD_REQUEST"
 
-    payload_status = data.get("status")
-    if payload_status in ["DONE", "FOLLOW_UP"]:
-        appointment.status = StatusRole.COMPLETED
+    record = MedicalRecord(
+        doctor_profile_id=appointment.doctor_profile_id,
+        patient_profile_id=appointment.patient_profile_id,
+        type=MedicalRecordType[payload_status],
+        diagnosis=data.get("diagnosis", ""),
+        prescription_text=data.get("prescriptionText", ""),
+        treatment_orders=data.get("treatmentOrders", ""),
+        note=data.get("notes", "")
+    )
+
+    db.session.add(record)
+    db.session.flush()
+
+    appointment.medical_record_id = record.id
+    appointment.status = StatusRole.COMPLETED
 
     db.session.commit()
-    return "", "SUCCESS"
+
+    result = {
+        "id": record.id,
+        "diagnosis": record.diagnosis,
+        "prescriptionText": record.prescription_text,
+        "treatmentOrders": record.treatment_orders,
+        "notes": record.note,
+        "status": record.type.name
+    }
+
+    return result, "SUCCESS"
 
 @handle_db_errors(parameter=2)
 def update_medical_record_service(current_user, record_id, data):
@@ -104,8 +115,20 @@ def update_medical_record_service(current_user, record_id, data):
         record.note = data["notes"]
 
     payload_status = data.get("status")
-    if payload_status in ["DONE", "FOLLOW_UP"] and record.appointment:
-        record.appointment.status = StatusRole.COMPLETED
+    if payload_status in ["DONE", "FOLLOW_UP"]:
+        record.type = MedicalRecordType[payload_status]
+        if record.appointment:
+            record.appointment.status = StatusRole.COMPLETED
 
     db.session.commit()
-    return "", "SUCCESS"
+
+    result = {
+        "id": record.id,
+        "diagnosis": record.diagnosis,
+        "prescriptionText": record.prescription_text,
+        "treatmentOrders": record.treatment_orders,
+        "notes": record.note,
+        "status": record.type.name if record.type else None
+    }
+
+    return result, "SUCCESS"

@@ -30,7 +30,7 @@ class CtaLabel(enum.Enum):
 
 class User(Base, UserMixin):
     __tablename__ = "user"
-    username = Column(String(100), unique=True, nullable=False)
+    username = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)

@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
 
-from src import db
+from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.doctor.models import DayOfWeek, WorkDate, WorkSchedule
 from src.utils.decorator import handle_db_errors
+from src.utils.utils import format_appointment_summary
+
 
 @handle_db_errors(parameter=2)
 def get_my_schedule_service(current_user):
@@ -37,21 +39,9 @@ def get_my_schedule_service(current_user):
         patient_user = appointment.patient.user
         doctor_user = current_user
         specialty = profile.specialty
-
-        appointment_data.append({
-            "id": str(appointment.id),
-            "type": specialty.cta_label.name if specialty and specialty.cta_label else None,
-            "patientName": f"{patient_user.last_name} {patient_user.first_name}",
-            "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
-            "appointmentDate": 
-                appointment.appointment_date.isoformat(),
-            "status": appointment.status.name if appointment.status else None,
-            "note": appointment.note,
-            "createdAt":
-                appointment.created_date.isoformat() + "Z" if appointment.created_date else None,
-            "updatedAt":
-                appointment.updated_date.isoformat() + "Z" if appointment.updated_date else None,
-        })
+        appointment_data.append(
+            format_appointment_summary(appointment,patient_user,doctor_user,specialty)
+        )
 
     result = {
         "workSchedule": ws_data,

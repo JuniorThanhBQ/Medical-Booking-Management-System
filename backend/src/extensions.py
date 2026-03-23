@@ -7,4 +7,5 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
-limiter = Limiter(key_func=get_remote_address, storage_uri="memory://")  # Cần cấu hình redis để lưu trữ
+# Cần cấu hình redis để lưu trữ
+limiter = Limiter(key_func=get_remote_address, storage_uri="memory://")

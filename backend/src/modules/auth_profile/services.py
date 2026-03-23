@@ -5,8 +5,8 @@ from flask import current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.extensions import db
-from src.utils.decorator import handle_db_errors
 from src.modules.auth_profile.models import GenderRole, PatientProfile, User
+from src.utils.decorator import handle_db_errors
 from src.utils.utils import cloudinary_upload_process, verify_google_token
 
 
@@ -94,9 +94,6 @@ def register_user_service(user_payload):
     phone = user_payload.get("phone")
     address = user_payload.get("address")
     medical_history = user_payload.get("medical_history")
-
-    if User.query.filter_by(username=username).first():
-        return None, "Username đã tồn tại", "ERROR_BAD_REQUEST"
 
     if User.query.filter_by(email=email).first():
         return None, "Email đã tồn tại", "ERROR_BAD_REQUEST"

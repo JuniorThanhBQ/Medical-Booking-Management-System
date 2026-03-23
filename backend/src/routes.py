@@ -2,9 +2,8 @@ from flask import Blueprint
 from flask_restful import Api
 
 from src.modules.appointments.views import (AppointmentListCreateAPI,
-                                            AppointmentRetrieveUpdateAPI,
-                                            PatientRetrieveAPI,
-                                            ReceptionistAppointmentCreateAPI)
+                                            AppointmentRetrieveUpdateDeleteAPI,
+                                            PatientRetrieveAPI)
 from src.modules.auth_profile.views import (GoogleLoginAPI, LoginAPI,
                                             RegisterAPI,
                                             RetrieveCurrentUserAPI)
@@ -16,6 +15,7 @@ from src.modules.public.views import (PublicDoctorListAPI,
                                       PublicDoctorRetrieveAPI,
                                       PublicDoctorSlotListAPI,
                                       PublicSpecialtyListAPI)
+from src.modules.receptionist.views import ReceptionistAppointmentCreateAPI
 
 api_v1 = Blueprint("auth_v1", __name__, url_prefix="/api/v1")
 api = Api(api_v1)
@@ -31,7 +31,7 @@ api.add_resource(PublicDoctorRetrieveAPI, "/public/doctors/<int:doctor_id>")
 api.add_resource(PublicDoctorSlotListAPI, "/public/doctors/<int:doctor_id>/time-slots")
 
 api.add_resource(AppointmentListCreateAPI, "/appointments")
-api.add_resource(AppointmentRetrieveUpdateAPI, "/appointments/<int:appointment_id>")
+api.add_resource(AppointmentRetrieveUpdateDeleteAPI, "/appointments/<int:appointment_id>")
 api.add_resource(CreateMedicalRecordAPI, "/appointments/<int:appointment_id>/medical-record")
 api.add_resource(PatientRetrieveAPI, "/appointments/<int:appointment_id>/patient-profile")
 

@@ -2,12 +2,12 @@ from flask import request
 from flask_restful import Resource
 
 from src.extensions import limiter
-from src.utils.decorator import token_required
 from src.modules.auth_profile.services import (get_user_data,
                                                login_google_service,
                                                login_user_service,
                                                register_user_service,
                                                update_patient_profile_service)
+from src.utils.decorator import token_required
 from src.utils.utils import (check_xss_violation, get_http_status_code,
                              get_request_data, validate_email_password)
 
@@ -17,8 +17,8 @@ class LoginAPI(Resource):
 
     def post(self):
         data = get_request_data(request)
-        login_email = data.get("email", "").strip()
-        password = data.get("password", "").strip()
+        login_email = data.get("email", "")
+        password = data.get("password", "")
 
         error_msg, status_code = validate_email_password(login_email, password)
         if error_msg:
@@ -41,20 +41,20 @@ class RegisterAPI(Resource):
 
     def post(self):
         data = get_request_data(request)
-        username = data.get("name").strip()
-        password = data.get("password").strip()
-        email = data.get("email").strip()
-        first_name = data.get("firstName").strip()
-        last_name = data.get("lastName").strip()
-        address = data.get("address").strip()
-        birthday = data.get("dayOfBirth").strip()
-        gender = data.get("gender").strip()
-        phone = data.get("phone").strip()
+        password = data.get("password")
+        email = data.get("email")
+        first_name = data.get("firstName")
+        last_name = data.get("lastName")
+        username = "newUserMembers"
+        address = data.get("address")
+        birthday = data.get("dayOfBirth")
+        gender = data.get("gender")
+        phone = data.get("phone")
         avatar = request.files.get("avatar") or data.get("avatar")
-        medical_history = data.get("medicalHistory").strip()
+        medical_history = data.get("medicalHistory")
 
         if not all(
-                [username, password, email, first_name, last_name, gender, phone, birthday, address]
+                [password, email, first_name, last_name, gender, phone, birthday, address]
         ):
             return {"message": "Vui lòng điền đầy đủ thông tin bắt buộc"}, 400
 

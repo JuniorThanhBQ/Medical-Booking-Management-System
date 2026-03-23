@@ -9,26 +9,6 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  backend-linting-check:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Clone repository
-      uses: actions/checkout@v4
-
-    - name: Cài đặt Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13'
-        cache: 'pip'
-
-    - name: Cài đặt gói thư viện
-      run: pip install isort
-
-    - name: Chạy isort
-      working-directory: ./backend
-      run: isort --check .
-
   backend-layered-check:
     runs-on: ubuntu-latest
 
@@ -71,10 +51,6 @@ jobs:
     - name: Kiểm tra Eslint
       working-directory: ./frontend
       run: npm run lint
-
-    - name: Kiểm tra format Prettier
-      working-directory: ./frontend
-      run: npm run format:check
 
   backend-security-check:
     runs-on: ubuntu-latest

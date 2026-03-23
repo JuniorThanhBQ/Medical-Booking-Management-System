@@ -1,5 +1,6 @@
 import pytest
 from flask import Flask
+
 from src.extensions import db
 
 
