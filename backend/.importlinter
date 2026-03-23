@@ -1,12 +1,45 @@
 [importlinter]
 root_package = src
 
-[importlinter:contract:layered-structure]
-name = "Check layered structure"
+name = "Check Layered Structure"
 type = layers
 layers =
+    routes
     views
     services
     models
 containers =
     src.modules.auth_profile
+    src.modules.appointments
+    src.modules.doctor
+    src.modules.medical_records
+    src.modules.public
+    src.modules.notification
+
+[importlinter:contract:module-isolation]
+name = "Check module isolation"
+type = independence
+modules =
+    src.modules.auth_profile
+    src.modules.appointments
+    src.modules.doctor
+    src.modules.medical_records
+    src.modules.public
+    src.modules.notification
+ignore_imports =
+    src.modules.appointments.models -> src.modules.doctor.models
+    src.modules.auth_profile.models -> src.modules.doctor.models
+    src.modules.notification.models -> src.modules.doctor.models
+    src.modules.medical_records.models -> src.modules.doctor.models
+    src.modules.medical_records.services -> src.modules.appointments.models
+    src.modules.doctor.services -> src.modules.appointments.models
+    src.modules.public.services -> src.modules.auth_profile.models
+    src.modules.appointments.services -> src.modules.auth_profile.models
+    src.modules.medical_records.views -> src.modules.auth_profile.auth_decorators
+    src.modules.notification.views -> src.modules.auth_profile.auth_decorators
+    src.modules.appointments.views -> src.modules.auth_profile.auth_decorators
+    src.modules.doctor.views -> src.modules.auth_profile.auth_decorators
+    src.modules.public.services -> src.modules.appointments.services
+
+
+

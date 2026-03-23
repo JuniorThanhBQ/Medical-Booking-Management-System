@@ -9,14 +9,32 @@ services:
 
   backend:
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "8000:8000"
+    env_file:
+      - .env
     environment:
-      - FLASK_MODE=development
-      - BACKEND_PORT=${BACKEND_PORT}
-      - DATABASE_URL=mysql+pymysql://${MYSQL_USERNAME}:${MYSQL_ROOT_PASSWORD}@db:${DB_PORT}/${DB_NAME}
-      - RABBITMQ_URL=amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:${RABBITMQ_PORT}/
+      - FLASK_MODE=production
+      - DATABASE_URL=mysql+pymysql://root:admin123@db:3306/madb8?charset=utf8mb4
+      - RABBITMQ_URL=amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/0
+
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    
     volumes:
       - ./backend/src:/app/src
+      - ./backend/.env:/app/.env
+      - ./.env:/app/src/.env
+      - ./database/migrations:/app/migrations
+      
+    command: >
+      bash -c "export PYTHONPATH=/app &&
+               flask --app src.index:app db upgrade &&
+               python src/fixtures/fixtures.py &&
+               gunicorn --workers=4 --bind=0.0.0.0:8000 --access-logfile=- --error-logfile=- src.index:app"
 
   db:
     ports:

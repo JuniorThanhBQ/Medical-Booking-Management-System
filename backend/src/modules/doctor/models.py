@@ -20,8 +20,8 @@ class DayOfWeek(enum.Enum):
 class Base(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
-    created_date = Column(DateTime, default=func.now()) # pylint: disable=not-callable
-    updated_date = Column(DateTime, default=func.now(), onupdate=func.now()) # pylint: disable=not-callable
+    created_date = Column(DateTime, default=func.now())  # pylint: disable=not-callable
+    updated_date = Column(DateTime, default=func.now(), onupdate=func.now())  # pylint: disable=not-callable
 
 
 class WorkSchedule(Base):

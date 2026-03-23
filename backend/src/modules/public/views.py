@@ -4,6 +4,7 @@ from flask_restful import Resource
 from src.modules.public.services import (get_doctor_detail_service,
                                          get_doctors_service,
                                          get_specialties_service,
+                                         get_specialty_detail_service,
                                          get_time_slots_service)
 from src.utils.utils import format_api_response
 
@@ -23,6 +24,12 @@ class PublicSpecialtyListAPI(Resource):
             "message": message,
             "data": data
         }, 200
+
+
+class PublicSpecialtyRetrieveAPI(Resource):
+    def get(self, specialty_id):
+        return format_api_response(*get_specialty_detail_service(specialty_id))
+
 
 class PublicDoctorListAPI(Resource):
     def get(self):

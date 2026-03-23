@@ -36,7 +36,8 @@ run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
 
 backend_status = os.environ.get("BACKEND_LINT", "unknown")
 frontend_status = os.environ.get("FRONTEND_LINT", "unknown")
-security_status = os.environ.get("SECURITY_CHECK", "unknown")
+backend_security_status = os.environ.get("BACKEND_SECURITY_CHECK", "unknown")
+frontend_security_status = os.environ.get("FRONTEND_SECURITY_CHECK", "unknown")
 
 
 def format_status(status):
@@ -57,7 +58,8 @@ md_content += "### 1. Trạng thái các jobs:\n"
 md_content += "| Hạng mục  | Kết quả |\n|---|---|\n"
 md_content += f"| kiểm tra format backend: | {format_status(backend_status)} |\n"
 md_content += f"| Kiểm tra format frontend: | {format_status(frontend_status)} |\n"
-md_content += f"| Kiểm tra bảo mật: | {format_status(security_status)} |\n\n"
+md_content += f"| Kiểm tra bảo mật backend: | {format_status(backend_security_status)} |\n"
+md_content += f"| Kiểm tra bảo mật frontend: | {format_status(frontend_security_status)} |\n\n"
 md_content += f"*(Xem chi tiết: [link]({run_url}))*\n\n"
 md_content += "---\n\n"
 

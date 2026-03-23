@@ -12,16 +12,23 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    RUN_MODE = True
-    HOST = os.getenv("127.0.0.1")
+    DEBUG = True
+    HOST = os.getenv("HOST", "127.0.0.1")
     PORT = 8000
+    db_host = os.getenv('DB_HOST', 'localhost')
     db_password = quote(str(os.getenv("DB_PASSWORD")))
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv('DB_USER')}:{db_password}@localhost/{os.getenv('DB_NAME')}?charset=utf8mb4"  # pylint: disable=line-too-long
+    default_db_url = f"mysql+pymysql://{os.getenv('DB_USER')}:{db_password}@{db_host}/{os.getenv('DB_NAME')}?charset=utf8mb4"  # pylint: disable=line-too-long
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', default_db_url)
+    ALLOWED_ORIGINS = ["*"]
 
 
 class ProductionConfig(Config):
-    RUN_MODE = False
+    DEBUG = False
     HOST = os.getenv("PRODUCTION_HOST")
     PORT = os.getenv("PORT")
+    db_host = os.getenv('DB_HOST', 'localhost')
     production_db_password = quote(str(os.getenv("PRODUCTION_DB_PASSWORD")))
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv("PRODUCTION_DB_USER")}:{production_db_password}@{os.getenv("PRODUCTION_DB_HOST")}/{os.getenv("PRODUCTION_DB_NAME")}?charset=utf8mb4" # pylint: disable=line-too-long
+    default_db_url = f"mysql+pymysql://{os.getenv('PRODUCTION_DB_USER')}:{production_db_password}@{os.getenv('PRODUCTION_DB_HOST')}/{os.getenv('PRODUCTION_DB_NAME')}?charset=utf8mb4"  # pylint: disable=line-too-long
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', default_db_url)
+    origins = os.getenv("ALLOWED_ORIGINS", "")
+    ALLOWED_ORIGINS = origins.split(",") if origins else []
