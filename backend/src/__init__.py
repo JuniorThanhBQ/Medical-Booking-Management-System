@@ -11,6 +11,8 @@ from src.middlewares import setup_middlewares
 from src.modules.auth_profile import models
 from src.routes import api_v1
 
+from src.admin import init_admin
+
 env_path = Path(__file__).resolve().parent.parent / ".env"
 
 if env_path.exists():
@@ -44,6 +46,8 @@ def create_app():
     login.init_app(app)
     limiter.init_app(app)
     setup_middlewares(app)
+
+    init_admin(app, db)
 
     cloudinary.config(
         cloud_name=app.config.get("CLOUDINARY_API_NAME"),
