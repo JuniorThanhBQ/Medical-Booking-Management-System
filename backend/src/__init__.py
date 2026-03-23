@@ -9,6 +9,8 @@ from src.extensions import db, limiter, login, migrate
 from src.modules.auth_profile import models
 from src.routes import api_v1
 
+from src.admin import init_admin
+
 env_path = Path(__file__).resolve().parent.parent / ".env"
 
 if env_path.exists():
@@ -31,6 +33,8 @@ def create_app():
     migrate.init_app(app, db)
     login.init_app(app)
     limiter.init_app(app)
+
+    init_admin(app, db)
 
     cloudinary.config(
         cloud_name=app.config["CLOUDINARY_API_NAME"],

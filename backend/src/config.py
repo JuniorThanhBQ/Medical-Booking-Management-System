@@ -16,7 +16,7 @@ class DevelopmentConfig(Config):
     HOST = os.getenv("127.0.0.1")
     PORT = 8000
     db_password = quote(str(os.getenv("DB_PASSWORD")))
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv('DB_USER')}:{db_password}@localhost/{os.getenv('DB_NAME')}?charset=utf8mb4" # pylint: disable=line-too-long
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv('DB_USER')}:{db_password}@localhost/{os.getenv('DB_NAME')}?charset=utf8mb4"  # pylint: disable=line-too-long
 
 
 class ProductionConfig(Config):
