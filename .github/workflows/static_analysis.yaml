@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  backend-layered-check:
+  backend-linting-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +23,15 @@ jobs:
         cache: 'pip'
 
     - name: Cài đặt gói thư viện
-      run: pip install lint-imports
+      run: pip install import-linter pylint
 
     - name: Chạy lint-imports
       working-directory: ./backend
       run: lint-imports
+
+    - name: Chạy pylint
+      working-directory: ./backend
+      run: pylint src/
 
 
   frontend-linting-check:
@@ -123,7 +127,8 @@ jobs:
         env:
           BACKEND_LINT: ${{ needs.backend-linting-check.result }}
           FRONTEND_LINT: ${{ needs.frontend-linting-check.result }}
-          SECURITY_CHECK: ${{ needs.security-check.result }}
+          BACKEND_SECURITY_CHECK: ${{ needs.backend-security-check.result }}
+          FRONTEND_SECURITY_CHECK: ${{ needs.frontend-security-check.result }}
         run: python .github/workflows/scripts/static_report_scripts.py
 
       - name: Tạo GitHub Issue
@@ -151,7 +156,7 @@ jobs:
         run: docker compose up -d --build
 
       - name: Đợi container sẵn sàng sau 30 giây
-        run: sleep 20 
+        run: sleep 30 
 
       - name: Kiểm tra tình trạng docker
         run: |

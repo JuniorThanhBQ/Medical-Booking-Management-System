@@ -1,10 +1,10 @@
 from flask import request
 from flask_restful import Resource
 
+from src.modules.auth_profile.auth_decorators import token_required
 from src.modules.medical_records.services import (
     create_medical_record_service, get_detail_medical_record_service,
     update_medical_record_service)
-from src.utils.decorator import token_required
 from src.utils.utils import check_xss_violation, format_api_response
 
 

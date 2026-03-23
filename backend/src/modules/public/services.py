@@ -1,25 +1,10 @@
 from datetime import date, datetime, timedelta
 
-from sqlalchemy import func
-
-from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.auth_profile.models import Specialty, User, UserRole, Profile, CtaLabel
-from src.utils.decorator import handle_db_errors
-
-
-def format_work_schedule(work_schedule):
-    if not work_schedule:
-        return None
-
-    return {
-        "title": work_schedule.title,
-        "description": work_schedule.description,
-        "startTime":
-            work_schedule.start_time.strftime("%H:%M:%S") if work_schedule.start_time else None,
-        "endTime":
-            work_schedule.end_time.strftime("%H:%M:%S") if work_schedule.end_time else None,
-        "workDate": [wd.day_of_week.name.capitalize() for wd in work_schedule.work_dates],
-    }
+from src.modules.appointments.services import get_available_time_slots
+from src.modules.auth_profile.models import (CtaLabel, Profile, Specialty,
+                                             User, UserRole)
+from src.utils.exception_decorator import handle_db_errors
+from src.utils.utils import format_speciality_output, format_work_schedule
 
 
 @handle_db_errors(parameter=2)
@@ -40,13 +25,7 @@ def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
 
     items = [
-        {
-            "id": specialty.id,
-            "name": specialty.name,
-            "description": specialty.description,
-            "level": specialty.level,
-            "ctaLabel": specialty.cta_label.name if specialty.cta_label else None,
-        } for specialty in pagination.items
+        format_speciality_output(specialty) for specialty in pagination.items
     ]
 
     result = {
@@ -67,7 +46,7 @@ def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
 @handle_db_errors(parameter=2)
 def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
     query = User.query.join(User.profile).filter(
-        User.is_active == True,
+        User.is_active,
         User.role == UserRole.DOCTOR,
         Profile.profile_type == "doctor"
     )
@@ -114,14 +93,6 @@ def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
     return result, "SUCCESS"
 
 
-def get_doctor_by_id(doctor_id):
-    return User.query.filter(
-        User.is_active == True,
-        User.id == doctor_id,
-        User.role == UserRole.DOCTOR
-    ).first()
-
-
 @handle_db_errors(parameter=2)
 def get_doctor_detail_service(doctor_id):
     doctor = get_doctor_by_id(doctor_id)
@@ -156,6 +127,26 @@ def get_doctor_detail_service(doctor_id):
 
 
 @handle_db_errors(parameter=2)
+def get_specialty_detail_service(specialty_id):
+    specialty = Specialty.query.filter(Specialty.id == specialty_id).first()
+
+    if not specialty:
+        return {"message": "Không tồn tại chuyên khoa này"}, "NOT_FOUND"
+
+    result = format_speciality_output(specialty)
+
+    return result, "SUCCESS"
+
+
+def get_doctor_by_id(doctor_id):
+    return User.query.filter(
+        User.is_active,
+        User.id == doctor_id,
+        User.role == UserRole.DOCTOR
+    ).first()
+
+
+@handle_db_errors(parameter=2)
 def get_time_slots_service(doctor_id, date_str):
     doctor = get_doctor_by_id(doctor_id)
 
@@ -187,60 +178,3 @@ def get_time_slots_service(doctor_id, date_str):
         }
     ]
     return result, "SUCCESS"
-
-
-def get_available_time_slots(doctor, target_date):
-    if not doctor.profile or doctor.profile.profile_type != "doctor":
-        return []
-
-    schedule = doctor.profile.work_schedule
-    if not schedule:
-        return []
-
-    target_day_name = target_date.strftime('%A').upper()
-    if not any(wd.day_of_week.name == target_day_name for wd in schedule.work_dates):
-        return []
-
-    if doctor.profile.specialty and doctor.profile.specialty.cta_label:
-        specialty_cta = doctor.profile.specialty.cta_label.name
-    else:
-        specialty_cta = "CK1"
-
-    hours = 1
-    if specialty_cta == "CK2":
-        hours = 2
-    elif specialty_cta == "CK3":
-        hours = 3
-    duration = timedelta(hours=hours)
-
-    appointments = Appointment.query.filter(
-        Appointment.doctor_profile_id == doctor.profile.id,
-        func.date(Appointment.appointment_date) == target_date,
-        Appointment.status.in_([StatusRole.APPROVED, StatusRole.COMPLETED])
-    ).all()
-
-    available = []
-    curr_dt = datetime.combine(target_date, schedule.start_time)
-    end_dt = datetime.combine(target_date, schedule.end_time)
-    now_dt = datetime.now()
-
-    while curr_dt + duration <= end_dt:
-        if curr_dt <= now_dt:
-            curr_dt += timedelta(minutes=30)
-            continue
-
-        conflict = False
-        for a in appointments:
-            a_start = a.appointment_date
-            a_end = a_start + duration
-            if ((curr_dt + duration + timedelta(minutes=30) > a_start)
-                    and (a_end + timedelta(minutes=30) > curr_dt)):
-                conflict = True
-                break
-
-        if not conflict:
-            available.append(curr_dt.isoformat() + "Z")
-
-        curr_dt += timedelta(minutes=30)
-
-    return available

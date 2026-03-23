@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.doctor.models import DayOfWeek, WorkDate, WorkSchedule
-from src.utils.decorator import handle_db_errors
+from src.utils.exception_decorator import handle_db_errors
 from src.utils.utils import format_appointment_summary
 
 
@@ -40,7 +40,7 @@ def get_my_schedule_service(current_user):
         doctor_user = current_user
         specialty = profile.specialty
         appointment_data.append(
-            format_appointment_summary(appointment,patient_user,doctor_user,specialty)
+            format_appointment_summary(appointment, patient_user, doctor_user, specialty)
         )
 
     result = {
@@ -48,6 +48,7 @@ def get_my_schedule_service(current_user):
         "appointments": appointment_data
     }
     return result, "SUCCESS"
+
 
 @handle_db_errors(parameter=2)
 def request_schedule_change_service(current_user, data):

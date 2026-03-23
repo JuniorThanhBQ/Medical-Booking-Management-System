@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import jsonify, render_template
 
 from src import create_app, login
 from src.modules.auth_profile.services import get_user_loader
@@ -16,6 +16,14 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/health")
+def health_check():
+    return jsonify({
+        "status": "good",
+        "message": "Backend đã chạy"
+    }), 200
+
+
 if __name__ == "__main__":
     app.run(host=app.config.get("HOST"), port=app.config.get("PORT"),
-            debug=app.config.get("RUN_MODE"))
+            debug=app.config.get("DEBUG"))
