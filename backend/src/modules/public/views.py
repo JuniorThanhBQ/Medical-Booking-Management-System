@@ -10,12 +10,35 @@ from src.utils.utils import format_api_response
 
 class PublicSpecialtyListAPI(Resource):
     def get(self):
-        return format_api_response(*get_specialties_service())
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("limit", 10, type=int)
+        keywords = request.args.get("keywords", type=str)
+        cta_label = request.args.get("ctaLabel", type=str)
 
+        data, message = get_specialties_service(
+            page=page, per_page=per_page, keywords=keywords, cta_label=cta_label
+        )
+
+        return {
+            "message": message,
+            "data": data
+        }, 200
 
 class PublicDoctorListAPI(Resource):
     def get(self):
-        return format_api_response(*get_doctors_service())
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("limit", 10, type=int)
+        keywords = request.args.get("keywords", type=str)
+        specialty_id = request.args.get("specialtyId", type=int)
+
+        data, message = get_doctors_service(
+            page=page, per_page=per_page, keywords=keywords, specialty_id=specialty_id
+        )
+
+        return {
+            "message": message,
+            "data": data
+        }, 200
 
 
 class PublicDoctorRetrieveAPI(Resource):

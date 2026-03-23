@@ -1,9 +1,9 @@
 from flask import request
 from flask_restful import Resource
 
-from src.utils.decorator import token_required
 from src.modules.doctor.services import (get_my_schedule_service,
                                          request_schedule_change_service)
+from src.utils.decorator import token_required
 from src.utils.utils import check_xss_violation, format_api_response
 
 

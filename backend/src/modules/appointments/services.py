@@ -1,51 +1,73 @@
-import uuid
-from datetime import date, datetime, timedelta
-
-from werkzeug.security import generate_password_hash
-
 from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.auth_profile.models import (GenderRole, PatientProfile, User,
-                                             UserRole)
 from src.modules.public.services import get_available_time_slots
 from src.utils.decorator import handle_db_errors
-
+from src.utils.utils import (format_appointment_response,
+                             format_appointment_summary,
+                             parse_appointment_datetime,
+                             validate_appointment_booking,
+                             validate_appointment_date,
+                             validate_available_slot)
 
 @handle_db_errors(parameter=2)
-def get_appointments_list_service(current_user):
+def get_appointments_list_service(current_user, page=1, per_page=10):
     role_name = current_user.role.name
     query = Appointment.query
 
+    empty_result = {
+        "items": [],
+        "meta": {
+            "total": 0,
+            "pages": 0,
+            "currentPage": page,
+            "perPage": per_page,
+            "hasNext": False,
+            "hasPrev": False
+        }
+    }
+
     if role_name == "PATIENT":
         if not current_user.profile:
-            return [], "SUCCESS"
+            return empty_result, "SUCCESS"
         query = query.filter(Appointment.patient_profile_id == current_user.profile.id)
     elif role_name == "DOCTOR":
         if not current_user.profile:
-            return [], "SUCCESS"
+            return empty_result, "SUCCESS"
         query = query.filter(Appointment.doctor_profile_id == current_user.profile.id)
     elif role_name in ["RECEPTIONIST", "ADMIN"]:
         pass
     else:
         return {"message": "Không có quyền truy cập"}, "FORBIDDEN"
 
-    appointments = query.order_by(Appointment.appointment_date.desc()).all()
-    result = []
+    pagination = query.order_by(Appointment.appointment_date.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
 
-    for appointment in appointments:
+    items = []
+    for appointment in pagination.items:
         doctor_user = appointment.doctor.user
         patient_user = appointment.patient.user
-        result.append(
+        items.append(
             {
                 "id": str(appointment.id),
                 "patientName": f"{patient_user.last_name} {patient_user.first_name}",
                 "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
                 "status": appointment.status.name if appointment.status else None,
-                "appointmentDate": (
-                    appointment.appointment_date.isoformat() + "Z"
-                ),
+                "appointmentDate": appointment.appointment_date.isoformat() + "Z",
             }
         )
+
+    result = {
+        "items": items,
+        "meta": {
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "currentPage": pagination.page,
+            "perPage": pagination.per_page,
+            "hasNext": pagination.has_next,
+            "hasPrev": pagination.has_prev
+        }
+    }
 
     return result, "SUCCESS"
 
@@ -67,17 +89,9 @@ def get_appointment_detail_service(current_user, appointment_id):
     patient_user = appointment.patient.user
     specialty = appointment.doctor.specialty
 
+    appointment_data = format_appointment_summary(appointment, patient_user, doctor_user, specialty)
     result = {
-        "id": str(appointment.id),
-        "type": specialty.cta_label.name if specialty and specialty.cta_label else None,
-        "patientName": f"{patient_user.last_name} {patient_user.first_name}",
-        "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
-        "appointmentDate":
-            appointment.appointment_date.isoformat() + "Z",
-        "status": appointment.status.name if appointment.status else None,
-        "note": appointment.note,
-        "createdAt": appointment.created_date.isoformat() + "Z" ,
-        "updatedAt": appointment.updated_date.isoformat() + "Z" ,
+        **appointment_data,
         "medicalRecordId": str(appointment.medical_record_id) ,
     }
     return result, "SUCCESS"
@@ -122,27 +136,13 @@ def create_patient_appointment_service(current_user, data):
     if not doctor_id or not appointment_date_str:
         return {"message": "Thiếu thông tin bắt buộc"}, "ERROR_BAD_REQUEST"
 
-    try:
-        appointment_dt = (
-            datetime.strptime(appointment_date_str.replace("Z", "").split(".")[0],
-                              "%Y-%m-%dT%H:%M:%S")
-        )
-    except ValueError:
-        return {"message": "Định dạng ngày không hợp lệ"}, "ERROR_BAD_REQUEST"
-
-    target_date = appointment_dt.date()
-    today = date.today()
-    if target_date < today or target_date > today + timedelta(days=7):
-        return {"message": "Chỉ được đặt lịch trong vòng 7 ngày tới"}, "ERROR_BAD_REQUEST"
-
-    doctor = db.session.get(User, int(doctor_id))
-    if not doctor or doctor.role.name != "DOCTOR" or not doctor.is_active:
-        return {"message": "Bác sĩ không hợp lệ"}, "ERROR_BAD_REQUEST"
-
-    available_slots = get_available_time_slots(doctor, target_date)
-    exact_iso = appointment_dt.isoformat() + "Z"
-    if exact_iso not in available_slots:
-        return {"message": "Khung giờ này không khả dụng hoặc đã có người đặt"}, "ERROR_BAD_REQUEST"
+    appointment_dt, doctor, error = validate_appointment_booking(
+        doctor_id, appointment_date_str, get_available_time_slots, db.session
+    )
+    if error:
+        if isinstance(error, tuple):
+            return error
+        return error
 
     new_appointment = Appointment(
         name=f"Khám bệnh - {current_user.last_name} {current_user.first_name}",
@@ -155,121 +155,10 @@ def create_patient_appointment_service(current_user, data):
     db.session.add(new_appointment)
     db.session.commit()
 
-    return {
-        "id": str(new_appointment.id),
-        "type": doctor.profile.specialty.cta_label.name,
-        "patientName": f"{current_user.last_name} {current_user.first_name}",
-        "doctorName": f"{doctor.last_name} {doctor.first_name}",
-        "appointmentDate": new_appointment.appointment_date.isoformat() + "Z",
-        "status": new_appointment.status.name,
-        "note": new_appointment.note,
-        "createdAt": new_appointment.created_date.isoformat() + "Z",
-        "updatedAt": new_appointment.updated_date.isoformat() + "Z"
-    }, "SUCCESS"
+    response = format_appointment_response(
+        new_appointment, doctor, f"{current_user.last_name} {current_user.first_name}")
+    return response, "SUCCESS"
 
-@handle_db_errors(parameter=2)
-# pylint: disable=too-many-return-statements
-def create_receptionist_appointment_service(current_user, data):
-    if current_user.role.name not in ["RECEPTIONIST", "ADMIN"]:
-        return {"message": "Không có quyền thực hiện"}, "FORBIDDEN"
-
-    doctor_id = data.get("doctorId")
-    appointment_date_str = data.get("appointmentDate")
-    note = data.get("note", "")
-
-    try:
-        appointment_dt = (
-            datetime.strptime(appointment_date_str.replace("Z", "").split(".")[0],
-                              "%Y-%m-%dT%H:%M:%S")
-        )
-    except ValueError:
-        return {"message": "Định dạng ngày không hợp lệ"}, "ERROR_BAD_REQUEST"
-
-    target_date = appointment_dt.date()
-    today = date.today()
-    if target_date < today or target_date > today + timedelta(days=7):
-        return {"message": "Chỉ được đặt lịch trong vòng 7 ngày tới"}, "ERROR_BAD_REQUEST"
-
-    doctor = db.session.get(User, int(doctor_id))
-    if not doctor or doctor.role.name != "DOCTOR" or not doctor.is_active:
-        return {"message": "Bác sĩ không hợp lệ"}, "ERROR_BAD_REQUEST"
-
-    available_slots = get_available_time_slots(doctor, target_date)
-    exact_iso = appointment_dt.isoformat() + "Z"
-    if exact_iso not in available_slots:
-        return {"message": "Khung giờ này không khả dụng hoặc đã có người đặt"}, "ERROR_BAD_REQUEST"
-
-    first_name = data.get("firstName")
-    last_name = data.get("lastName")
-    phone = data.get("phone")
-    gender = data.get("gender")
-    birthday_str = data.get("birthday")
-    address = data.get("address")
-
-    try:
-        birthday_dt = datetime.strptime(birthday_str, "%Y-%m-%d").date()
-    except ValueError:
-        return {"message": "Định dạng ngày sinh không hợp lệ"}, "ERROR_BAD_REQUEST"
-
-    try:
-        gender_enum = GenderRole[gender.upper()]
-    except KeyError:
-        return {"message": "Giới tính không hợp lệ"}, "ERROR_BAD_REQUEST"
-
-    patient_profile = PatientProfile.query.join(User).filter(
-        User.first_name == first_name,
-        User.last_name == last_name,
-        PatientProfile.phone == phone,
-        PatientProfile.gender == gender_enum,
-        PatientProfile.birthday == birthday_dt,
-        PatientProfile.address == address
-    ).first()
-
-    if not patient_profile:
-        unique_str = uuid.uuid4().hex[:8]
-        new_user = User(
-            username=f"pt{unique_str}",
-            password=generate_password_hash(f"A1@a{unique_str}"),
-            email=f"pt{unique_str}@clinic.com",
-            first_name=first_name,
-            last_name=last_name,
-            role=UserRole.PATIENT
-        )
-        db.session.add(new_user)
-        db.session.flush()
-
-        patient_profile = PatientProfile(
-            user_id=new_user.id,
-            phone=phone,
-            gender=gender_enum,
-            birthday=birthday_dt,
-            address=address,
-        )
-        db.session.add(patient_profile)
-        db.session.flush()
-
-    new_appointment = Appointment(
-        name=f"Khám bệnh - {last_name} {first_name}",
-        note=note,
-        status=StatusRole.APPROVED,
-        appointment_date=appointment_dt,
-        doctor_profile_id=doctor.profile.id,
-        patient_profile_id=patient_profile.id,
-    )
-    db.session.add(new_appointment)
-    db.session.commit()
-
-    return {
-        "id": str(new_appointment.id),
-        "type": doctor.profile.specialty.cta_label.name,
-        "patientName": f"{last_name} {first_name}",
-        "doctorName": f"{doctor.last_name} {doctor.first_name}",
-        "appointmentDate": new_appointment.appointment_date.isoformat() + "Z",
-        "status": new_appointment.status.name,
-        "note": new_appointment.note,
-        "createdAt": new_appointment.created_date.isoformat() + "Z",
-        "updatedAt": new_appointment.updated_date.isoformat() + "Z"
-    }, "SUCCESS"
 
 @handle_db_errors(parameter=2)
 # pylint: disable=too-many-return-statements
@@ -291,28 +180,26 @@ def patch_appointment_service(current_user, appointment_id, data):
 
     if "appointmentDate" in data:
         appointment_date_str = data["appointmentDate"]
-        try:
-            appointment_dt = datetime.strptime(appointment_date_str.replace("Z", "").split(".")[0],
-                                               "%Y-%m-%dT%H:%M:%S")
-        except ValueError:
-            return {"message": "Định dạng ngày không hợp lệ"}, "ERROR_BAD_REQUEST"
+        appointment_dt, error = parse_appointment_datetime(appointment_date_str)
+        if error:
+            return error
 
-        target_date = appointment_dt.date()
-        today = date.today()
-        if target_date < today or target_date > today + timedelta(days=7):
-            return {"message": "Chỉ được đặt lịch trong vòng 7 ngày tới"}, "ERROR_BAD_REQUEST"
+        error, status = validate_appointment_date(appointment_dt)
+        if error:
+            return error, status
 
         if appointment.appointment_date != appointment_dt:
             doctor = appointment.doctor.user
+            target_date = appointment_dt.date()
             available_slots = get_available_time_slots(doctor, target_date)
-            exact_iso = appointment_dt.isoformat() + "Z"
-
-            if exact_iso not in available_slots:
-                return {"message": "Khung giờ này không khả dụng"}, "ERROR_BAD_REQUEST"
+            error, status = validate_available_slot(appointment_dt, available_slots)
+            if error:
+                return error, status
             appointment.appointment_date = appointment_dt
 
     db.session.commit()
     return "", "SUCCESS"
+
 
 @handle_db_errors(parameter=2)
 def delete_appointment_service(current_user, appointment_id):

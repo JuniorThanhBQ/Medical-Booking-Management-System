@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 from sqlalchemy import func
 
 from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.auth_profile.models import Specialty, User, UserRole
+from src.modules.auth_profile.models import Specialty, User, UserRole, Profile, CtaLabel
 from src.utils.decorator import handle_db_errors
 
 
@@ -23,32 +23,70 @@ def format_work_schedule(work_schedule):
 
 
 @handle_db_errors(parameter=2)
-def get_specialties_service():
-    specialties = Specialty.query.all()
-    result = [
+def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
+    query = Specialty.query
+
+    if keywords:
+        query = query.filter(
+            Specialty.name.ilike(f"%{keywords}%") | Specialty.description.ilike(f"%{keywords}%")
+        )
+
+    if cta_label:
+        try:
+            query = query.filter(Specialty.cta_label == CtaLabel[cta_label])
+        except KeyError:
+            pass
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+    items = [
         {
             "id": specialty.id,
             "name": specialty.name,
             "description": specialty.description,
             "level": specialty.level,
-            "ctaLabel": specialty.cta_label.name,
-        } for specialty in specialties
+            "ctaLabel": specialty.cta_label.name if specialty.cta_label else None,
+        } for specialty in pagination.items
     ]
+
+    result = {
+        "items": items,
+        "meta": {
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "currentPage": pagination.page,
+            "perPage": pagination.per_page,
+            "hasNext": pagination.has_next,
+            "hasPrev": pagination.has_prev
+        }
+    }
+
     return result, "SUCCESS"
 
 
 @handle_db_errors(parameter=2)
-def get_doctors_service():
-    doctors = User.query.filter(User.is_active is True, User.role == UserRole.DOCTOR).all()
-    result = []
+def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
+    query = User.query.join(User.profile).filter(
+        User.is_active == True,
+        User.role == UserRole.DOCTOR,
+        Profile.profile_type == "doctor"
+    )
 
-    for doctor in doctors:
+    if keywords:
+        query = query.filter(
+            User.first_name.ilike(f"%{keywords}%") |
+            User.last_name.ilike(f"%{keywords}%")
+        )
+
+    if specialty_id:
+        query = query.filter(Profile.specialty_id == specialty_id)
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+    items = []
+    for doctor in pagination.items:
         profile = doctor.profile
-
-        if not profile or profile.profile_type != "doctor":
-            continue
-
-        result.append(
+        items.append(
             {
                 "id": doctor.id,
                 "firstName": doctor.first_name,
@@ -61,12 +99,26 @@ def get_doctors_service():
             }
         )
 
+    result = {
+        "items": items,
+        "meta": {
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "currentPage": pagination.page,
+            "perPage": pagination.per_page,
+            "hasNext": pagination.has_next,
+            "hasPrev": pagination.has_prev
+        }
+    }
+
     return result, "SUCCESS"
 
 
 def get_doctor_by_id(doctor_id):
     return User.query.filter(
-        User.is_active is True, User.id == doctor_id, User.role == UserRole.DOCTOR
+        User.is_active == True,
+        User.id == doctor_id,
+        User.role == UserRole.DOCTOR
     ).first()
 
 
@@ -149,7 +201,10 @@ def get_available_time_slots(doctor, target_date):
     if not any(wd.day_of_week.name == target_day_name for wd in schedule.work_dates):
         return []
 
-    specialty_cta = doctor.profile.specialty.cta_label.name if doctor.profile.specialty and doctor.profile.specialty.cta_label else "CK1"
+    if doctor.profile.specialty and doctor.profile.specialty.cta_label:
+        specialty_cta = doctor.profile.specialty.cta_label.name
+    else:
+        specialty_cta = "CK1"
 
     hours = 1
     if specialty_cta == "CK2":
@@ -178,7 +233,8 @@ def get_available_time_slots(doctor, target_date):
         for a in appointments:
             a_start = a.appointment_date
             a_end = a_start + duration
-            if (curr_dt + duration + timedelta(minutes=30) > a_start) and (a_end + timedelta(minutes=30) > curr_dt):
+            if ((curr_dt + duration + timedelta(minutes=30) > a_start)
+                    and (a_end + timedelta(minutes=30) > curr_dt)):
                 conflict = True
                 break
 

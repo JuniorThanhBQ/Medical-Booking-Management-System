@@ -9,7 +9,7 @@
 ## 1. Công việc đã hoàn thành 
 | Thành viên | MSSV | Công việc | Link Commit/PR | 
 |------------|------|-----------|----------------| 
-| Văn Trung Thành | 2351050164 | Triển khai phân tích tĩnh và động thành pipeline CI/CD, refactor và cải thiện chức năng cho backend | [abc123](link) | 
+| Văn Trung Thành | 2351050164 | Triển khai phân tích tĩnh và động thành pipeline CI/CD, refactor và cải thiện chức năng cho backend | [2c0efb6](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/pull/76/changes/2c0efb6d5a755b2ebcab7b4405dbdab6ef212d81) | 
 | Nguyễn Thanh Phong | 2351050133 | Thiết kế API thành file api-v1.yaml và phát triển các API trên backend flask | [4573ba2](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/pull/58/changes/4573ba27533140ede492233726a16b3c804f4e7f) | 
 | Trương Hưng Phát | 2351010154 | Cải thiện giao diện đăng nhập - đăng ký, đặt lịch khám, xem và tra cứu bác sĩ - chuyên khoa. Thiết kế trang quản lý thông tin cá nhân người dùng và thực hiện refactor componnents | [51d6428](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/pull/71/changes/51d64289e05f0f81f62c5670436bd61e5a83733d) | 
 
