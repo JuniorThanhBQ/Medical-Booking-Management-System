@@ -5,6 +5,7 @@ from datetime import datetime
 
 from werkzeug.security import generate_password_hash
 
+
 current_dir = os.path.dirname(__file__)
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.insert(0, root_dir)
@@ -14,14 +15,14 @@ from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.auth_profile.models import (CtaLabel, DoctorProfile,
                                              GenderRole, PatientProfile,
                                              Specialty, User, UserRole)
+from src.modules.notification.models import Notification
 from src.modules.doctor.models import DayOfWeek, WorkDate, WorkSchedule
 from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
-
 
 def load_fixtures(app):
     fixture_path = os.path.join(os.path.dirname(__file__), "data.json")
     if not os.path.exists(fixture_path):
-        print("Không tìm thấy file data.json")
+        print(f"Lỗi: Không tìm thấy file {fixture_path}")
         return
 
     with open(fixture_path, "r", encoding="utf-8") as f:
@@ -29,8 +30,9 @@ def load_fixtures(app):
 
     with app.app_context():
         try:
+
             if User.query.first():
-                print("Phát hiện có dữ liệu trong database")
+                print("Database đã có dữ liệu.")
                 return
 
             specialty_map = {}
@@ -39,7 +41,7 @@ def load_fixtures(app):
                     name=sp["name"],
                     description=sp["description"],
                     level=sp["level"],
-                    cta_label=CtaLabel[sp["cta_label"]],
+                    cta_label=CtaLabel[sp["cta_label"]]
                 )
                 db.session.add(specialty)
                 db.session.flush()
@@ -53,7 +55,7 @@ def load_fixtures(app):
                     first_name=u["first_name"],
                     last_name=u["last_name"],
                     email=u["email"],
-                    role=UserRole[u["role"]],
+                    role=UserRole[u["role"]]
                 )
                 db.session.add(user)
                 db.session.flush()
@@ -67,7 +69,9 @@ def load_fixtures(app):
                     gender=GenderRole[dp["gender"]],
                     title=dp["title"],
                     bio=dp["bio"],
-                    specialty_id=specialty_map[dp["specialty_id"]],
+                    address=dp.get("address"),
+                    birthday=datetime.strptime(dp["birthday"], "%Y-%m-%d").date() if dp.get("birthday") else None,
+                    specialty_id=specialty_map[dp["specialty_id"]]
                 )
                 db.session.add(profile)
                 db.session.flush()
@@ -79,7 +83,9 @@ def load_fixtures(app):
                     user_id=user_map[pp["user_id"]],
                     phone=pp["phone"],
                     gender=GenderRole[pp["gender"]],
-                    medical_history=pp.get("medical_history"),
+                    address=pp.get("address"),
+                    birthday=datetime.strptime(pp["birthday"], "%Y-%m-%d").date() if pp.get("birthday") else None,
+                    medical_history=pp.get("medical_history")
                 )
                 db.session.add(profile)
                 db.session.flush()
@@ -92,18 +98,19 @@ def load_fixtures(app):
                     description=ws["description"],
                     start_time=datetime.strptime(ws["start_time"], "%H:%M:%S").time(),
                     end_time=datetime.strptime(ws["end_time"], "%H:%M:%S").time(),
-                    doctor_id=doc_profile_map.get(ws["doctor_id"]),
+                    doctor_id=doc_profile_map[ws["doctor_id"]]
                 )
                 db.session.add(schedule)
                 db.session.flush()
                 ws_map[ws["id"]] = schedule.id
 
             for wd in data.get("work_dates", []):
-                work_date = WorkDate(
-                    day_of_week=DayOfWeek[wd["day_of_week"]],
-                    work_schedule_id=ws_map[wd["work_schedule_id"]],
-                )
-                db.session.add(work_date)
+                for day_str in wd["days"]:
+                    work_date = WorkDate(
+                        day_of_week=DayOfWeek[day_str],
+                        work_schedule_id=ws_map[wd["work_schedule_id"]]
+                    )
+                    db.session.add(work_date)
 
             med_record_map = {}
             for mr in data.get("medical_records", []):
@@ -121,29 +128,34 @@ def load_fixtures(app):
                 med_record_map[mr["id"]] = record.id
 
             for appt in data.get("appointments", []):
-                medical_record_id = None
-                if appt.get("medical_record_id"):
-                    medical_record_id = med_record_map.get(appt["medical_record_id"])
-
+                m_id = med_record_map.get(appt.get("medical_record_id")) if appt.get("medical_record_id") else None
                 appointment = Appointment(
                     name=appt["name"],
                     note=appt["note"],
                     status=StatusRole[appt["status"]],
-                    appointment_date=datetime.strptime(
-                        appt["appointment_date"], "%Y-%m-%dT%H:%M:%S"
-                    ),
+                    appointment_date=datetime.strptime(appt["appointment_date"], "%Y-%m-%dT%H:%M:%S"),
                     doctor_profile_id=doc_profile_map[appt["doctor_id"]],
                     patient_profile_id=pat_profile_map[appt["patient_id"]],
-                    medical_record_id=medical_record_id
+                    medical_record_id=m_id
                 )
                 db.session.add(appointment)
+
+            for nt in data.get("notifications", []):
+                notification = Notification(
+                    title=nt["title"],
+                    message=nt["message"],
+                    is_read=nt["is_read"],
+                    user_id=user_map[nt["user_id"]]
+                )
+                db.session.add(notification)
 
             db.session.commit()
 
         except Exception as e:
             db.session.rollback()
-            print(f"Lỗi khi nạp fixtures: {str(e)}")
-
+            print(f"{str(e)}")
+            import traceback
+            traceback.print_exc()
 
 if __name__ == "__main__":
     app = create_app()

@@ -1,10 +1,10 @@
 from flask import request
 from flask_restful import Resource
 
-from src.utils.decorator import token_required
 from src.modules.medical_records.services import (
-    get_detail_medical_record_service, update_medical_record_service,
-    create_medical_record_service)
+    create_medical_record_service, get_detail_medical_record_service,
+    update_medical_record_service)
+from src.utils.decorator import token_required
 from src.utils.utils import check_xss_violation, format_api_response
 
 
@@ -30,9 +30,14 @@ class CreateMedicalRecordAPI(Resource):
 
     def post(self, current_user, appointment_id):
         data = request.get_json(silent=True) or request.form.to_dict()
+
+        if not data:
+            return {"message": "Dữ liệu gửi lên không được để trống"}, 400
+
         if check_xss_violation(data.values()):
             return {"message": "Dữ liệu đầu vào chứa ký tự không hợp lệ"}, 400
 
         return format_api_response(
-            *create_medical_record_service(current_user, appointment_id, data)
+            *create_medical_record_service(current_user, appointment_id, data),
+            success_code=201
         )

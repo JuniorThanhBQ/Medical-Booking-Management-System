@@ -12,6 +12,7 @@ disable=
     R0913,  # too-many-arguments
     R0914,  # too-many-locals
     R0915,  # too-many-statements
+    R0801,
 
 [FORMAT]
 max-line-length=100
