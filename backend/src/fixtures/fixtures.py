@@ -5,7 +5,6 @@ from datetime import datetime
 
 from werkzeug.security import generate_password_hash
 
-
 current_dir = os.path.dirname(__file__)
 root_dir = os.path.abspath(os.path.join(current_dir, "../../"))
 sys.path.insert(0, root_dir)
@@ -15,9 +14,10 @@ from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.auth_profile.models import (CtaLabel, DoctorProfile,
                                              GenderRole, PatientProfile,
                                              Specialty, User, UserRole)
-from src.modules.notification.models import Notification
 from src.modules.doctor.models import DayOfWeek, WorkDate, WorkSchedule
 from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
+from src.modules.notification.models import Notification
+
 
 def load_fixtures(app):
     fixture_path = os.path.join(os.path.dirname(__file__), "data.json")

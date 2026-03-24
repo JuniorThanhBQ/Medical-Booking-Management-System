@@ -14,11 +14,6 @@ RUN groupadd -r appuser && useradd -r -g appuser -m appuser
 RUN mkdir -p /app/instance && chown -R appuser:appuser /app
 USER appuser
 COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
-COPY --chown=appuser:appuser ./src .
+COPY --chown=appuser:appuser ./src ./src
+ENV PYTHONPATH=/app
 EXPOSE 8000
-CMD ["gunicorn", \
-     "--workers=4", \
-     "--bind=0.0.0.0:8000", \
-     "--access-logfile=-", \
-     "--error-logfile=-", \
-     "index:app"]

@@ -23,7 +23,17 @@ jobs:
           python-version: '3.13'
 
       - name: Cài đặt thư viện pytest và pytest-cov
-        run: pip install pytest pytest-cov
+        working-directory: ./backend
+        run: pip install -r requirements.txt
+
+      - name: Tạo file .env 
+        working-directory: ./backend
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
+          fi
 
       - name: Chạy Pytest
         id: pytest_step

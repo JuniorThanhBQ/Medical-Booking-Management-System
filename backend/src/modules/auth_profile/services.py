@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.extensions import db
 from src.modules.auth_profile.models import GenderRole, PatientProfile, User
-from src.utils.decorator import handle_db_errors
+from src.utils.exception_decorator import handle_db_errors
 from src.utils.utils import cloudinary_upload_process, verify_google_token
 
 
@@ -66,6 +66,7 @@ def get_user_data(user):
 
     return user_data
 
+
 @handle_db_errors(parameter=4)
 def login_user_service(login_email, password):
     user = User.query.filter(User.email == login_email).first()
@@ -80,6 +81,7 @@ def login_user_service(login_email, password):
     user_data = get_user_data(user)
 
     return token, "Đăng nhập thành công", user_data, "SUCCESS"
+
 
 @handle_db_errors(parameter=3)
 def register_user_service(user_payload):
@@ -141,6 +143,7 @@ def register_user_service(user_payload):
 
     return get_user_data(new_user), "Đăng ký thành công", "SUCCESS"
 
+
 @handle_db_errors(parameter=3)
 def login_google_service(google_token):
     user_info = verify_google_token(google_token)
@@ -172,6 +175,7 @@ def login_google_service(google_token):
     token = create_token(user)
 
     return {"token": token, "user": user_data}, None, "SUCCESS"
+
 
 @handle_db_errors(parameter=3)
 def update_patient_profile_service(current_user, data):
@@ -218,3 +222,12 @@ def update_patient_profile_service(current_user, data):
 
     db.session.commit()
     return get_user_data(current_user), "Cập nhật hồ sơ thành công", "SUCCESS"
+
+
+def check_email_exists_service(email: str):
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        return False
+
+    return True

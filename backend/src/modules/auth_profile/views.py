@@ -1,15 +1,19 @@
+import re
+
 from flask import request
 from flask_restful import Resource
 
 from src.extensions import limiter
-from src.modules.auth_profile.services import (get_user_data,
+from src.modules.auth_profile.auth_decorators import token_required
+from src.modules.auth_profile.services import (check_email_exists_service,
+                                               get_user_data,
                                                login_google_service,
                                                login_user_service,
                                                register_user_service,
                                                update_patient_profile_service)
-from src.utils.decorator import token_required
-from src.utils.utils import (check_xss_violation, get_http_status_code,
-                             get_request_data, validate_email_password)
+from src.utils.utils import (EMAIL_REGEX, check_xss_violation,
+                             get_http_status_code, get_request_data,
+                             validate_email_password)
 
 
 class LoginAPI(Resource):
@@ -115,6 +119,30 @@ class GoogleLoginAPI(Resource):
             "message": "Đăng nhập Google thành công",
             "data": result,
             "status": status
+        }, 200
+
+
+class EmailValidatorAPI(Resource):
+    decorators = [limiter.limit("15 per minute")]
+
+    def post(self):
+        data = get_request_data(request)
+        email = data.get("email", "").strip()
+
+        if not email or not re.match(EMAIL_REGEX, email):
+            return {
+                "is_valid": False,
+            }, 400
+
+        is_valid = check_email_exists_service(email)
+
+        if not is_valid:
+            return {
+                "is_valid": is_valid,
+            }, 400
+
+        return {
+            "is_valid": is_valid,
         }, 200
 
 
