@@ -30,7 +30,6 @@ def load_fixtures(app):
 
     with app.app_context():
         try:
-
             if User.query.first():
                 print("Database đã có dữ liệu.")
                 return
@@ -127,6 +126,7 @@ def load_fixtures(app):
                 db.session.flush()
                 med_record_map[mr["id"]] = record.id
 
+            appt_map = {}
             for appt in data.get("appointments", []):
                 m_id = med_record_map.get(appt.get("medical_record_id")) if appt.get("medical_record_id") else None
                 appointment = Appointment(
@@ -139,13 +139,16 @@ def load_fixtures(app):
                     medical_record_id=m_id
                 )
                 db.session.add(appointment)
+                db.session.flush()
+                appt_map[appt["id"]] = appointment.id
 
             for nt in data.get("notifications", []):
                 notification = Notification(
                     title=nt["title"],
                     message=nt["message"],
                     is_read=nt["is_read"],
-                    user_id=user_map[nt["user_id"]]
+                    user_id=user_map[nt["user_id"]],
+                    appointment_id=appt_map[nt["appointment_id"]]
                 )
                 db.session.add(notification)
 
@@ -156,6 +159,7 @@ def load_fixtures(app):
             print(f"{str(e)}")
             import traceback
             traceback.print_exc()
+
 
 if __name__ == "__main__":
     app = create_app()

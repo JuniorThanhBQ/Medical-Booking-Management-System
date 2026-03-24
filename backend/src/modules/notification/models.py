@@ -13,3 +13,5 @@ class Notification(Base):
         Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False
     )
     user = relationship("User", backref="notifications")
+    appointment_id = Column(Integer, ForeignKey("appointment.id"), nullable=False)
+    appointment = relationship("Appointment", backref="notifications")

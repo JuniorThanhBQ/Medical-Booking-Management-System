@@ -1,9 +1,9 @@
 from flask_restful import Resource
 
+from src.modules.auth_profile.auth_decorators import token_required
+from src.modules.notification.services import (get_notifications_service,
+                                               mark_notification_read_service)
 from src.utils.utils import format_api_response
-
-from ..auth_profile.auth_decorators import token_required
-from .services import get_notifications_service, mark_notification_read_service
 
 
 class NotificationAPI(Resource):

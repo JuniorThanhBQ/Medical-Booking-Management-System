@@ -40,6 +40,11 @@ ignore_imports =
     src.modules.appointments.views -> src.modules.auth_profile.auth_decorators
     src.modules.doctor.views -> src.modules.auth_profile.auth_decorators
     src.modules.public.services -> src.modules.appointments.services
-
+    src.modules.appointments.admin -> src.modules.auth_profile.admin
+    src.modules.doctor.admin -> src.modules.auth_profile.admin
+    src.modules.notification.signals -> src.modules.auth_profile.models
+    src.modules.notification.admin -> src.modules.auth_profile.admin
+    src.modules.medical_records.admin -> src.modules.auth_profile.admin
+    src.modules.notification.signals -> src.modules.appointments.models
 
 
