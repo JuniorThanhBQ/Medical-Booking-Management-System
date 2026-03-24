@@ -31,3 +31,6 @@ class Appointment(Base):
         backref=backref("appointment", uselist=False),
         lazy=True
     )
+
+    def __str__(self):
+        return self.name

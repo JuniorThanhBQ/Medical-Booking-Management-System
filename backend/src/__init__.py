@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 
+import src.modules.notification.signals
+from src.admin import init_admin
 from src.extensions import db, limiter, login, migrate
 from src.middlewares import setup_middlewares
 from src.modules.auth_profile import models
 from src.routes import api_v1
-
-from src.admin import init_admin
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 

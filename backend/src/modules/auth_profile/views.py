@@ -50,7 +50,7 @@ class RegisterAPI(Resource):
         first_name = data.get("firstName")
         last_name = data.get("lastName")
         username = "newUserMembers"
-        address = data.get("address")
+        address = data.get("address", "")
         birthday = data.get("dayOfBirth")
         gender = data.get("gender")
         phone = data.get("phone")
@@ -58,7 +58,7 @@ class RegisterAPI(Resource):
         medical_history = data.get("medicalHistory")
 
         if not all(
-                [password, email, first_name, last_name, gender, phone, birthday, address]
+                [password, email, first_name, last_name, gender, phone, birthday]
         ):
             return {"message": "Vui lòng điền đầy đủ thông tin bắt buộc"}, 400
 
@@ -123,11 +123,11 @@ class GoogleLoginAPI(Resource):
 
 
 class EmailValidatorAPI(Resource):
-    decorators = [limiter.limit("15 per minute")]
+    decorators = [limiter.limit("150 per minute")]
 
     def post(self):
         data = get_request_data(request)
-        email = data.get("email", "").strip()
+        email = data.get("email", "")
 
         if not email or not re.match(EMAIL_REGEX, email):
             return {

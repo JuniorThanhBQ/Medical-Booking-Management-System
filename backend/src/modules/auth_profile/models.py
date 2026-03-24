@@ -39,7 +39,7 @@ class User(Base, UserMixin):
     is_active = Column(Boolean, nullable=False, default=True, index=True)
 
     def __str__(self):
-        return self.username
+        return f"{self.last_name} {self.first_name}"
 
 
 class Profile(Base):
