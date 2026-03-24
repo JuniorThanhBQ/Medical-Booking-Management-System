@@ -16,8 +16,8 @@ const EditProfileForm = ({ profile, onSave }) => {
 
   useEffect(() => {
     const { firstName, lastName } = splitName(profile.name);
-    const { day, month, year } = splitBirthday(profile.birthday);
-    
+    const { day, month, year } = splitBirthday(profile.dateOfBirth);
+
     setFormData({
       firstName,
       lastName,

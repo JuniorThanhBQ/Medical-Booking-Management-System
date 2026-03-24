@@ -1,19 +1,17 @@
 import axios from "axios";
 
-export const BASE_URL = "";
+export const BASE_URL = "http://localhost:8000";
 
 export const endpoints = {
-  login: "/o/token/",
-  users: "/users/",
-  users_detail: (user_id) => `/users/${user_id}/`,
-  current_user: "/users/current-user/",
-  auth_check_email: "/auth/check-email/",
-  auth_login_password: "/auth/login-with-password/",
-  auth_register: "/auth/register-with-profile/",
-  // checking for available time slots by using derived query params: ?doctor_id=1&date=2024-06-30 / month=2024-06
-  // if date is not provided, it will return all available time slots in that month,
-  // appointments_available_slots: "/appointments/available-slots/",
-  // appointments: "/appointments/",
+  auth_login: "/api/v1/auth/login",
+  auth_register: "/api/v1/auth/register",
+  auth_google_login: "/api/v1/auth/google-login",
+  auth_current_user: "/api/v1/auth/current-user",
+  auth_email_validator: "/api/v1/auth/email-validator",
+  public_specialties: "/api/v1/public/specialties",
+  public_doctors: "/api/v1/public/doctors",
+  public_doctor_detail: (id) => `/api/v1/public/doctors/${id}`,
+  public_doctor_time_slots: (id) => `/api/v1/public/doctors/${id}/time-slots`,
 };
 
 const Apis = axios.create({

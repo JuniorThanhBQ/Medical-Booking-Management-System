@@ -22,27 +22,19 @@ export function toISODate(date) {
   return `${year}-${month}-${day}`;
 }
 
-export function buildTimeSlots() {
+export function buildTimeSlots(referenceDate) {
   const slots = [];
+  const dateStr = referenceDate ? toISODate(referenceDate) : toISODate(new Date());
   for (let hour = OPEN_HOURS.start; hour <= OPEN_HOURS.end; hour += 1) {
-    slots.push(`${String(hour).padStart(2, "0")}:00`);
-    slots.push(`${String(hour).padStart(2, "0")}:30`);
+    slots.push(`${dateStr}T${String(hour).padStart(2, "0")}:00:00Z`);
+    slots.push(`${dateStr}T${String(hour).padStart(2, "0")}:30:00Z`);
   }
   return slots;
 }
 
-// use api instead of local storage
-// export function loadAppointments() {
-//   try {
-//     const raw = localStorage.getItem("appointments");
-//     const parsed = raw ? JSON.parse(raw) : [];
-//     return Array.isArray(parsed) ? parsed : [];
-//   } catch {
-//     return [];
-//   }
-// }
+export function formatTimeDisplay(isoString) {
+  if (!isoString) return "";
+  const d = new Date(isoString);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
 
-// export function saveAppointment(appointment) {
-//   const current = loadAppointments();
-//   localStorage.setItem("appointments", JSON.stringify([appointment, ...current]));
-// }

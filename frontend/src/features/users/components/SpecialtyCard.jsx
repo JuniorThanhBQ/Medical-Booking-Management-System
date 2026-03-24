@@ -1,4 +1,5 @@
 import { ArrowRightFilledIcon } from "@/assets/icons";
+import { CTA_DISPLAY_MAP } from "@/configs/const";
 
 const SpecialtyCard = ({ specialty, onClick }) => {
   const { id, level, name, description, ctaLabel } = specialty;
@@ -19,7 +20,7 @@ const SpecialtyCard = ({ specialty, onClick }) => {
       <p className="dashboard-specialty-card__description">{description}</p>
 
       <div className="dashboard-specialty-card__cta">
-        {ctaLabel}
+        {CTA_DISPLAY_MAP[ctaLabel] || ctaLabel}
         <ArrowRightFilledIcon size={24} aria-hidden="true" />
       </div>
     </button>

@@ -8,12 +8,14 @@ import '@/assets/css/users/profile.css';
 export const TABS = { PROFILE: 'profile', ACTIVITY: 'activity' };
 
 const ProfilePage = () => {
-  const { user } = useProfileStore();
+  const { user, setUser, updateAvatar } = useProfileStore();
 
   const handleSave = (updatedData) => {
-    // updateProfile(updatedData);
     console.log('Profile updated locally:', updatedData);
-    // zustand update profile here
+  };
+
+  const handleAvatarChange = (avatarUrl) => {
+    updateAvatar(avatarUrl);
   };
 
   return (
@@ -27,7 +29,7 @@ const ProfilePage = () => {
           <h1 className="profile-main__title">Hồ sơ</h1>
 
           <div className="profile-content">
-            <ProfileCard profile={user} />
+            <ProfileCard profile={user} onAvatarChange={handleAvatarChange} />
             <EditProfileForm profile={user} onSave={handleSave} />
           </div>
         </main>

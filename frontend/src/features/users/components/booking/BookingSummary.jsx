@@ -1,4 +1,4 @@
-import { toISODate } from "../../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "../../utils/booking-utils";
 
 export function BookingSummary({
   specialtyName,
@@ -22,7 +22,7 @@ export function BookingSummary({
         </div>
         <div className="booking__summary-row">
           <span className="booking__summary-label">Thời gian</span>
-          <span className="booking__summary-value">{selectedTime || "—"}</span>
+          <span className="booking__summary-value">{selectedTime ? formatTimeDisplay(selectedTime) : "—"}</span>
         </div>
         <div className="booking__summary-row">
           <span className="booking__summary-label">Bác sĩ</span>

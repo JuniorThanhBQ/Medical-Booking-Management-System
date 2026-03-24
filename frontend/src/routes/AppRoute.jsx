@@ -20,9 +20,10 @@ export default function AppRoute() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/activity" element={<ActivityPage />} />
 
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/specialties/:specialtyId" element={<SpecialtyPage />} />
+
       <Route element={<RoleRoute allowedRoles={["Patient", "Admin"]} />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/specialties/:specialtyId" element={<SpecialtyPage />} />
         <Route
           path="/specialties/:specialtyId/book"
           element={<BookAppointmentPage />}
