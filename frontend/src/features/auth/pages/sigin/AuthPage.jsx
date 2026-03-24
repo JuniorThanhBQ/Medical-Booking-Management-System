@@ -22,14 +22,18 @@ export default function AuthPage() {
   const { role, setRole } = useAuthStore();
 
   const handleAuthenticated = (data) => {
-    const { password: _, ...safeUser } = data.user;
-
-
-    
     localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(safeUser));
-    const isDoctor = data.user.role === "Doctor";
-    navigate(isDoctor ? "/doctor/today" : "/dashboard");
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const returnUrl = searchParams.get("returnUrl");
+
+    if (returnUrl && returnUrl.startsWith("/") && !returnUrl.startsWith("//")) {
+      navigate(returnUrl, { replace: true });
+    } else {
+      const isDoctor = data.user.role === "DOCTOR";
+      navigate(isDoctor ? "/doctor/today" : "/dashboard", { replace: true });
+    }
   };
 
   if (role) {

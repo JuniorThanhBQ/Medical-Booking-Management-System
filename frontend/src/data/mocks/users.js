@@ -4,7 +4,7 @@ const users = [
     firstName: "Thị A",
     lastName: "Nguyễn",
     name: "Nguyễn Thị A",       
-    address: "123 Đường Nguyễn Huệ",
+
     avatar: "https://shorturl.at/KNuMX",
     dateOfBirth: "1995-06-15",
     email: "patient@gmail.com",
@@ -19,7 +19,7 @@ const users = [
     firstName: "Văn B",
     lastName: "Nguyễn",
     name: "BS. Nguyễn Văn B",
-    address: "456 Đường Phòng Khám",
+
     avatar: "https://shorturl.at/KNuMX",
     dateOfBirth: "1980-03-22",
     email: "doctor@gmail.com",
@@ -34,7 +34,7 @@ const users = [
     firstName: "Văn C",
     lastName: "Trần",
     name: "Trần Văn C",
-    address: "789 Đường Quản Trị",
+
     avatar: "https://shorturl.at/KNuMX",
     dateOfBirth: "1988-11-05",
     email: "admin@gmail.com",

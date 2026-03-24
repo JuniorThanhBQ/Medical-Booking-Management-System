@@ -15,6 +15,13 @@ export const useProfileStore = create((set) => ({
     set({ user });
   },
 
+  updateAvatar: (avatarUrl) =>
+    set((state) => {
+      const updatedUser = { ...state.user, avatar: avatarUrl };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return { user: updatedUser };
+    }),
+
   updateProfile: async (data) => {
     set({ loading: true });
 

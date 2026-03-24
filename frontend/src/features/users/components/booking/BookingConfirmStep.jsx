@@ -1,4 +1,4 @@
-import { toISODate } from "../../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "../../utils/booking-utils";
 
 export function BookingConfirmStep({
   specialtyName,
@@ -29,7 +29,7 @@ export function BookingConfirmStep({
         </div>
         <div className="booking__confirm-row">
           <span className="booking__confirm-label">Thời gian</span>
-          <span className="booking__confirm-value">{selectedTime || "—"}</span>
+          <span className="booking__confirm-value">{selectedTime ? formatTimeDisplay(selectedTime) : "—"}</span>
         </div>
         <div className="booking__confirm-row">
           <span className="booking__confirm-label">Bác sĩ</span>

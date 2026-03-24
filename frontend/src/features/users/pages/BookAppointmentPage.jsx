@@ -38,11 +38,13 @@ export default function BookAppointmentPage() {
     confirmBooking,
   } = useBookingStore();
 
-  const specialty = SPECIALTIES.find((s) => s.id === specialtyId);
+  const numericSpecialtyId = Number(specialtyId);
+
+  const specialty = SPECIALTIES.find((s) => s.id === numericSpecialtyId);
 
   const doctorsForSpecialty = useMemo(
-    () => DOCTORS.filter((d) => d.specialtyId === specialtyId),
-    [specialtyId],
+    () => DOCTORS.filter((d) => d.specialtyId === numericSpecialtyId),
+    [numericSpecialtyId],
   );
 
   const availableDays = useMemo(() => {
@@ -58,7 +60,7 @@ export default function BookAppointmentPage() {
     return days;
   }, []);
 
-  const timeSlots = useMemo(() => buildTimeSlots(), []);
+  const timeSlots = useMemo(() => buildTimeSlots(selectedDate), [selectedDate]);
 
   const selectedDoctor = useMemo(
     () => doctorsForSpecialty.find((d) => d.id === selectedDoctorId) ?? null,
@@ -72,7 +74,7 @@ export default function BookAppointmentPage() {
       date: selectedDate ? toISODate(selectedDate) : null,
       startTime: selectedTime,
       doctorId: selectedDoctor?.id ?? null,
-      doctorName: selectedDoctor?.name ?? null,
+      doctorName: selectedDoctor ? `${selectedDoctor.firstName} ${selectedDoctor.lastName}` : null,
       notes: patientNotes.trim() || null,
     });
   };
@@ -155,7 +157,7 @@ export default function BookAppointmentPage() {
                   specialtyName={specialty.name}
                   selectedDate={selectedDate}
                   selectedTime={selectedTime}
-                  selectedDoctorName={selectedDoctor?.name ?? null}
+                  selectedDoctorName={selectedDoctor ? `${selectedDoctor.firstName} ${selectedDoctor.lastName}` : null}
                   patientNotes={patientNotes}
                   onPatientNotesChange={setPatientNotes}
                   onConfirm={handleConfirm}
@@ -171,7 +173,7 @@ export default function BookAppointmentPage() {
               specialtyName={specialty.name}
               selectedDate={selectedDate}
               selectedTime={selectedTime}
-              selectedDoctorName={selectedDoctor?.name ?? null}
+              selectedDoctorName={selectedDoctor ? `${selectedDoctor.firstName} ${selectedDoctor.lastName}` : null}
             />
           </div>
         </div>

@@ -1,39 +1,30 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../hooks/use-auth-store";
 import EmailStep from "../../components/EmailStep";
 import ProfileStep from "../../components/ProfileStep";
 import PasswordStep from "../../components/PasswordStep";
 import "@/assets/css/auth/email-authorization.css";
-import { isValidEmail } from "../../utils/validation";
-import users from "@/data/mocks/users";
+import {
+  isValidEmail, isValidName, isValidPhone,
+  isValidDateOfBirth, isValidGender,
+  getPasswordErrors, containsXss,
+} from "../../utils/validation";
+import { checkEmailExists, loginUser, registerUser, getCurrentUser } from "../../api/authService";
 
+function getAuthPageMeta(authStep, mode, role) {
+  if (authStep === "email") return {
+    title: "Xác thực",
+    subtitle: role ? `Tiếp tục với vai trò ${role}. Nhập email để tiếp tục.` : "Nhập email để tiếp tục.",
+  };
+  if (mode === "login") return { title: "Chào mừng trở lại", subtitle: "Nhập mật khẩu để tiếp tục." };
+  return { title: "Hoàn tất hồ sơ của bạn", subtitle: "Thêm một vài thông tin để tạo tài khoản mới." };
+}
 
 export default function EmailAuthorizationPage({ onAuthenticated }) {
   const navigate = useNavigate();
-
-  const {
-    role,
-    email,
-    authStep,
-    mode,
-    profile,
-    password,
-    loading,
-    error,
-    touchedEmail,
-    setEmail,
-    setAuthStep,
-    setMode,
-    setProfile,
-    setPassword,
-    setError,
-    setLoading,
-    setTouchedEmail,
-    resetAuthFlow,
-  } = useAuthStore();
-
-  const matchedUserRef = useRef(null);
+  const { role, email, authStep, mode, profile, password, loading, error, touchedEmail, setEmail, setAuthStep,
+    setMode, setProfile, setPassword, setError, setLoading, setTouchedEmail, resetAuthFlow } = useAuthStore();
 
   useEffect(() => {
     resetAuthFlow();
@@ -48,17 +39,14 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
 
     try {
       setLoading(true);
-      const matchedUser = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
-      matchedUserRef.current = matchedUser;
-      const exists = !!matchedUser;
-
-      const nextMode = exists ? "login" : "register";
-      setMode(nextMode);
-      setEmail(email);
-
+      const exists = await checkEmailExists(email);
+      if (role === "doctor" && !exists) {
+        setError("Email không tồn tại. Tài khoản bác sĩ do quản trị viên cung cấp.");
+        return;
+      }
+      setMode(exists ? "login" : "register");
       setAuthStep(exists ? "password" : "profile");
-    } catch (err) {
-      console.error("checkEmail error", err);
+    } catch {
       setError("Không thể kiểm tra email. Vui lòng thử lại.");
     } finally {
       setLoading(false);
@@ -69,11 +57,26 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     event.preventDefault();
     setError("");
 
-    if (!profile.firstName || !profile.lastName || !profile.phone) {
-      setError("Vui lòng điền đầy đủ thông tin bắt buộc.");
+    if (!isValidName(profile.firstName)) {
+      setError(containsXss(profile.firstName) ? "Tên chứa ký tự không hợp lệ." : "Tên phải có ít nhất 2 ký tự.");
       return;
     }
-
+    if (!isValidName(profile.lastName)) {
+      setError(containsXss(profile.lastName) ? "Họ chứa ký tự không hợp lệ." : "Họ phải có ít nhất 2 ký tự.");
+      return;
+    }
+    if (!isValidPhone(profile.phone)) {
+      setError(containsXss(profile.phone) ? "Số điện thoại chứa ký tự không hợp lệ." : "Số điện thoại phải có ít nhất 10 ký tự.");
+      return;
+    }
+    if (!isValidDateOfBirth(profile.dateOfBirth)) {
+      setError("Vui lòng chọn ngày sinh hợp lệ.");
+      return;
+    }
+    if (!isValidGender(profile.gender)) {
+      setError("Vui lòng chọn giới tính.");
+      return;
+    }
     setAuthStep("password");
   };
 
@@ -81,45 +84,26 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     event.preventDefault();
     setError("");
 
-    if (!password.trim()) {
+    if (mode === "register") {
+      const pwErrors = getPasswordErrors(password);
+      if (pwErrors.length > 0) {
+        setError("Mật khẩu không hợp lệ: " + pwErrors.join(", "));
+        return;
+      }
+    } else if (!password.trim()) {
       setError("Vui lòng nhập mật khẩu.");
       return;
     }
 
     try {
       setLoading(true);
-
-      let result;
-      if (mode === "login") {
-        const matchedUser = matchedUserRef.current;
-        if (!matchedUser || matchedUser.password !== password) {
-          setError("Email hoặc mật khẩu không đúng.");
-          return;
-        }
-        if (matchedUser.role.toLowerCase() !== role) {
-          setError("Tài khoản không được đăng ký với role này.");
-          return;
-        }
-        result = { token: "TOKEN AFTER LOGIN", user: matchedUser };
-      } else {
-        result = {
-          token: "TOKEN AFTER REGISTER",
-          user: {
-            id: `usr_${Date.now()}`,
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            name: `${profile.lastName} ${profile.firstName}`,
-            email,
-            phone: profile.phone,
-            role: role === "patient" ? "Patient" : "Doctor",
-            password,
-          },
-        };
-      }
-      onAuthenticated?.(result);
+      if (mode !== "login") await registerUser({ email, password, ...profile });
+      const loginRes = await loginUser({ email, password });
+      const userRes = await getCurrentUser(loginRes.access_token);
+      onAuthenticated?.({ token: loginRes.access_token, user: userRes.user });
     } catch (err) {
-      console.error("password submit error", err);
-      setError("Không thể tiếp tục. Vui lòng kiểm tra thông tin và thử lại.");
+      const msg = err?.response?.data?.message;
+      setError(msg || "Không thể tiếp tục. Vui lòng kiểm tra thông tin và thử lại.");
     } finally {
       setLoading(false);
     }
@@ -144,21 +128,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     handleChangeEmail();
   };
 
-  const title =
-    authStep === "email"
-      ? "Xác thực"
-      : mode === "login"
-        ? "Chào mừng trở lại"
-        : "Hoàn tất hồ sơ của bạn";
-
-  const subtitle =
-    authStep === "email"
-      ? role
-        ? `Tiếp tục với vai trò ${role}. Nhập email để tiếp tục.`
-        : "Nhập email để tiếp tục."
-      : mode === "login"
-        ? "Nhập mật khẩu để tiếp tục."
-        : "Thêm một vài thông tin để tạo tài khoản mới.";
+  const { title, subtitle } = getAuthPageMeta(authStep, mode, role);
 
   const renderStepForm = () => {
     if (authStep === "profile") {

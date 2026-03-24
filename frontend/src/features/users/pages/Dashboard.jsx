@@ -1,73 +1,55 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "@/assets/css/users/dashboard.css";
 import Navbar from "../components/Navbar";
-import { SPECIALTIES } from "@/data/mocks/specialties";
-import { DOCTORS } from "@/data/mocks/doctors";
+import { getSpecialties } from "@/services/public-api-service";
 import SpecialtyCard from "../components/SpecialtyCard";
 import DashboardHero from "../components/DashboardHero";
 import { useNavigate } from "react-router-dom";
-import { validateAppointmentDate } from "../utils/dashboard-util";
-import { normalizeQuery } from "@/utils/utils";
+import { useDashboardSearch } from "../hooks/use-dashboard-search";
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  const [searchResults, setSearchResults] = useState(null);
-  const [lastSearchParams, setLastSearchParams] = useState(null);
-  const [searchError, setSearchError] = useState(null);
+  const [specialties, setSpecialties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const specialtyById = useMemo(() => {
-    const map = {};
-    SPECIALTIES.forEach((specialty) => {
-      map[specialty.id] = specialty;
-    });
-    return map;
+  useEffect(() => {
+    getSpecialties({ limit: 50 })
+      .then((items) => {
+        setSpecialties(items);
+        setError(null);
+      })
+      .catch(() => setError("Không thể tải dữ liệu chuyên khoa."))
+      .finally(() => setLoading(false));
   }, []);
 
-  const handleSearch = ({ query, date }) => {
-    const normalizedQuery = normalizeQuery(query || "");
-    let error = null;
+  const { searchResults, lastSearchParams, searchError, searching, handleSearch } =
+    useDashboardSearch(specialties);
 
-    console.log(query, date, normalizedQuery);
-
-    const { isValid, error: dateError } = validateAppointmentDate(date);
-    if (!isValid) {
-      error = dateError;
-    }
-
-    if (!isValid) {
-      setSearchResults([]);
-      setLastSearchParams({ query, date });
-      setSearchError(error);
-      return;
-    }
-
-    // should be replaced with api call
-    const matchingDoctors = DOCTORS.filter((doctor) => {
-      if (!normalizedQuery) {
-        return true;
-      }
-
-      const nameMatch = doctor.name.toLowerCase().includes(normalizedQuery);
-      const titleMatch = doctor.title.toLowerCase().includes(normalizedQuery);
-      const specialtyName =
-        specialtyById[doctor.specialtyId]?.name?.toLowerCase() || "";
-      const specialtyMatch = specialtyName.includes(normalizedQuery);
-
-      return nameMatch || titleMatch || specialtyMatch;
-    });
-
-    const specialtyIds = new Set(
-      matchingDoctors.map((doctor) => doctor.specialtyId),
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="dashboard">
+          <p style={{ textAlign: "center", padding: "2rem" }}>Đang tải...</p>
+        </main>
+      </>
     );
+  }
 
-    const results = SPECIALTIES.filter((specialty) =>
-      specialtyIds.has(specialty.id),
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <main className="dashboard">
+          <p style={{ textAlign: "center", padding: "2rem", color: "#c00" }}>
+            {error}
+          </p>
+        </main>
+      </>
     );
-
-    setSearchResults(results);
-    setLastSearchParams({ query, date });
-    setSearchError(null);
-  };
+  }
 
   return (
     <>
@@ -93,6 +75,8 @@ const Dashboard = () => {
 
               {searchError ? (
                 <p className="dashboard__search-error">{searchError}</p>
+              ) : searching ? (
+                <p style={{ textAlign: "center" }}>Đang tìm kiếm...</p>
               ) : searchResults && searchResults.length > 0 ? (
                 <div className="dashboard__specialties-grid">
                   {searchResults.map((specialty) => (
@@ -120,14 +104,14 @@ const Dashboard = () => {
                   Dịch vụ theo khoa
                 </h2>
                 <p className="dashboard__specialties-subtitle">
-                  Chọn một chuyên khoa để xem các bác sĩ được đánh giá cao trong
-                  lĩnh vực đó.
+                  Chọn một chuyên khoa để xem các bác sĩ được đánh giá cao
+                  trong lĩnh vực đó.
                 </p>
               </div>
             </div>
 
             <div className="dashboard__specialties-grid">
-              {SPECIALTIES.map((specialty) => (
+              {specialties.map((specialty) => (
                 <SpecialtyCard
                   key={specialty.id}
                   specialty={specialty}

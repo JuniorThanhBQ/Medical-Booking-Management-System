@@ -58,6 +58,7 @@ export default function ProfileStep({
           type="date"
           value={profile.dateOfBirth}
           onChange={(e) => onProfileChange("dateOfBirth", e.target.value)}
+          required
         />
       </div>
 
@@ -67,6 +68,7 @@ export default function ProfileStep({
           className="auth-field__input"
           value={profile.gender}
           onChange={(e) => onProfileChange("gender", e.target.value)}
+          required
         >
           <option value="">Chọn giới tính</option>
           <option value="male">Nam</option>

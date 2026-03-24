@@ -29,18 +29,11 @@ export function BookingDoctorStep({
               >
                 <div className="booking__doctor-head">
                   <div className="booking__avatar" aria-hidden="true">
-                    {d.name
-                      .split(" ")
-                      .slice(0, 2)
-                      .map((x) => x[0])
-                      .join("")
-                      .toUpperCase()}
+                    {`${d.firstName[0]}${d.lastName[0]}`.toUpperCase()}
                   </div>
                   <div>
-                    <div className="booking__doctor-name">{d.name}</div>
-                    <div className="booking__doctor-title">
-                      {d.title} · {d.location}
-                    </div>
+                    <div className="booking__doctor-name">{d.firstName} {d.lastName}</div>
+                    <div className="booking__doctor-title">{d.title}</div>
                   </div>
                 </div>
               </button>

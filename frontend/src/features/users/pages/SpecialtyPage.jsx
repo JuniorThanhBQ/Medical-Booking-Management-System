@@ -5,7 +5,8 @@ import { SPECIALTIES } from "@/data/mocks/specialties";
 export default function SpecialtyPage() {
   const { specialtyId } = useParams();
 
-  const specialty = SPECIALTIES.find((s) => s.id === specialtyId);
+  const specialty =
+    SPECIALTIES.find((s) => s.id === Number(specialtyId)) || null;
 
   return (
     <>

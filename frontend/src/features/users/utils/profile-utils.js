@@ -26,7 +26,7 @@ export function formatProfileUpdate(formData) {
     name: `${formData.firstName} ${formData.lastName}`.trim(),
     phone: formData.phone,
     email: formData.email,
-    birthday: formatBirthday(formData.birthYear, formData.birthMonth, formData.birthDay),
+    dateOfBirth: formatBirthday(formData.birthYear, formData.birthMonth, formData.birthDay),
     gender: formData.gender,
   };
 }
@@ -35,6 +35,27 @@ export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
   value: i + 1,
   label: new Date(0, i).toLocaleString("vi-VN", { month: "long" }),
 }));
+
+const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2MB
+const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+export function readAvatarFile(event, callback) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+    alert('Chỉ chấp nhận ảnh JPEG, PNG, hoặc WebP');
+    return;
+  }
+  if (file.size > MAX_AVATAR_SIZE) {
+    alert('Ảnh không được vượt quá 2MB');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => callback(reader.result);
+  reader.onerror = () => console.error('Không thể đọc tệp ảnh');
+  reader.readAsDataURL(file);
+}
 
 export function normalizeActivity(item, doctorMap = {}) {
   if (item.type === "medical_records") {

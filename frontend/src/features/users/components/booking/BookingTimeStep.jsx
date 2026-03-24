@@ -1,4 +1,4 @@
-import { toISODate } from "../../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "../../utils/booking-utils";
 import { BookingPanelHeader } from "./BookingPanelHeader";
 
 export function BookingTimeStep({
@@ -28,7 +28,7 @@ export function BookingTimeStep({
               }`}
               onClick={() => onSelectTime(t)}
             >
-              {t}
+              {formatTimeDisplay(t)}
             </button>
           );
         })}

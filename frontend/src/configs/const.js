@@ -1,38 +1,38 @@
 import { UserProfileIcon, ActivityIcon } from '@/assets/icons';
 
 export const ROLE = {
-  Patient: "Patient",
-  Doctor: "Doctor",
-  Admin: "Admin",
-  Receptionist: "Receptionist",
+  Patient: "PATIENT",
+  Doctor: "DOCTOR",
+  Admin: "ADMIN",
+  Receptionist: "RECEPTIONIST",
 };
 
 export const DEFAULT_NAV_LINKS = [{ label: "Trang chủ", href: "#home" }];
 
 export const DEFAULT_AUTH_NAV_LINKS = {
-  Patient: [{ label: "Trang chủ", href: "/dashboard" }],
-  Doctor: [{ label: "Trang chủ", href: "/doctor/today" }],
-  Admin: [{ label: "Trang chủ", href: "/dashboard" }],
-  Receptionist: [{ label: "Trang chủ", href: "/dashboard" }],
+  PATIENT: [{ label: "Trang chủ", href: "/dashboard" }],
+  DOCTOR: [{ label: "Trang chủ", href: "/doctor/today" }],
+  ADMIN: [{ label: "Trang chủ", href: "/dashboard" }],
+  RECEPTIONIST: [{ label: "Trang chủ", href: "/dashboard" }],
 };
 
 export const DEFAULT_AUTH_MENU_ITEMS = {
-  Patient: [
+  PATIENT: [
     { label: "Hồ sơ", href: "/profile" },
     { label: "Hoạt động", href: "/activity" },
   ],
-  Doctor: [
+  DOCTOR: [
     { label: "Hồ sơ", href: "/profile" },
     { label: "Hoạt động", href: "/activity" },
     { label: "Lịch làm việc", href: "/schedule" },
   ],
-  Admin: [
+  ADMIN: [
     { label: "Quản lý bác sĩ", href: "/doctors" },
     { label: "Quản lý lịch hẹn", href: "/appointments" },
     { label: "Quản lý bệnh nhân", href: "/patients" },
     { label: "Trợ giúp và hỗ trợ", href: "#support" },
   ],
-  Receptionist: [
+  RECEPTIONIST: [
     { label: "Quản lý lịch hẹn", href: "/appointments" },
     { label: "Quản lý bệnh nhân", href: "/patients" },
     { label: "Trợ giúp và hỗ trợ", href: "#support" },
@@ -48,22 +48,24 @@ export const OPEN_HOURS = {
   end: 16,
 };
 
-export const AVAILABLE_BOOKING_DAYS = 15;
+export const AVAILABLE_BOOKING_DAYS = 7; 
 
 export const APPOINTMENT_STATUS = {
-  PENDING: "pending",
-  CONFIRMED: "confirmed",
-  IN_PROGRESS: "in_progress",
-  COMPLETED: "completed",
-  CANCELLED: "cancelled",
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  IN_PROGRESS: "in_progress", // not in back end yet
+  COMPLETED: "COMPLETED",
+  CANCEL: "CANCEL",
+  CONFIRMED: "APPROVED",
+  CANCELLED: "CANCEL",
 };
 
 export const STATUS_LABELS = {
-  pending: "Chờ xác nhận",
-  confirmed: "Đã xác nhận",
+  PENDING: "Chờ xác nhận",
+  APPROVED: "Đã xác nhận",
   in_progress: "Đang khám",
-  completed: "Hoàn thành",
-  cancelled: "Đã hủy",
+  COMPLETED: "Hoàn thành",
+  CANCEL: "Đã hủy",
 };
 
 export const REASON_OPTIONS = [
@@ -118,6 +120,12 @@ export const GENDER_OPTIONS = [
   { value: "FEMALE", label: "Nữ" },
   { value: "OTHER", label: "Khác" },
 ];
+
+export const CTA_DISPLAY_MAP = {
+  CK1: "Đặt lịch khám",
+  CK2: "Đặt lịch khám",
+  CK3: "Đặt lịch khám",
+};
 
 export const EXAM_STATUS = {
   DRAFT: "draft",

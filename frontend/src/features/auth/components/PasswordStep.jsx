@@ -43,6 +43,11 @@ export default function PasswordStep({
           onChange={onPasswordChange}
           required
         />
+        {mode !== "login" && (
+          <p className="auth-field__hint" style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: 4 }}>
+            Tối thiểu 9 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt (@#_-?)
+          </p>
+        )}
       </div>
 
       {error && (
@@ -58,6 +63,7 @@ export default function PasswordStep({
             ? "Đăng nhập"
             : "Tạo tài khoản"}
       </button>
+
     </form>
   );
 }
