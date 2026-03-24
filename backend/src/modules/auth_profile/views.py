@@ -23,12 +23,13 @@ class LoginAPI(Resource):
         data = get_request_data(request)
         login_email = data.get("email", "")
         password = data.get("password", "")
+        role = data.get("role", "")
 
         error_msg, status_code = validate_email_password(login_email, password)
         if error_msg:
             return error_msg, status_code
 
-        token, message, user_data, http_status = login_user_service(login_email, password)
+        token, message, user_data, http_status = login_user_service(login_email, password, role)
 
         if not token:
             return {"message": message}, get_http_status_code(http_status, default=401)

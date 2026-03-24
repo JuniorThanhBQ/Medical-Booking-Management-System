@@ -68,7 +68,7 @@ def get_user_data(user):
 
 
 @handle_db_errors(parameter=4)
-def login_user_service(login_email, password):
+def login_user_service(login_email, password, role):
     user = User.query.filter(User.email == login_email).first()
 
     if not user or not check_password_hash(user.password, password):
@@ -76,6 +76,9 @@ def login_user_service(login_email, password):
 
     if not user.is_active:
         return None, "Tài khoản đã bị khóa", None, "FORBIDDEN"
+
+    if role.upper() != user.role.name:
+        return None, "Loại đăng nhập không hợp lệ", None, "FORBIDDEN"
 
     token = create_token(user)
     user_data = get_user_data(user)
