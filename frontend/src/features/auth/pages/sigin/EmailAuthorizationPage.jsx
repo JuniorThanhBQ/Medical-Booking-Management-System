@@ -10,7 +10,7 @@ import {
   isValidDateOfBirth, isValidGender,
   getPasswordErrors, containsXss,
 } from "../../utils/validation";
-import { checkEmailExists, loginUser, registerUser, getCurrentUser } from "../../api/authService";
+import { checkEmailExists, loginUser, registerUser, getCurrentUser } from "../../services/authService";
 
 function getAuthPageMeta(authStep, mode, role) {
   if (authStep === "email") return {
@@ -46,7 +46,8 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
       }
       setMode(exists ? "login" : "register");
       setAuthStep(exists ? "password" : "profile");
-    } catch {
+    } catch (err) {
+      console.log("err", err)
       setError("Không thể kiểm tra email. Vui lòng thử lại.");
     } finally {
       setLoading(false);
@@ -98,10 +99,11 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
     try {
       setLoading(true);
       if (mode !== "login") await registerUser({ email, password, ...profile });
-      const loginRes = await loginUser({ email, password });
+      const loginRes = await loginUser({ email, password, role });
       const userRes = await getCurrentUser(loginRes.access_token);
-      onAuthenticated?.({ token: loginRes.access_token, user: userRes.user });
+      onAuthenticated?.({ token: loginRes.access_token, user: userRes });
     } catch (err) {
+      console.log("err", err)
       const msg = err?.response?.data?.message;
       setError(msg || "Không thể tiếp tục. Vui lòng kiểm tra thông tin và thử lại.");
     } finally {

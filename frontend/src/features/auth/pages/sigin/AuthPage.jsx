@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../hooks/use-auth-store";
+import { setToken, setUser, getUser } from "@/repository/local-storage-repository";
 import EmailAuthorizationPage from "./EmailAuthorizationPage";
 import "@/assets/css/auth/auth-page.css";
 
@@ -22,8 +23,10 @@ export default function AuthPage() {
   const { role, setRole } = useAuthStore();
 
   const handleAuthenticated = (data) => {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    setToken(data.token);
+    setUser(data.user.user);
+
+    const user = getUser();
 
     const searchParams = new URLSearchParams(window.location.search);
     const returnUrl = searchParams.get("returnUrl");
@@ -31,7 +34,7 @@ export default function AuthPage() {
     if (returnUrl && returnUrl.startsWith("/") && !returnUrl.startsWith("//")) {
       navigate(returnUrl, { replace: true });
     } else {
-      const isDoctor = data.user.role === "DOCTOR";
+      const isDoctor = user.role === "DOCTOR";
       navigate(isDoctor ? "/doctor/today" : "/dashboard", { replace: true });
     }
   };

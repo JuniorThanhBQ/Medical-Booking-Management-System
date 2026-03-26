@@ -1,6 +1,6 @@
 import SearchCard from "./SearchCard";
 
-const DashboardHero = ({ onSearch }) => {
+const DashboardHero = ({ onSearch, searching }) => {
   return (
     <section className="dashboard__hero">
       <div className="dashboard__hero-content">
@@ -19,7 +19,7 @@ const DashboardHero = ({ onSearch }) => {
       </div>
 
       <div className="dashboard__hero-search">
-        <SearchCard onSearch={onSearch} />
+        <SearchCard onSearch={onSearch} searching={searching} />
       </div>
     </section>
   );

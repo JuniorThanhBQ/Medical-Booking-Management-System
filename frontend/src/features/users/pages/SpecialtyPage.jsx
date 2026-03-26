@@ -1,12 +1,65 @@
 import "@/assets/css/users/specialty.css";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { SPECIALTIES } from "@/data/mocks/specialties";
+import { getSpecialtyDetail } from "@/services/public-api-service";
+import { isAuthenticated } from "@/utils/auth-helpers";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function SpecialtyPage() {
   const { specialtyId } = useParams();
+  const loggedIn = isAuthenticated();
+  const [specialty, setSpecialty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const specialty =
-    SPECIALTIES.find((s) => s.id === Number(specialtyId)) || null;
+  useEffect(() => {
+    if (!specialtyId) {
+      setError("Không tìm thấy chuyên khoa.");
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const fetchSpecialty = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getSpecialtyDetail(specialtyId);
+        if (!cancelled) setSpecialty(data);
+      } catch (err) {
+        console.error("Failed to fetch specialty:", err);
+        if (!cancelled)
+          setError("Không thể tải thông tin chuyên khoa. Vui lòng thử lại.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    fetchSpecialty();
+    return () => { cancelled = true; };
+  }, [specialtyId]);
+
+  if (loading) {
+    return (
+      <main className="specialty">
+        <LoadingSpinner fullPage label="Đang tải..." />
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="specialty">
+        <section className="specialty__hero">
+          <div className="specialty__hero-inner">
+            <p>{error}</p>
+            <Link to="/dashboard" className="specialty__primary-cta">
+              Quay lại Dashboard
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <>
@@ -30,17 +83,28 @@ export default function SpecialtyPage() {
             ) : (
               <div className="specialty__hero-grid">
                 <div className="specialty__hero-content">
-                  <div className="specialty__pill">{specialty.level}</div>
+                  {specialty.level && (
+                    <div className="specialty__pill">{specialty.level}</div>
+                  )}
                   <h1 className="specialty__title">{specialty.name}</h1>
                   <p className="specialty__subtitle">{specialty.description}</p>
 
                   <div className="specialty__ctas">
-                    <Link
-                      to={`/specialties/${specialty.id}/book`}
-                      className="specialty__primary-cta"
-                    >
-                      Đặt lịch khám
-                    </Link>
+                    {loggedIn ? (
+                      <Link
+                        to={`/specialties/${specialty.id}/book`}
+                        className="specialty__primary-cta"
+                      >
+                        Đặt lịch khám
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/auth?returnUrl=${encodeURIComponent(`/specialties/${specialty.id}/book`)}`}
+                        className="specialty__secondary-cta"
+                      >
+                        Đăng nhập để đặt lịch
+                      </Link>
+                    )}
                     <a href="#doctors" className="specialty__secondary-cta">
                       Xem danh sách bác sĩ
                     </a>
@@ -56,7 +120,7 @@ export default function SpecialtyPage() {
                       Các bước tiếp theo
                     </span>
                     <span className="specialty__hero-card-value">
-                      Chọn ngày → giờ → bác sĩ → xác nhận
+                      Chọn ngày → bác sĩ → giờ → xác nhận
                     </span>
                   </div>
                   <div className="specialty__hero-card-row">

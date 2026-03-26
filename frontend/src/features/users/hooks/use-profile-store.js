@@ -1,24 +1,21 @@
 import { create } from "zustand";
 import Apis from "@/configs/Apis";
-
-const getInitialUser = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-};
+import { getStoredUser } from "@/utils/auth-helpers";
+import { setUser as persistUser } from "@/repository/local-storage-repository";
 
 export const useProfileStore = create((set) => ({
-  user: getInitialUser(),
+  user: getStoredUser(),
   loading: false,
 
   setUser: (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
+    persistUser(user);
     set({ user });
   },
 
   updateAvatar: (avatarUrl) =>
     set((state) => {
       const updatedUser = { ...state.user, avatar: avatarUrl };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      persistUser(updatedUser);
       return { user: updatedUser };
     }),
 
@@ -34,7 +31,7 @@ export const useProfileStore = create((set) => ({
           ...res.data,
         };
 
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        persistUser(updatedUser);
 
         return { user: updatedUser };
       });

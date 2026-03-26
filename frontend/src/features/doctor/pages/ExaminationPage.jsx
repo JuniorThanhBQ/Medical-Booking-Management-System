@@ -8,6 +8,7 @@ import { mockPatients } from "@/data/mocks/patients";
 import { useExamStore } from "../hooks/use-exam-store";
 import PatientHistoryPanel from "../components/PatientHistoryPanel";
 import ExamForm from "../components/ExamForm";
+import { getStoredUser } from "@/utils/auth-helpers";
 
 const EMPTY_FORM = {
   diagnosis: "",
@@ -29,7 +30,7 @@ export default function ExaminationPage() {
     ? mockPatients.find((p) => p.id === appointment.patientId)
     : null;
 
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const user = getStoredUser();
   const doctorName = user?.name || "Bác sĩ";
 
   const [formData, setFormData] = useState(EMPTY_FORM);

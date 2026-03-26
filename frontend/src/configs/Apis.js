@@ -10,8 +10,12 @@ export const endpoints = {
   auth_email_validator: "/api/v1/auth/email-validator",
   public_specialties: "/api/v1/public/specialties",
   public_doctors: "/api/v1/public/doctors",
+  public_specialty_detail: (id) => `/api/v1/public/specialties/${id}`,
   public_doctor_detail: (id) => `/api/v1/public/doctors/${id}`,
   public_doctor_time_slots: (id) => `/api/v1/public/doctors/${id}/time-slots`,
+  appointments: "/api/v1/appointments",
+  doctor_my_schedule: "/api/v1/my-schedule",
+  doctor_schedule_request: "/api/v1/schedule-requests",
 };
 
 const Apis = axios.create({

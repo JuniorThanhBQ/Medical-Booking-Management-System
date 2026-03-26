@@ -1,20 +1,4 @@
-import { APPOINTMENT_STATUS, OPEN_HOURS } from "@/configs/const";
-
-export function buildDefaultDaySchedule(day) {
-  const defaultRange = {
-    id: `${day}-range-1`,
-    start: `${String(OPEN_HOURS.start).padStart(2, "0")}:00`,
-    end: `${String(OPEN_HOURS.end).padStart(2, "0")}:00`,
-  };
-
-  const isWeekend = day === "Sat" || day === "Sun";
-
-  return {
-    day,
-    isWorking: !isWeekend,
-    ranges: [defaultRange],
-  };
-}
+import { OPEN_HOURS } from "@/configs/const";
 
 export function generateTimeOptions() {
   const options = [];

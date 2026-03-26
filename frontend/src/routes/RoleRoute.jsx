@@ -1,7 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { getStoredUser } from "@/utils/auth-helpers";
 
 export default function RoleRoute({ allowedRoles }) {
-  const user = localStorage.getItem("user");
+  const user = getStoredUser();
   const location = useLocation();
 
   if (!user) {
@@ -9,15 +10,7 @@ export default function RoleRoute({ allowedRoles }) {
     return <Navigate to={`/auth?returnUrl=${returnUrl}`} replace />;
   }
 
-  let role;
-  try {
-    role = JSON.parse(user).role;
-  } catch {
-    localStorage.removeItem("user");
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (!allowedRoles.includes(role)) {
+  if (!allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 

@@ -36,7 +36,7 @@ export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
   label: new Date(0, i).toLocaleString("vi-VN", { month: "long" }),
 }));
 
-const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
 const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export function readAvatarFile(event, callback) {

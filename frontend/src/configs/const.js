@@ -48,7 +48,7 @@ export const OPEN_HOURS = {
   end: 16,
 };
 
-export const AVAILABLE_BOOKING_DAYS = 7; 
+export const AVAILABLE_BOOKING_DAYS = 7;
 
 export const APPOINTMENT_STATUS = {
   PENDING: "PENDING",
@@ -84,16 +84,16 @@ export function getStatusLabel(status) {
 }
 
 export const DAY_LABELS = {
-  Mon: "Thứ 2",
-  Tue: "Thứ 3",
-  Wed: "Thứ 4",
-  Thu: "Thứ 5",
-  Fri: "Thứ 6",
-  Sat: "Thứ 7",
-  Sun: "Chủ nhật",
+  MONDAY: "Thứ 2",
+  TUESDAY: "Thứ 3",
+  WEDNESDAY: "Thứ 4",
+  THURSDAY: "Thứ 5",
+  FRIDAY: "Thứ 6",
+  SATURDAY: "Thứ 7",
+  SUNDAY: "Chủ nhật",
 };
 
-export const INITIAL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+export const INITIAL_DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
 
 export const PROFILE_SIDEBAR_ITEMS = [
   {

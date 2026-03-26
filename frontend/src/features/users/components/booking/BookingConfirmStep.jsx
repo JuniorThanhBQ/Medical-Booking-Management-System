@@ -9,6 +9,8 @@ export function BookingConfirmStep({
   onPatientNotesChange,
   onConfirm,
   canConfirm,
+  submitting = false,
+  submitError = null,
 }) {
   return (
     <div className="booking__step-panel">
@@ -55,10 +57,11 @@ export function BookingConfirmStep({
           type="button"
           className="booking__primary"
           onClick={onConfirm}
-          disabled={!canConfirm}
+          disabled={!canConfirm || submitting}
         >
-          Xác nhận lịch hẹn
+          {submitting ? "Đang xử lý..." : "Xác nhận lịch hẹn"}
         </button>
+        {submitError && <p className="booking__error">{submitError}</p>}
         <p className="booking__hint">
           Bằng việc xác nhận, bạn đồng ý thông tin trên là chính xác.
         </p>
