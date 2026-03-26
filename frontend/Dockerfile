@@ -4,19 +4,16 @@ COPY package*.json ./
 RUN npm install
 COPY public/ ./public/
 COPY src/ ./src/
-COPY index.html ./
-COPY vite.config.js ./
-COPY eslint.config.js ./
-COPY .eslintrc.json ./
+COPY index.html vite.config.js eslint.config.js .eslintrc.json ./
 RUN npm run build
 
 FROM nginx:1.28.2-alpine
 RUN apk add --no-cache curl
 RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/*
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder --chmod=555 /app/dist /usr/share/nginx/html
 RUN touch /var/run/nginx.pid && \
-    chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/log/nginx /var/run/nginx.pid /etc/nginx
+    chown -R nginx:nginx /var/cache/nginx /var/log/nginx /var/run/nginx.pid
 USER nginx
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]

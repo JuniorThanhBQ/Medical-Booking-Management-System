@@ -45,7 +45,7 @@ class TestUserLogin:
 
     def test_successful_login_with_valid_credentials(self, test_session, setup_active_user):
         token, message, user_data, status = login_user_service(
-            "active_user@example.com", "CorrectPassword123!"
+            "active_user@example.com", "CorrectPassword123!", "PATIENT"
         )
         assert status == "SUCCESS"
         assert token is not None
@@ -55,7 +55,7 @@ class TestUserLogin:
 
     def test_login_fails_with_incorrect_password(self, test_session, setup_active_user):
         token, message, user_data, status = login_user_service(
-            "active_user@example.com", "WrongPassword123!"
+            "active_user@example.com", "WrongPassword123!", "PATIENT"
         )
         assert status == "ERROR_UNAUTHORIZED"
         assert message == "Tài khoản hoặc mật khẩu không đúng"
@@ -64,7 +64,7 @@ class TestUserLogin:
 
     def test_login_fails_for_inactive_user(self, test_session, setup_inactive_user):
         token, message, user_data, status = login_user_service(
-            "locked_user@example.com", "CorrectPassword123!"
+            "locked_user@example.com", "CorrectPassword123!", "PATIENT"
         )
         assert status == "FORBIDDEN"
         assert message == "Tài khoản đã bị khóa"

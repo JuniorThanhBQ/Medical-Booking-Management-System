@@ -30,15 +30,14 @@ with open("folder_code.txt", "w", encoding="utf-8") as out_file:
 
 file_stats.sort(key=lambda x: x[1], reverse=True)
 
-repo = os.environ.get("GITHUB_REPOSITORY", "unknown-repo")
-run_id = os.environ.get("GITHUB_RUN_ID", "unknown-run")
-run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
-
-backend_status = os.environ.get("BACKEND_LINT", "unknown")
-frontend_status = os.environ.get("FRONTEND_LINT", "unknown")
-backend_security_status = os.environ.get("BACKEND_SECURITY_CHECK", "unknown")
-frontend_security_status = os.environ.get("FRONTEND_SECURITY_CHECK", "unknown")
-
+repo = os.environ.get("GITHUB_REPOSITORY", "Repo không tồn tại")
+run_id = os.environ.get("GITHUB_RUN_ID", "Mã id chạy không hợp lệ")
+url = f"https://github.com/{repo}/actions/runs/{run_id}"
+backend_status = os.environ.get("BACKEND_LINT", "Không rõ")
+frontend_status = os.environ.get("FRONTEND_LINT", "Không rõ")
+backend_security_status = os.environ.get("BACKEND_SECURITY_CHECK", "Không rõ")
+frontend_security_status = os.environ.get("FRONTEND_SECURITY_CHECK", "Không rõ")
+docker_build_status = os.environ.get("DOCKER_BUILD_CHECK", "Không rõ")
 
 def format_status(status):
     if status == "success":
@@ -51,30 +50,34 @@ def format_status(status):
         return "**Đã bỏ qua**"
     return f"Có lỗi xảy ra {status}"
 
+md_content = f"""## Báo cáo kiểm tra tĩnh
 
-md_content = "## Báo cáo kiểm tra tĩnh \n\n"
+### 1. Trạng thái kiểm tra chung:
+| Hạng mục | Kết quả |
+|---|---|
+| Kiểm tra format backend: | {format_status(backend_status)} |
+| Kiểm tra format frontend: | {format_status(frontend_status)} |
+| Kiểm tra bảo mật backend: | {format_status(backend_security_status)} |
+| Kiểm tra bảo mật frontend: | {format_status(frontend_security_status)} |
+| Kiểm tra build docker: | {format_status(docker_build_status)} |
 
-md_content += "### 1. Trạng thái các jobs:\n"
-md_content += "| Hạng mục  | Kết quả |\n|---|---|\n"
-md_content += f"| kiểm tra format backend: | {format_status(backend_status)} |\n"
-md_content += f"| Kiểm tra format frontend: | {format_status(frontend_status)} |\n"
-md_content += f"| Kiểm tra bảo mật backend: | {format_status(backend_security_status)} |\n"
-md_content += f"| Kiểm tra bảo mật frontend: | {format_status(frontend_security_status)} |\n\n"
-md_content += f"*(Xem chi tiết: [link]({run_url}))*\n\n"
-md_content += "---\n\n"
+*(Xem chi tiết: [link]({url}))*
 
-md_content += "### 2. Thống kê về mã nguồn:\n"
-md_content += f"- **Tổng số file:** `{len(file_stats)}` files\n"
-md_content += f"- **Tổng số dòng code:** `{total_lines}` dòng\n\n"
+---
 
-md_content += "| Tên File | Số dòng |\n|---|---|\n"
+### 2. Thống kê mã nguồn:
+- **Tổng số file:** `{len(file_stats)}` files
+- **Tổng số dòng code:** `{total_lines}` dòng
+
+| Tên File | Số dòng |
+|---|---|
+"""
+
 for filepath, count in file_stats:
-    if count > 300:
+    if count > 500:
         md_content += f"| Cần xem lại: `{filepath}` | **{count}** |\n"
     else:
         md_content += f"| `{filepath}` | {count} |\n"
-
-md_content += "\n---\n"
 
 with open("issue.md", "w", encoding="utf-8") as f:
     f.write(md_content)
