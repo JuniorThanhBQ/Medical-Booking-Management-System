@@ -5,35 +5,34 @@ services:
     restart: always
     ports:
       - "${FRONTEND_PORT_PROD}:8080"
+    environment:
+      - VITE_API_URL=${BACKEND_PROD_API_URL}
+
 
   backend:
     restart: always
+    ports:
+      - "${BACKEND_PORT_PROD}:5000"
+    env_file:
+      - .env
     environment:
       - FLASK_MODE=production
-      - BACKEND_PORT=${BACKEND_PORT:-3000}
-      - DATABASE_URL=${DATABASE_URL_PROD}
-      - RABBITMQ_URL=amqp://${RABBITMQ_USERNAME_PROD}:${RABBITMQ_PASSWORD_PROD}@rabbitmq:${RABBITMQ_PORT_PROD}/
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+
 
   db:
     restart: always
-    volumes:
-      - mysql-data:/var/lib/mysql
     environment:
-      - MYSQL_USERNAME=${MYSQL_USERNAME_PROD}
+      - MYSQL_USERNAME=${DB_USER_PROD}
+      - MYSQL_PASSWORD=${DB_PASSWORD_PROD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD_PROD}
       - MYSQL_DATABASE=${DB_NAME_PROD}
+
+  redis:
+    restart: always
+    
 
   rabbitmq:
     restart: always
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-  
-  adminer:
-    deploy:
-      replicas: 0 
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME_PROD}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD_PROD}

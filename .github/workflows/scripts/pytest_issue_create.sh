@@ -1,31 +1,40 @@
 #!/bin/bash
 
-set -o pipefail
+LOG_FILE="pytest_log.txt"
 
-FINAL_SUMMARY=$(tail -n 1 pytest_log.txt)
+if [[ ! -f "$LOG_FILE" ]]; then
+  echo "Có lỗi khi tạo $LOG_FILE"
+  exit 1
+fi
 
-FAILED_CASES=$(grep "^FAILED" pytest_log.txt || echo "Không phát sinh lỗi trong test case.")
+FINAL_SUMMARY=$(tail -n 1 "$LOG_FILE")
+FAILED_CASES=$(grep "^FAILED" "$LOG_FILE" || echo "Lỗi ngoài phạm vi kiểm thử.")
+ISSUE_BODY_FILE="issue_body.md"
 
-ISSUE_BODY="Pytest cảnh báo vấn đề phát sinh.
+cat << EOF > "$ISSUE_BODY_FILE"
+## Có lỗi trong Pytest
 
 **Tổng quan:**
 \`\`\`text
 $FINAL_SUMMARY
 \`\`\`
 
-**Các Test Case thất bại (Nếu có):**
+**Các Test Case thất bại:**
 \`\`\`text
 $FAILED_CASES
 \`\`\`
 
 ---
-*Thông tin chung:*
-- **Commit:** $COMMIT_SHA
-- **Người cần review lại:** @$ACTOR
-- **Chi tiết hành động:** [Xem chi tiết](https://github.com/$REPO/actions/runs/$RUN_ID)"
+### Thông tin liên quan:
+- **Mã commit:** \`$COMMIT_SHA\`
+- **Người cần xem lại:** @$ACTOR
+- **Link action:** [Xem log chi tiết tại đây](https://github.com/$REPO/actions/runs/$RUN_ID)
+EOF
 
 gh issue create \
-  --title "Lỗi Pytest trên PR #$PR_NUMBER" \
-  --body "$ISSUE_BODY" \
+  --title "Lỗi Pytest trên PR #${PR_NUMBER}" \
+  --body-file "$ISSUE_BODY_FILE" \
   --assignee "$ACTOR" \
   --label "bug"
+
+rm "$ISSUE_BODY_FILE"
