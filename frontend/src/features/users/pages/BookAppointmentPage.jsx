@@ -1,11 +1,10 @@
 import "@/assets/css/users/booking.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useMemo } from "react";
-import { SPECIALTIES } from "@/data/mocks/specialties";
-import { DOCTORS } from "@/data/mocks/doctors";
+import { useEffect, useMemo } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
-import { STEPS, toISODate, buildTimeSlots } from "../utils/booking-utils";
+import { STEPS, toISODate } from "../utils/booking-utils";
 import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import {
   BookingNotFoundView,
   BookingSuccessView,
@@ -22,30 +21,30 @@ export default function BookAppointmentPage() {
   const navigate = useNavigate();
 
   const {
-    stepIndex,
-    selectedDate,
-    selectedTime,
-    selectedDoctorId,
-    patientNotes,
-    confirmed,
-    setSelectedDate,
-    setSelectedTime,
-    setSelectedDoctorId,
-    setPatientNotes,
-    goToStep,
-    increaseStepIndex,
-    resetBooking,
-    confirmBooking,
+    stepIndex, selectedDate, selectedTime, selectedDoctorId, patientNotes, confirmed,
+    specialty, doctors, timeSlots, loading, timeSlotsLoading, fetchError, submitting, submitError,
+    setSelectedDate, setSelectedTime, setSelectedDoctorId, setPatientNotes,
+    goToStep, increaseStepIndex, resetBooking, confirmBooking,
+    fetchSpecialtyAndDoctors, fetchTimeSlots,
   } = useBookingStore();
 
-  const numericSpecialtyId = Number(specialtyId);
+  useEffect(() => {
+    resetBooking();
+    let cancelled = false;
+    fetchSpecialtyAndDoctors(specialtyId).then(() => {
+      if (cancelled) resetBooking();
+    });
+    return () => { cancelled = true; };
+  }, [specialtyId]);
 
-  const specialty = SPECIALTIES.find((s) => s.id === numericSpecialtyId);
-
-  const doctorsForSpecialty = useMemo(
-    () => DOCTORS.filter((d) => d.specialtyId === numericSpecialtyId),
-    [numericSpecialtyId],
-  );
+  useEffect(() => {
+    if (!selectedDoctorId || !selectedDate) return;
+    let cancelled = false;
+    fetchTimeSlots(selectedDoctorId, toISODate(selectedDate)).then(() => {
+      if (cancelled) return;
+    });
+    return () => { cancelled = true; };
+  }, [selectedDoctorId, selectedDate]);
 
   const availableDays = useMemo(() => {
     const base = new Date();
@@ -56,33 +55,33 @@ export default function BookAppointmentPage() {
       d.setDate(base.getDate() + i);
       days.push(d);
     }
-    console.log(days);
     return days;
   }, []);
 
-  const timeSlots = useMemo(() => buildTimeSlots(selectedDate), [selectedDate]);
-
   const selectedDoctor = useMemo(
-    () => doctorsForSpecialty.find((d) => d.id === selectedDoctorId) ?? null,
-    [doctorsForSpecialty, selectedDoctorId],
+    () => doctors.find((d) => d.id === selectedDoctorId) ?? null,
+    [doctors, selectedDoctorId],
   );
 
   const handleConfirm = () => {
     confirmBooking({
-      specialtyId,
-      specialtyName: specialty?.name ?? specialtyId,
+      doctorId: selectedDoctorId,
       date: selectedDate ? toISODate(selectedDate) : null,
-      startTime: selectedTime,
-      doctorId: selectedDoctor?.id ?? null,
-      doctorName: selectedDoctor ? `${selectedDoctor.firstName} ${selectedDoctor.lastName}` : null,
-      notes: patientNotes.trim() || null,
+      time: selectedTime,
+      notes: patientNotes.trim() || "",
     });
   };
 
+  if (loading) {
+    return <main className="booking"><LoadingSpinner fullPage label="Đang tải..." /></main>;
+  }
+
+  if (fetchError) {
+    return <main className="booking"><p className="booking__error">{fetchError}</p></main>;
+  }
+
   if (!specialty) {
-    return (
-      <BookingNotFoundView onBrowseSpecialties={() => navigate("/dashboard")} />
-    );
+    return <BookingNotFoundView onBrowseSpecialties={() => navigate("/dashboard")} />;
   }
 
   if (confirmed) {
@@ -101,15 +100,12 @@ export default function BookAppointmentPage() {
         <div className="booking__container">
           <div className="booking__header">
             <div>
-              <Link
-                to={`/specialties/${specialtyId}`}
-                className="booking__back"
-              >
+              <Link to={`/specialties/${specialtyId}`} className="booking__back">
                 <span aria-hidden="true">←</span> {specialty.name}
               </Link>
               <h1 className="booking__title">Đặt lịch khám</h1>
               <p className="booking__subtitle">
-                Chọn ngày, giờ, bác sĩ và xác nhận đầy đủ thông tin.
+                Chọn ngày, bác sĩ, giờ và xác nhận đầy đủ thông tin.
               </p>
             </div>
             <BookingStepper stepIndex={stepIndex} onGoToStep={goToStep} />
@@ -117,8 +113,7 @@ export default function BookAppointmentPage() {
 
           <div className="booking__grid">
             <div className="booking__panel">
-              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 False Positive*/}
-              {/* eslint-disable-next-line security/detect-object-injection*/}
+              {/* eslint-disable-next-line security/detect-object-injection */}
               {STEPS[stepIndex]?.id === "day" && (
                 <BookingDayStep
                   availableDays={availableDays}
@@ -127,22 +122,10 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
-              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
-              {/* eslint-disable-next-line security/detect-object-injection*/}
-              {STEPS[stepIndex]?.id === "time" && (
-                <BookingTimeStep
-                  timeSlots={timeSlots}
-                  selectedDate={selectedDate}
-                  selectedTime={selectedTime}
-                  onSelectTime={setSelectedTime}
-                  onNext={increaseStepIndex}
-                />
-              )}
-              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
-              {/* eslint-disable-next-line security/detect-object-injection*/}
+              {/* eslint-disable-next-line security/detect-object-injection */}
               {STEPS[stepIndex]?.id === "doctor" && (
                 <BookingDoctorStep
-                  doctorsForSpecialty={doctorsForSpecialty}
+                  doctorsForSpecialty={doctors}
                   selectedDate={selectedDate}
                   selectedTime={selectedTime}
                   selectedDoctorId={selectedDoctorId}
@@ -150,8 +133,18 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
-              {/* Lỗi eslint được đánh dấu ngày 15/03/2026 */}
-              {/* eslint-disable-next-line security/detect-object-injection*/}
+              {/* eslint-disable-next-line security/detect-object-injection */}
+              {STEPS[stepIndex]?.id === "time" && (
+                <BookingTimeStep
+                  timeSlots={timeSlots}
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                  onSelectTime={setSelectedTime}
+                  onNext={increaseStepIndex}
+                  loading={timeSlotsLoading}
+                />
+              )}
+              {/* eslint-disable-next-line security/detect-object-injection */}
               {STEPS[stepIndex]?.id === "confirm" && (
                 <BookingConfirmStep
                   specialtyName={specialty.name}
@@ -162,9 +155,9 @@ export default function BookAppointmentPage() {
                   onPatientNotesChange={setPatientNotes}
                   onConfirm={handleConfirm}
                   onGoToStep={goToStep}
-                  canConfirm={Boolean(
-                    selectedDate && selectedTime && selectedDoctorId,
-                  )}
+                  canConfirm={Boolean(selectedDate && selectedTime && selectedDoctorId)}
+                  submitting={submitting}
+                  submitError={submitError}
                 />
               )}
             </div>

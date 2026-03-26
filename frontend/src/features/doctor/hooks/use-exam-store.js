@@ -1,31 +1,20 @@
 import { create } from "zustand";
 import { EXAM_STATUS, APPOINTMENT_STATUS } from "@/configs/const";
 import { mockMedicalRecords } from "@/data/mocks/patients";
-
-const STORAGE_KEY = "exam-store";
+import { getExamStore, setExamStore } from "@/repository/local-storage-repository";
 
 function loadPersistedState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return { records: parsed.records || {} };
-    }
-  } catch {
-  }
-  return null;
+  const parsed = getExamStore();
+  return parsed ? { records: parsed.records || {} } : null;
 }
 
 function persistState(state) {
-  try {
-    const draftRecords = Object.fromEntries(
-      Object.entries(state.records).filter(
-        ([_, r]) => r.status === EXAM_STATUS.DRAFT
-      )
-    );
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ records: draftRecords }));
-  } catch {
-  }
+  const draftRecords = Object.fromEntries(
+    Object.entries(state.records).filter(
+      ([_, r]) => r.status === EXAM_STATUS.DRAFT
+    )
+  );
+  setExamStore({ records: draftRecords });
 }
 
 const persisted = loadPersistedState();

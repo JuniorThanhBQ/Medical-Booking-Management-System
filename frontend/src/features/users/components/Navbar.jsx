@@ -2,14 +2,15 @@ import { useNavbarMenu } from "../hooks/use-navbar-menu";
 import { BellIcon } from "@/assets/icons";
 import "@/assets/css/users/navbar.css";
 import { DEFAULT_MENU_ITEMS } from "@/configs/const";
-import { handleLogout } from "../../auth/api/authService";
+import { handleLogout } from "../../auth/services/authService";
 import { getRoleNavLinks, getRoleMenuItems } from "@/utils/utils";
+import { isAuthenticated } from "@/utils/auth-helpers";
 
 export default function Navbar() {
   const { scrolled, menuOpen, menuRef, toggleMenu, closeMenu } =
     useNavbarMenu();
 
-  const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const isLoggedIn = isAuthenticated();
 
   const allNavLinks = getRoleNavLinks();
   const homeLink = allNavLinks[0];
@@ -65,9 +66,8 @@ export default function Navbar() {
                       <button
                         key={item.label}
                         type="button"
-                        className={`navbar__menu-item${
-                          item.danger ? " navbar__menu-item--danger" : ""
-                        }`}
+                        className={`navbar__menu-item${item.danger ? " navbar__menu-item--danger" : ""
+                          }`}
                         onClick={() => {
                           closeMenu();
                           item.onClick();
@@ -82,9 +82,8 @@ export default function Navbar() {
                     <a
                       key={item.label}
                       href={item.href}
-                      className={`navbar__menu-item${
-                        item.danger ? " navbar__menu-item--danger" : ""
-                      }`}
+                      className={`navbar__menu-item${item.danger ? " navbar__menu-item--danger" : ""
+                        }`}
                       onClick={closeMenu}
                     >
                       {item.label}

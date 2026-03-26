@@ -72,7 +72,6 @@ export const EmailIcon = ({ size = 24, className, ...rest }) => (
   </svg>
 );
 
-// Activity feed / history list icon — three rows of dot + line
 export const ActivityIcon = ({ size = 24, className, ...rest }) => (
   <svg
     width={size}

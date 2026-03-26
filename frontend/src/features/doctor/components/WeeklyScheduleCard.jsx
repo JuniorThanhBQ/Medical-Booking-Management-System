@@ -1,10 +1,14 @@
-import { DAY_LABELS } from "@/configs/const";
+import { INITIAL_DAYS, DAY_LABELS } from "@/configs/const";
 
 export default function WeeklyScheduleCard({
-  weeklySchedule,
+  workDate,
+  startTime,
+  endTime,
   timeOptions,
   toggleWorking,
-  changeRange,
+  setTime,
+  onSave,
+  isSaving,
 }) {
   return (
     <div className="schedule-page__card">
@@ -21,83 +25,71 @@ export default function WeeklyScheduleCard({
           <thead>
             <tr>
               <th>Ngày</th>
-              <th className="schedule-page__table-col-wide">Khung giờ làm việc</th>
+              <th className="schedule-page__table-col-wide" />
               <th />
             </tr>
           </thead>
           <tbody>
-            {weeklySchedule.map((entry) => (
-              <tr key={entry.day}>
-                <td>
-                  <div className="schedule-page__day-cell">
-                    <label className="schedule-page__day-label">
-                      <input
-                        type="checkbox"
-                        checked={entry.isWorking}
-                        onChange={() => toggleWorking(entry.day)}
-                      />
-                      <span>{DAY_LABELS[entry.day]}</span>
-                    </label>
-                    {!entry.isWorking && (
-                      <span className="schedule-page__day-off">Nghỉ</span>
-                    )}
-                  </div>
-                </td>
-                <td>
-                  {entry.isWorking && (
-                    <div className="schedule-page__ranges">
-                      {entry.ranges.map((range) => (
-                        <div key={range.id} className="schedule-page__range-row">
-                          <select
-                            className="schedule-page__select"
-                            value={range.start}
-                            onChange={(event) =>
-                              changeRange({
-                                day: entry.day,
-                                rangeId: range.id,
-                                field: "start",
-                                value: event.target.value,
-                              })
-                            }
-                          >
-                            {timeOptions.map((time) => (
-                              <option key={time} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </select>
-                          <span className="schedule-page__range-separator">-</span>
-                          <select
-                            className="schedule-page__select"
-                            value={range.end}
-                            onChange={(event) =>
-                              changeRange({
-                                day: entry.day,
-                                rangeId: range.id,
-                                field: "end",
-                                value: event.target.value,
-                              })
-                            }
-                          >
-                            {timeOptions.map((time) => (
-                              <option key={time} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </select>
-
-                        </div>
-                      ))}
+            {INITIAL_DAYS.map((day) => {
+              const isWorking = workDate.includes(day);
+              return (
+                <tr key={day}>
+                  <td>
+                    <div className="schedule-page__day-cell">
+                      <label className="schedule-page__day-label">
+                        <input
+                          type="checkbox"
+                          checked={isWorking}
+                          onChange={() => toggleWorking(day)}
+                        />
+                        <span>{DAY_LABELS[day]}</span>
+                      </label>
+                      {!isWorking && (
+                        <span className="schedule-page__day-off">Nghỉ</span>
+                      )}
                     </div>
-                  )}
-                </td>
-                <td />
-              </tr>
-            ))}
+                  </td>
+                  <td />
+                  <td />
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+      </div>
+
+      <div className="schedule-page__time-row">
+        <label>Giờ bắt đầu</label>
+        <select
+          className="schedule-page__select"
+          value={startTime}
+          onChange={(e) => setTime("startTime", e.target.value)}
+        >
+          {timeOptions.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+        <label>Giờ kết thúc</label>
+        <select
+          className="schedule-page__select"
+          value={endTime}
+          onChange={(e) => setTime("endTime", e.target.value)}
+        >
+          {timeOptions.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="schedule-page__card-footer">
+        <button
+          className="schedule-page__primary-button"
+          onClick={onSave}
+          disabled={isSaving}
+        >
+          {isSaving ? "Đang lưu..." : "Lưu lịch làm việc"}
+        </button>
       </div>
     </div>
   );
 }
-

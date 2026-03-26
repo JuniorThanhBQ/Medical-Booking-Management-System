@@ -1,4 +1,5 @@
 import Apis, { AuthApis, endpoints } from "@/configs/Apis";
+import { clearAuth } from "@/repository/local-storage-repository";
 
 export async function checkEmailExists(email) {
   try {
@@ -12,8 +13,8 @@ export async function checkEmailExists(email) {
   }
 }
 
-export async function loginUser({ email, password }) {
-  const res = await Apis.post(endpoints.auth_login, { email, password });
+export async function loginUser({ email, password, role }) {
+  const res = await Apis.post(endpoints.auth_login, { email, password, role });
   return res.data;
 }
 
@@ -42,7 +43,6 @@ export async function loginWithGoogle(googleToken) {
 }
 
 export function handleLogout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  clearAuth();
   window.location.href = "/";
 }

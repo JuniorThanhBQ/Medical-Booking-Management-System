@@ -51,7 +51,6 @@ export const SearchIcon = ({ size = 24, className, ...rest }) => (
   </svg>
 );
 
-// User / profile person silhouette icon
 export const UserProfileIcon = ({ size = 24, className, ...rest }) => (
   <svg
     width={size}

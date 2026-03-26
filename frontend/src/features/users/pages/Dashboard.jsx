@@ -6,6 +6,7 @@ import SpecialtyCard from "../components/SpecialtyCard";
 import DashboardHero from "../components/DashboardHero";
 import { useNavigate } from "react-router-dom";
 import { useDashboardSearch } from "../hooks/use-dashboard-search";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const Dashboard = () => {
       .finally(() => setLoading(false));
   }, []);
 
+
   const { searchResults, lastSearchParams, searchError, searching, handleSearch } =
     useDashboardSearch(specialties);
 
@@ -32,7 +34,7 @@ const Dashboard = () => {
       <>
         <Navbar />
         <main className="dashboard">
-          <p style={{ textAlign: "center", padding: "2rem" }}>Đang tải...</p>
+          <LoadingSpinner fullPage label="Đang tải..." />
         </main>
       </>
     );
@@ -56,7 +58,7 @@ const Dashboard = () => {
       <Navbar />
 
       <main className="dashboard">
-        <DashboardHero onSearch={handleSearch} />
+        <DashboardHero onSearch={handleSearch} searching={searching} />
 
         {lastSearchParams && (
           <section className="dashboard__specialties-section">
@@ -76,7 +78,7 @@ const Dashboard = () => {
               {searchError ? (
                 <p className="dashboard__search-error">{searchError}</p>
               ) : searching ? (
-                <p style={{ textAlign: "center" }}>Đang tìm kiếm...</p>
+                <LoadingSpinner size="sm" label="Đang tìm kiếm..." />
               ) : searchResults && searchResults.length > 0 ? (
                 <div className="dashboard__specialties-grid">
                   {searchResults.map((specialty) => (

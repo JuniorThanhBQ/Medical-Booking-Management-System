@@ -3,7 +3,7 @@ import SearchField from "./SearchField";
 import { CalendarIcon, ArrowRightFilledIcon } from "@/assets/icons";
 import { toISODate } from "../utils/booking-utils";
 
-const SearchCard = ({ onSearch }) => {
+const SearchCard = ({ onSearch, searching }) => {
   const [query, setQuery] = useState("");
   const [date, setDate] = useState("");
 
@@ -79,8 +79,8 @@ const SearchCard = ({ onSearch }) => {
           tới.
         </p>
 
-        <button className="dashboard__search-btn" type="submit">
-          Tìm kiếm
+        <button className="dashboard__search-btn" type="submit" disabled={searching}>
+          {searching ? "Đang tìm..." : "Tìm kiếm"}
         </button>
       </div>
     </form>

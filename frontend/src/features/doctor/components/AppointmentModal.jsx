@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchAppointmentsInDay } from "../api/appointments-api";
-import { getStatusLabel } from "@/configs/const";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AppointmentsPreviewModal({
   date,
@@ -76,9 +76,7 @@ export default function AppointmentsPreviewModal({
 
         <div className="schedule-page__modal-body">
           {loading && (
-            <p className="schedule-page__modal-hint">
-              Đang tải lịch hẹn...
-            </p>
+            <LoadingSpinner size="sm" label="Đang tải lịch hẹn..." />
           )}
 
           {!loading && error && (

@@ -1,9 +1,7 @@
-import { OPEN_HOURS } from "@/configs/const";
-
 export const STEPS = [
   { id: "day", label: "Ngày" },
-  { id: "time", label: "Thời gian" },
   { id: "doctor", label: "Bác sĩ" },
+  { id: "time", label: "Thời gian" },
   { id: "confirm", label: "Xác nhận" },
 ];
 
@@ -22,19 +20,10 @@ export function toISODate(date) {
   return `${year}-${month}-${day}`;
 }
 
-export function buildTimeSlots(referenceDate) {
-  const slots = [];
-  const dateStr = referenceDate ? toISODate(referenceDate) : toISODate(new Date());
-  for (let hour = OPEN_HOURS.start; hour <= OPEN_HOURS.end; hour += 1) {
-    slots.push(`${dateStr}T${String(hour).padStart(2, "0")}:00:00Z`);
-    slots.push(`${dateStr}T${String(hour).padStart(2, "0")}:30:00Z`);
-  }
-  return slots;
-}
-
 export function formatTimeDisplay(isoString) {
   if (!isoString) return "";
-  const d = new Date(isoString);
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  if (isoString.includes("T")) {
+    return isoString.split("T")[1].substring(0, 5);
+  }
+  return isoString;
 }
-
