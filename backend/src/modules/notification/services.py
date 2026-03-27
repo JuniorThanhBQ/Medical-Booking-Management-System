@@ -6,6 +6,7 @@ from .models import Notification
 
 RABBITMQ_URL = os.getenv("RABBITMQ_URL")
 
+
 def get_notifications_service(current_user):
     notifications = (Notification.query.filter_by(user_id=current_user.id)
                      .order_by(Notification.created_date.desc()).all())

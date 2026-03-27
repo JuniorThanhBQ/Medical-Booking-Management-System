@@ -1,0 +1,14 @@
+{% extends 'admin/base.html' %}
+
+{% block head_tail %}
+    {{ super() }}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/master.css') }}">
+{% endblock %}
+
+{% block brand %}
+    <a class="navbar-brand font-weight-bold" href="{{ admin_view.admin.url }}"
+       style="display: flex; align-items: center; gap: 10px;">
+        <span>Medical Appointment B3</span>
+    </a>
+{% endblock %}

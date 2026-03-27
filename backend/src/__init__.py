@@ -1,24 +1,16 @@
 import os
-from pathlib import Path
 
 import cloudinary
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_cors import CORS
 
-import src.modules.notification.signals
 from src.admin import init_admin
 from src.extensions import db, limiter, login, migrate
-from src.middlewares import setup_middlewares
-from src.modules.auth_profile import models
+from src.middlewares.middlewares import middlewares
 from src.routes import api_v1
 
-env_path = Path(__file__).resolve().parent.parent / ".env"
-
-if env_path.exists():
-    load_dotenv(env_path)
-else:
-    raise SystemError("Lỗi hệ thống thiếu file env")
+load_dotenv(find_dotenv())
 
 
 def create_app():
@@ -32,7 +24,7 @@ def create_app():
 
     CORS(app, resources={
         r"/*": {
-            "origins": app.config.get("ALLOWED_ORIGINS"),
+            "origins": app.config.get("ALLOWED_ORIGINS", "*"),
             "methods": ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "expose_headers": ["Authorization"],
@@ -45,8 +37,7 @@ def create_app():
     migrate.init_app(app, db)
     login.init_app(app)
     limiter.init_app(app)
-    setup_middlewares(app)
-
+    middlewares(app)
     init_admin(app, db)
 
     cloudinary.config(

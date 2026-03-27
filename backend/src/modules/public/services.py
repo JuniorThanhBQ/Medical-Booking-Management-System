@@ -1,13 +1,15 @@
 from datetime import date, datetime, timedelta
 
-from src.modules.appointments.services import get_available_time_slots
-from src.modules.auth_profile.models import (CtaLabel, Profile, Specialty,
-                                             User, UserRole)
-from src.utils.exception_decorator import handle_db_errors
-from src.utils.utils import format_speciality_output, format_work_schedule
+from sqlalchemy import func
+
+from src.modules.appointments.models import Appointment, StatusRole
+from src.modules.auth_profiles.models import (CtaLabel, DoctorProfile, Profile,
+                                              Specialty, User, UserRole)
+from src.modules.shared.services import get_slot_duration, is_conflicting
+from src.utils.handle_db_errors import handle_db_errors
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
     query = Specialty.query
 
@@ -24,9 +26,7 @@ def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
 
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
 
-    items = [
-        format_speciality_output(specialty) for specialty in pagination.items
-    ]
+    items = [format_speciality_output(specialty) for specialty in pagination.items]
 
     result = {
         "items": items,
@@ -43,7 +43,7 @@ def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
     return result, "SUCCESS"
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
     query = User.query.join(User.profile).filter(
         User.is_active,
@@ -63,11 +63,12 @@ def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
 
     items = []
+
     for doctor in pagination.items:
         profile = doctor.profile
         items.append(
             {
-                "id": doctor.id,
+                "id": profile.id,
                 "firstName": doctor.first_name,
                 "lastName": doctor.last_name,
                 "avatar": profile.avatar,
@@ -93,7 +94,29 @@ def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
     return result, "SUCCESS"
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
+def get_specialty_detail_service(specialty_id):
+    specialty = Specialty.query.filter(Specialty.id == specialty_id).first()
+
+    if not specialty:
+        return {"message": "Không tồn tại chuyên khoa này"}, "NOT_FOUND"
+
+    result = format_speciality_output(specialty)
+
+    return result, "SUCCESS"
+
+
+def format_speciality_output(specialty):
+    return {
+        "id": specialty.id,
+        "name": specialty.name,
+        "description": specialty.description,
+        "level": specialty.level,
+        "ctaLabel": specialty.cta_label.name if specialty.cta_label else None
+    }
+
+
+@handle_db_errors
 def get_doctor_detail_service(doctor_id):
     doctor = get_doctor_by_id(doctor_id)
 
@@ -108,7 +131,7 @@ def get_doctor_detail_service(doctor_id):
         schedule_data = format_work_schedule(work_schedule)
 
     result = {
-        "id": doctor.id,
+        "id": profile.id,
         "firstName": doctor.first_name,
         "lastName": doctor.last_name,
         "email": doctor.email,
@@ -126,27 +149,68 @@ def get_doctor_detail_service(doctor_id):
     return result, "SUCCESS"
 
 
-@handle_db_errors(parameter=2)
-def get_specialty_detail_service(specialty_id):
-    specialty = Specialty.query.filter(Specialty.id == specialty_id).first()
+def get_booked_appointments(doctor_id, target_date):
+    return Appointment.query.filter(
+        Appointment.doctor_profile_id == doctor_id,
+        func.date(Appointment.appointment_date) == target_date,
+        Appointment.status.in_([StatusRole.APPROVED, StatusRole.COMPLETED])
+    ).all()
 
-    if not specialty:
-        return {"message": "Không tồn tại chuyên khoa này"}, "NOT_FOUND"
 
-    result = format_speciality_output(specialty)
+def get_available_time_slots(doctor, target_date):
+    if not doctor.profile or doctor.profile.profile_type != "doctor":
+        return []
 
-    return result, "SUCCESS"
+    schedule = doctor.profile.work_schedule
+    if not schedule:
+        return []
+
+    target_day_name = target_date.strftime('%A').upper()
+    working_days = [work_schedule.day_of_week.name for work_schedule in schedule.work_dates]
+    if target_day_name not in working_days:
+        return []
+
+    duration = get_slot_duration(doctor.profile)
+    appointments = get_booked_appointments(doctor.profile.id, target_date)
+    current_date = datetime.combine(target_date, schedule.start_time)
+    end_date = datetime.combine(target_date, schedule.end_time)
+    now_date = datetime.now()
+    available = []
+
+    while current_date + duration <= end_date:
+        if current_date <= now_date:
+            current_date += timedelta(minutes=30)
+            continue
+
+        if not is_conflicting(current_date, duration, appointments):
+            available.append(current_date.isoformat() + "Z")
+
+        current_date += timedelta(minutes=30)
+
+    return available
 
 
 def get_doctor_by_id(doctor_id):
-    return User.query.filter(
-        User.is_active,
-        User.id == doctor_id,
-        User.role == UserRole.DOCTOR
-    ).first()
+    return User.query.join(DoctorProfile).filter(DoctorProfile.id == doctor_id).first()
 
 
-@handle_db_errors(parameter=2)
+def format_work_schedule(work_schedule):
+    if not work_schedule:
+        return None
+
+    return {
+        "title": work_schedule.title,
+        "description": work_schedule.description,
+        "startTime":
+            work_schedule.start_time.strftime("%H:%M:%S") if work_schedule.start_time else None,
+        "endTime":
+            work_schedule.end_time.strftime("%H:%M:%S") if work_schedule.end_time else None,
+        "workDate": [work_schedule.day_of_week.name.capitalize()
+                     for work_schedule in work_schedule.work_dates],
+    }
+
+
+@handle_db_errors
 def get_time_slots_service(doctor_id, date_str):
     doctor = get_doctor_by_id(doctor_id)
 
@@ -154,13 +218,16 @@ def get_time_slots_service(doctor_id, date_str):
         return {"message": "Bác sĩ không tồn tại"}, "NOT_FOUND"
 
     try:
-        target_date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else date.today()
+        if date_str:
+            target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        else:
+            target_date = date.today()
     except ValueError:
         return {"message": "Định dạng không hợp lệ (YYYY-MM-DD)"}, "ERROR_BAD_REQUEST"
 
     today = date.today()
     if target_date < today or target_date > (today + timedelta(days=7)):
-        return {"message": "Chỉ xem được lịch trống trong vòng 7 ngày tới"}, "ERROR_BAD_REQUEST"
+        return {"message": "Chỉ xem được lịch trong vòng 7 ngày tới"}, "ERROR_BAD_REQUEST"
 
     profile = doctor.profile
     work_schedule_data = None

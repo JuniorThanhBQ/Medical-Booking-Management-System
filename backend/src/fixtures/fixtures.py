@@ -11,10 +11,10 @@ sys.path.insert(0, root_dir)
 
 from src import create_app, db
 from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.auth_profile.models import (CtaLabel, DoctorProfile,
-                                             GenderRole, PatientProfile,
-                                             Specialty, User, UserRole)
-from src.modules.doctor.models import DayOfWeek, WorkDate, WorkSchedule
+from src.modules.auth_profiles.models import (CtaLabel, DoctorProfile,
+                                              GenderRole, PatientProfile,
+                                              Specialty, User, UserRole)
+from src.modules.doctors.models import DayOfWeek, WorkDate, WorkSchedule
 from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
 from src.modules.notification.models import Notification
 
@@ -103,11 +103,11 @@ def load_fixtures(app):
                 db.session.flush()
                 ws_map[ws["id"]] = schedule.id
 
-            for wd in data.get("work_dates", []):
-                for day_str in wd["days"]:
+            for work_schedule in data.get("work_dates", []):
+                for day_str in work_schedule["days"]:
                     work_date = WorkDate(
                         day_of_week=DayOfWeek[day_str],
-                        work_schedule_id=ws_map[wd["work_schedule_id"]]
+                        work_schedule_id=ws_map[work_schedule["work_schedule_id"]]
                     )
                     db.session.add(work_date)
 

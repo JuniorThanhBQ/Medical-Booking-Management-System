@@ -2,12 +2,12 @@ from datetime import datetime, timedelta
 
 from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.doctor.models import DayOfWeek, WorkDate, WorkSchedule
-from src.utils.exception_decorator import handle_db_errors
-from src.utils.utils import format_appointment_summary
+from src.modules.doctors.models import DayOfWeek, WorkDate, WorkSchedule
+from src.modules.shared.services import format_appointment_summary
+from src.utils.handle_db_errors import handle_db_errors
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def get_my_schedule_service(current_user):
     if current_user.role.name != "DOCTOR":
         return {"message": "Chỉ bác sĩ mới có quyền truy cập"}, "FORBIDDEN"
@@ -24,7 +24,8 @@ def get_my_schedule_service(current_user):
             "description": ws.description,
             "startTime": ws.start_time.strftime("%H:%M:%S") if ws.start_time else None,
             "endTime": ws.end_time.strftime("%H:%M:%S") if ws.end_time else None,
-            "workDate": [wd.day_of_week.name.capitalize() for wd in ws.work_dates],
+            "workDate": [work_schedule.day_of_week.name.capitalize()
+                         for work_schedule in ws.work_dates],
         }
 
     now = datetime.now()
@@ -50,7 +51,7 @@ def get_my_schedule_service(current_user):
     return result, "SUCCESS"
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def request_schedule_change_service(current_user, data):
     if current_user.role.name != "DOCTOR":
         return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
@@ -99,8 +100,8 @@ def request_schedule_change_service(current_user, data):
     for day_str in work_days:
         try:
             day_enum = DayOfWeek[day_str.upper()]
-            new_wd = WorkDate(day_of_week=day_enum, work_schedule_id=ws.id)
-            db.session.add(new_wd)
+            new_work_schedule = WorkDate(day_of_week=day_enum, work_schedule_id=ws.id)
+            db.session.add(new_work_schedule)
         except KeyError:
             pass
 

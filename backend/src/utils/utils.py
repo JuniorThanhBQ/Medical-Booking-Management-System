@@ -1,10 +1,10 @@
-import logging
-import os
+import datetime
 import re
+import unicodedata
 
 import cloudinary.uploader
-from google.auth.transport import requests
-from google.oauth2 import id_token
+import jwt
+from flask import current_app
 
 EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
 PASSWORD_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#_\-?])[A-Za-z\d@#_\-?]{9,}$")
@@ -24,7 +24,8 @@ def check_xss_violation(values):
 
 
 def get_http_status_code(status_type, default=400):
-    mapping = {"SERVER_INTERNAL_ERROR": 500, "FORBIDDEN": 403, "NOT_FOUND": 400}
+    mapping = {"SERVER_INTERNAL_ERROR": 500, "FORBIDDEN": 403, "NOT_FOUND": 404,
+               "ERROR_UNAUTHORIZED": 401, "ERROR_BAD_REQUEST": 400}
     return mapping.get(status_type, default)
 
 
@@ -41,85 +42,35 @@ def get_request_data(request):
 
 def format_api_response(data, status_type, success_code=200):
     if status_type != "SUCCESS":
-        return data, get_http_status_code(status_type, default=400)
+        return data, get_http_status_code(status_type)
     return data, success_code
 
 
 def validate_email_password(email, password):
     if not EMAIL_REGEX.match(email):
-        return {"message": "Định dạng email không hợp lệ."}, 400
+        return {"message": "Định dạng email không hợp lệ."}
     if password and not PASSWORD_REGEX.match(password):
-        return {"message": "Định dạng mật khẩu không hợp lệ"}, 400
-    return None, None
+        return {"message": "Định dạng mật khẩu không hợp lệ"}
+    return None
 
 
-def verify_google_token(token):
-    try:
-        id_info = id_token.verify_oauth2_token(
-            token, requests.Request(), os.getenv("GOOGLE_CLIENT_ID")
-        )
-        return id_info
+def generate_username(first_name, last_name):
+    raw_name = f"{first_name}{last_name}".lower().replace(" ", "")
+    raw_name = raw_name.replace('đ', 'd')
+    username = (unicodedata.normalize('NFKD', raw_name).
+                encode('ascii', 'ignore').decode('utf-8'))
+
+    return username
 
 
-    except ValueError as e:
-        logging.error("Token Google không hợp lệ hoặc đã hết hạn: %s", e)
-        return None
-
-
-def format_appointment_summary(appointment, patient_user, doctor_user, specialty):
-    return {
-        "id": str(appointment.id),
-        "type": specialty.cta_label.name if specialty and specialty.cta_label else None,
-        "patientName": f"{patient_user.last_name} {patient_user.first_name}",
-        "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
-        "appointmentDate": appointment.appointment_date.isoformat() + "Z",
-        "status": appointment.status.name if appointment.status else None,
-        "note": appointment.note,
-        "createdAt":
-            appointment.created_date.isoformat() + "Z" if appointment.created_date else None,
-        "updatedAt":
-            appointment.updated_date.isoformat() + "Z" if appointment.updated_date else None,
+def create_token(user):
+    user_payload = {
+        "user_id": user.id,
+        "role": user.role.name,
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=12),
+        "iat": datetime.datetime.now(datetime.timezone.utc),
     }
 
-
-def format_appointment_response(appointment, doctor, patient_name=None):
-    if patient_name is None:
-        patient_name = (f"{appointment.patient_profile.user.last_name} "
-                        f"{appointment.patient_profile.user.first_name}")
-
-    return {
-        "id": str(appointment.id),
-        "type": doctor.profile.specialty.cta_label.name,
-        "patientName": patient_name,
-        "doctorName": f"{doctor.last_name} {doctor.first_name}",
-        "appointmentDate": appointment.appointment_date.isoformat() + "Z",
-        "status": appointment.status.name,
-        "note": appointment.note,
-        "createdAt": appointment.created_date.isoformat() + "Z",
-        "updatedAt": appointment.updated_date.isoformat() + "Z"
-    }
-
-
-def format_work_schedule(work_schedule):
-    if not work_schedule:
-        return None
-
-    return {
-        "title": work_schedule.title,
-        "description": work_schedule.description,
-        "startTime":
-            work_schedule.start_time.strftime("%H:%M:%S") if work_schedule.start_time else None,
-        "endTime":
-            work_schedule.end_time.strftime("%H:%M:%S") if work_schedule.end_time else None,
-        "workDate": [wd.day_of_week.name.capitalize() for wd in work_schedule.work_dates],
-    }
-
-
-def format_speciality_output(specialty):
-    return {
-        "id": specialty.id,
-        "name": specialty.name,
-        "description": specialty.description,
-        "level": specialty.level,
-        "ctaLabel": specialty.cta_label.name if specialty.cta_label else None
-    }
+    secret_key = current_app.config.get("SECRET_KEY")
+    token = jwt.encode(user_payload, secret_key, algorithm="HS256")
+    return token

@@ -1,50 +1,58 @@
 [importlinter]
 root_package = src
 
-name = "Check Layered Structure"
+[importlinter:contract:layered-architecture]
+name = Layered architecture
 type = layers
 layers =
-    routes
+    routers
     views
     services
     models
 containers =
-    src.modules.auth_profile
+    src.modules.auth_profiles
     src.modules.appointments
-    src.modules.doctor
+    src.modules.doctors
     src.modules.medical_records
     src.modules.public
     src.modules.notification
 
-[importlinter:contract:module-isolation]
-name = "Check module isolation"
+
+[importlinter:contract:service-independence]
+name = Service independence
 type = independence
 modules =
-    src.modules.auth_profile
-    src.modules.appointments
-    src.modules.doctor
-    src.modules.medical_records
-    src.modules.public
-    src.modules.notification
+    src.modules.auth_profiles.services
+    src.modules.appointments.services
+    src.modules.doctors.services
+    src.modules.medical_records.services
+    src.modules.public.services
+    src.modules.notification.services
 ignore_imports =
-    src.modules.appointments.models -> src.modules.doctor.models
-    src.modules.auth_profile.models -> src.modules.doctor.models
-    src.modules.notification.models -> src.modules.doctor.models
-    src.modules.medical_records.models -> src.modules.doctor.models
-    src.modules.medical_records.services -> src.modules.appointments.models
-    src.modules.doctor.services -> src.modules.appointments.models
-    src.modules.public.services -> src.modules.auth_profile.models
-    src.modules.appointments.services -> src.modules.auth_profile.models
-    src.modules.medical_records.views -> src.modules.auth_profile.auth_decorators
-    src.modules.notification.views -> src.modules.auth_profile.auth_decorators
-    src.modules.appointments.views -> src.modules.auth_profile.auth_decorators
-    src.modules.doctor.views -> src.modules.auth_profile.auth_decorators
-    src.modules.public.services -> src.modules.appointments.services
-    src.modules.appointments.admin -> src.modules.auth_profile.admin
-    src.modules.doctor.admin -> src.modules.auth_profile.admin
-    src.modules.notification.signals -> src.modules.auth_profile.models
-    src.modules.notification.admin -> src.modules.auth_profile.admin
-    src.modules.medical_records.admin -> src.modules.auth_profile.admin
-    src.modules.notification.signals -> src.modules.appointments.models
+    src.modules.appointments.services -> src.modules.public.services
 
 
+[importlinter:contract:view-to-service]
+name = Views independence
+type = forbidden
+source_modules =
+    src.modules.auth_profiles.views
+    src.modules.appointments.views
+    src.modules.doctors.views
+    src.modules.medical_records.views
+    src.modules.public.views
+    src.modules.notification.views
+forbidden_modules =
+    src.modules.auth_profiles.services
+    src.modules.appointments.services
+    src.modules.doctors.services
+    src.modules.medical_records.services
+    src.modules.public.services
+    src.modules.notification.services
+ignore_imports =
+    src.modules.auth_profiles.views -> src.modules.auth_profiles.services
+    src.modules.appointments.views -> src.modules.appointments.services
+    src.modules.doctors.views -> src.modules.doctors.services
+    src.modules.medical_records.views -> src.modules.medical_records.services
+    src.modules.public.views -> src.modules.public.services
+    src.modules.notification.views -> src.modules.notification.services

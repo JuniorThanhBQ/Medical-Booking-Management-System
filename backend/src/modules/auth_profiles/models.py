@@ -5,7 +5,7 @@ from sqlalchemy import (Boolean, Column, Date, Enum, ForeignKey, Integer,
                         String, Text)
 from sqlalchemy.orm import backref, relationship
 
-from src.modules.doctor.models import Base
+from src.modules.doctors.models import Base
 
 
 class UserRole(enum.Enum):
@@ -52,7 +52,9 @@ class Profile(Base):
     avatar = Column(String(500))
     gender = Column(Enum(GenderRole), default=GenderRole.NOT_SET, index=True)
     user_id = Column(Integer,
-                     ForeignKey("user.id", ondelete="CASCADE"), nullable=False, unique=True)
+                     ForeignKey("user.id", ondelete="CASCADE"),
+                     nullable=False,
+                     unique=True)
     user = relationship(
         "User",
         backref=backref("profile", uselist=False, cascade="all, delete-orphan")
@@ -76,11 +78,14 @@ class Specialty(Base):
 class DoctorProfile(Profile):
     __tablename__ = "doctor_profile"
     __mapper_args__ = {"polymorphic_identity": "doctor"}
-    id = Column(Integer, ForeignKey("profile.id", ondelete="CASCADE"), primary_key=True)
+    id = Column(Integer,
+                ForeignKey("profile.id", ondelete="CASCADE"),
+                primary_key=True)
     title = Column(String(255), nullable=False)
     bio = Column(Text, nullable=False)
     specialty_id = Column(Integer,
-                          ForeignKey("specialty.id", ondelete="RESTRICT"), nullable=False)
+                          ForeignKey("specialty.id", ondelete="RESTRICT"),
+                          nullable=False)
     specialty = relationship("Specialty", backref="doctors", lazy="joined")
     work_schedule = relationship(
         "WorkSchedule",
@@ -94,7 +99,9 @@ class DoctorProfile(Profile):
 class PatientProfile(Profile):
     __tablename__ = "patient_profile"
     __mapper_args__ = {"polymorphic_identity": "patient"}
-    id = Column(Integer, ForeignKey("profile.id", ondelete="CASCADE"), primary_key=True)
+    id = Column(Integer,
+                ForeignKey("profile.id", ondelete="CASCADE"),
+                primary_key=True)
     medical_history = Column(Text)
 
 
