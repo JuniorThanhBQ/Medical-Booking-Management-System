@@ -1,5 +1,5 @@
 from flask import request
-from flask_restful import Resource
+from flask_restx import Namespace, Resource
 
 from src.modules.public.services import (get_doctor_detail_service,
                                          get_doctors_service,
@@ -7,6 +7,8 @@ from src.modules.public.services import (get_doctor_detail_service,
                                          get_specialty_detail_service,
                                          get_time_slots_service)
 from src.utils.utils import format_api_response
+
+public_namespace = Namespace("public", description="Các API không cần đăng nhập")
 
 
 class PublicSpecialtyListAPI(Resource):
@@ -54,6 +56,7 @@ class PublicDoctorRetrieveAPI(Resource):
 
 
 class PublicDoctorSlotListAPI(Resource):
+    @public_namespace.doc(params={'date': 'Ngày muốn xem lịch. Định dạng: YYYY-MM-DD'})
     def get(self, doctor_id):
         date_str = request.args.get("date")
         return format_api_response(*get_time_slots_service(doctor_id, date_str))

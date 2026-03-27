@@ -3,7 +3,7 @@ import enum
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import backref, relationship
 
-from src.modules.doctor.models import Base
+from src.modules.doctors.models import Base
 
 
 class StatusRole(enum.Enum):

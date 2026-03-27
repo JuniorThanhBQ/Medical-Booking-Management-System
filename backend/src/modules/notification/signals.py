@@ -1,7 +1,7 @@
 from sqlalchemy import event, select
 
 from src.modules.appointments.models import Appointment
-from src.modules.auth_profile.models import DoctorProfile, PatientProfile
+from src.modules.auth_profiles.models import DoctorProfile, PatientProfile
 from src.modules.notification.models import Notification
 
 

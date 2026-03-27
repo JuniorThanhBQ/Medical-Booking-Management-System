@@ -1,10 +1,10 @@
 from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
-from src.utils.exception_decorator import handle_db_errors
+from src.utils.handle_db_errors import handle_db_errors
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def get_detail_medical_record_service(current_user, record_id):
     record = MedicalRecord.query.get(int(record_id))
     if not record:
@@ -42,7 +42,7 @@ def get_detail_medical_record_service(current_user, record_id):
     return result, "SUCCESS"
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def create_medical_record_service(current_user, appointment_id, data):
     if current_user.role.name != "DOCTOR":
         return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
@@ -91,7 +91,7 @@ def create_medical_record_service(current_user, appointment_id, data):
     return result, "SUCCESS"
 
 
-@handle_db_errors(parameter=2)
+@handle_db_errors
 def update_medical_record_service(current_user, record_id, data):
     if current_user.role.name != "DOCTOR":
         return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"

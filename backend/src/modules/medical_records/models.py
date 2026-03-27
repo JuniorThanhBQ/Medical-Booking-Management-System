@@ -3,7 +3,7 @@ import enum
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
 from sqlalchemy.orm import backref, relationship
 
-from src.modules.doctor.models import Base
+from src.modules.doctors.models import Base
 
 
 class MedicalRecordType(enum.Enum):

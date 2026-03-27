@@ -803,21 +803,10 @@ components:
                 format: date-time
                 description: "Ngày tạo lịch hẹn"
                 example: "2026-03-21T14:30:00Z"
-        # Cái này bên front-end phải giải quyết bằng thuật toán sau. 
-            # + Đầu tiên lấy chuyên khoa của bác sĩ đó, nếu bác sĩ thuộc CK1 = 1 tiếng, CK2 = 2 tiếng, CK3 = 3 tiếng
-            # + Chỉ được phép chọn thời gian đặt lịch là hôm nay và 7 ngày tới (Không được chọn các ngày không nằm trong "thứ" làm việc)
-            # + Khi bệnh nhân chọn ngày khác ngày hôm nay thì sẽ gửi get request kèm query (ngày đó) ==> Server sẽ trả về danh sách lịch hẹn của bác sĩ này trong ngày đó. 
-            # + Dùng thuật toán để tạo ra các slot trống trong  thời gian làm việc work schedule của bác sĩ (Mỗi lịch trống phải cách nhau 30p)
-            # + Ví dụ thực tế:
-            #     1. Ngày 22/03/2026 có lịch khám lúc 8h30 cho bác sĩ A (startTime lúc 8h30) thuộc chuyên khoa cấp 2
-            #     2. Người dùng B khi đặt lịch sẽ có thể đặt lúc 11h hoặc 11h30 hoặc 12h hoặc 12h30 hoặc 13h hoặc 13h30 ...
-            #     3. Giả sử hai trường hợp:
-            #         3.1. Họ chốt lúc 12h30 thì họ sẽ có lịch từ 12h30 đến 14h30 ==> khung giờ từ 11h đến 12h29 sẽ không thể đặt  
-            #         3.2. Họ chốt lúc 13h30 thì họ sẽ có lịch từ 13h30 đến 15h30 ==> Khung giờ từ 11h đến 13h sẽ có thể đặt
-            #     4. lưu ý hai giá trị biên là startTime và endTime khi tính toán timeSlot
+    
     ReceptionistAppointmentRequest: 
       type: object
-      properties: # Tùy vào loại tạo lịch mà lễ tân chọn mà có hai cách là nhập tay như bên dưới hoặc qua patient_id
+      properties: 
         firstName:
           type: string
         lastName:
@@ -839,7 +828,7 @@ components:
         appointmentDate:
           type: string
           format: date-time
-        note: # là reason á
+        note:
           type: string
     AppointmentRequest:
       type: object
@@ -852,7 +841,7 @@ components:
         appointmentDate:
           type: string
           format: date-time
-        note: # là reason á
+        note: 
           type: string
     AppointmentUpdate:
       type: object
@@ -889,7 +878,7 @@ components:
         id:
           type: string
         type:
-          type: string # Tương ứng với mã của chuyên khoa
+          type: string
         patientName:
           type: string
         doctorName:
@@ -945,8 +934,8 @@ components:
           type: string
           enum:
             - DONE
-            - FOLLOW_UP # Tái khám. Vì bản chất khóa ngoại ở Medical Record nên nếu là tái khám thì appointment hiện tại sẽ không có medicalRecord. Còn cái medicalRecord này sẽ có updatedAt = ngày khám của appointment hiện tại.
-        diagnosis:
+            - FOLLOW_UP 
+        diagnose:
           type: string
         notes:
           type: string
@@ -1021,7 +1010,7 @@ components:
                 type: string
                 enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]                
         reason:
-          type: string  # Chúng ta sẽ không làm duyệt bởi admin nữa mà chấp nhận luôn (với điều kiện là không có bất cứ lịch nào trong thời gian 7 ngày tới trừ lịch đã hủy). 
+          type: string 
     ImpromptuRequest:
       type: object
       required:

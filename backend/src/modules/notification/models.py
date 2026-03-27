@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
-from src.modules.doctor.models import Base
+from src.modules.doctors.models import Base
 
 
 class Notification(Base):

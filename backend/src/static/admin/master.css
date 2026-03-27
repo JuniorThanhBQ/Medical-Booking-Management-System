@@ -1,0 +1,427 @@
+:root {
+    --primary: #0ea5e9;
+    --primary-hover: #0284c7;
+    --surface: #ffffff;
+    --bg: #f8fafc;
+    --text-main: #18253a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+}
+
+body {
+    background-color: var(--bg) !important;
+    color: var(--text-main) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+.navbar, .navbar.bg-dark, .navbar.navbar-dark {
+    background-color: var(--surface) !important;
+    border-bottom: 1px solid var(--border) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    padding: 1rem 2rem !important;
+}
+
+.navbar-brand {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    font-size: 1.25rem !important;
+    letter-spacing: -0.025em !important;
+}
+
+.navbar-dark .navbar-nav .nav-link,
+.navbar .navbar-nav .nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar .navbar-nav .nav-link:hover {
+    color: var(--primary) !important;
+    background-color: #f1f5f9 !important;
+}
+
+.dropdown-menu {
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+    background-color: var(--surface) !important;
+    min-width: 200px !important;
+}
+
+.dropdown-menu > li > a,
+.dropdown-item {
+    color: var(--text-muted) !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    padding: 0.6rem 1rem !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+    display: block !important;
+    text-decoration: none !important;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-item:hover,
+.dropdown-menu > li.active > a,
+.dropdown-item.active {
+    background-color: var(--primary) !important;
+    color: var(--bg) !important;
+}
+
+.nav-tabs {
+    border-bottom: none !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    font-size: 0.9rem !important;
+    gap: 0.3rem;
+    display: flex;
+}
+
+.nav-tabs .nav-item .nav-link {
+    border: none !important;
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 1.2rem !important;
+    transition: all 0.2s;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: #e0f2fe !important;
+    color: var(--primary) !important;
+    box-shadow: inset 0 0 0 1px #bae6fd !important;
+}
+
+.nav-tabs .nav-item .nav-link:hover:not(.active) {
+    background-color: #f1f5f9 !important;
+    color: var(--text-main) !important;
+}
+
+.form-inline .form-control {
+    border-radius: 10px !important;
+    border: 1px solid var(--border) !important;
+    padding: 0.6rem 1.2rem !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    font-size: 0.9rem !important;
+    min-width: 250px;
+}
+
+.form-inline .form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15) !important;
+    outline: none !important;
+}
+
+.btn {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.9rem !important;
+    border: none !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-default {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-main) !important;
+}
+
+.btn-default:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.table-responsive {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border);
+    padding: 0 !important;
+    overflow-x: auto;
+}
+
+table.table {
+    margin-bottom: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.table thead th {
+    background-color: #f8fafc !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-top: none !important;
+    padding: 0.5rem 1rem !important;
+    vertical-align: middle;
+    color: var(--text-muted) !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-weight: 700 !important;
+}
+
+.table thead th:first-child {
+    border-top-left-radius: 16px;
+}
+
+.table thead th:last-child {
+    border-top-right-radius: 16px;
+}
+
+.table thead th a,
+.table thead th b,
+.table thead th span,
+.table thead th strong {
+    color: var(--text-muted) !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+}
+
+.table thead th a:hover {
+    color: var(--primary) !important;
+}
+
+.table tbody td {
+    padding: 0.5rem 1rem !important;
+    vertical-align: middle !important;
+    border-top: 1px solid var(--border) !important;
+    color: var(--text-main) !important;
+    font-size: 0.8rem !important;
+    font-weight: 500;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: transparent !important;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: #f1f5f9 !important;
+}
+
+td.list-buttons {
+    white-space: nowrap;
+}
+
+td.list-buttons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    margin-right: 4px;
+    color: #94a3b8 !important;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    font-size: 0 !important;
+}
+
+td.list-buttons a:hover {
+    background-color: #e0f2fe;
+    color: var(--primary) !important;
+}
+
+td.list-buttons a[title="Delete Record"]:hover,
+td.list-buttons a[title="Xóa"]:hover,
+td.list-buttons form.icon-remove button:hover {
+    background-color: #fee2e2;
+    color: #ef4444 !important;
+}
+
+td.list-buttons a span,
+td.list-buttons a i {
+    font-size: 14px !important;
+}
+
+input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 4px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+form .control-label,
+form label {
+    font-weight: 600 !important;
+    color: var(--text-main) !important;
+    margin-bottom: 0.4rem !important;
+    font-size: 0.9rem !important;
+}
+
+form .form-control {
+    border-radius: 8px !important;
+    border: 1px solid var(--border) !important;
+    padding: 0.5rem 1rem !important;
+    box-shadow: none !important;
+    font-size: 0.9rem !important;
+    color: var(--text-main) !important;
+    background-color: var(--surface) !important;
+    transition: all 0.2s ease;
+    min-height: 42px;
+}
+
+form textarea.form-control {
+    min-height: 100px;
+}
+
+form .form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+    outline: none !important;
+}
+
+form .select2-container.form-control {
+    border: none !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    min-height: auto !important;
+}
+
+.select2-container .select2-choice,
+.select2-container .select2-selection {
+    border-radius: 8px !important;
+    border: 1px solid var(--border) !important;
+    height: 42px !important;
+    padding: 0.3rem 0.8rem !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    background-color: var(--surface) !important;
+    color: var(--text-main) !important;
+    display: flex;
+    align-items: center;
+}
+
+.select2-container.select2-container-active .select2-choice,
+.select2-container.select2-container-active .select2-selection,
+.select2-drop-active {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+}
+
+.select2-container .select2-choice .select2-arrow,
+.select2-container .select2-selection__arrow {
+    background: transparent !important;
+    border-left: none !important;
+}
+
+.select2-container-multi .select2-choices {
+    border-radius: 8px !important;
+    border: 1px solid var(--border) !important;
+    min-height: 42px !important;
+    background-image: none !important;
+    background-color: var(--surface) !important;
+    padding: 2px !important;
+    margin: 0 !important;
+}
+
+.select2-container-active.select2-container-multi .select2-choices {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+}
+
+.select2-container-multi .select2-choices .select2-search-choice {
+    border-radius: 6px !important;
+    background-color: var(--bg) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-main) !important;
+    padding: 5px 8px 5px 24px !important;
+    margin: 4px 0 4px 4px !important;
+    box-shadow: none !important;
+    font-size: 0.85rem !important;
+}
+
+.daterangepicker, .bootstrap-datetimepicker-widget {
+    border-radius: 12px !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    font-family: inherit !important;
+    padding: 10px !important;
+}
+
+.daterangepicker .btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+.daterangepicker .btn-success {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+}
+
+.daterangepicker .btn-success:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+.daterangepicker .btn-default {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-main) !important;
+}
+
+.daterangepicker .btn-default:hover {
+    background-color: var(--bg) !important;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+}
+
+.admin-form .btn,
+form .btn {
+    margin-top: 1rem;
+    border-radius: 8px !important;
+    padding: 0.6rem 1.2rem !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+.btn-danger {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626 !important;
+}
+
+.btn-secondary,
+input[name="_continue_editing"] {
+    background-color: #64748b !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary:hover,
+input[name="_continue_editing"]:hover {
+    background-color: #475569 !important;
+}

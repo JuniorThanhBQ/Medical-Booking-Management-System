@@ -4,15 +4,16 @@ import jwt
 from flask import current_app, request
 
 from src.extensions import db
-from src.modules.auth_profile.models import User
+from src.modules.auth_profiles.models import User
 
 
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         token = request.headers.get("Authorization")
+
         if not token or not token.startswith("Bearer "):
-            return {"message": "Có vấn đề trong xác thực token"}, 401
+            return {"message": "Token không đúng định dạng"}, 401
 
         try:
             token_val = token.split(" ")[1]
@@ -21,7 +22,10 @@ def token_required(f):
             current_user = db.session.get(User, data["user_id"])
 
             if not current_user:
-                return {"message": "User không tồn tại"}, 401
+                return {"message": "User không tồn tại"}, 400
+
+            if not current_user.is_active:
+                return {"message": "Tài khoản bị khoá"}, 403
 
         except jwt.ExpiredSignatureError:
             return {"message": "Token đã hết hạn"}, 401
