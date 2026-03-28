@@ -1,36 +1,37 @@
 openapi: 3.0.0
-
 info:
-  title: Appointment Booking API
-  description: API cho hệ thống đặt lịch khám bệnh
+  title: Medical Appointment B3-8 API
+  description: API cho hệ thống đặt lịch khám bệnh trực tuyến
   version: 1.0.0
-
 servers:
   - url: http://localhost:8000
     description: Local server
-
+  - url: http://url:8000
+    description: Production Server
+tags:
+  - name: Auth & Account
+  - name: Notifications
+  - name: Public
+  - name: Patient
+  - name: Doctor
+  - name: Patient & Doctor & Receptionist
+  - name: Receptionist
 paths:
-
-  /auth/register:
+  /api/v1/auth/login:
     post:
-      summary: Đăng ký tài khoản
+      tags:
+        - Auth & Account
+      summary: Đăng nhập tài khoản
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        "201":
-          description: Đăng ký thành công
-
-  /auth/login:
-    post:
-      summary: Đăng nhập
-      requestBody:
-        required: true
-        content:
-          application/json:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/LoginRequest'
       responses:
@@ -39,11 +40,95 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
-
-  /notifications:
+                $ref: '#/components/schemas/AuthResponse'
+        "400":
+          description: Dữ liệu không hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Sai thông tin đăng nhập
+        "403":
+          description: Tài khoản bị khóa hoặc thử quá nhiều lần
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Auth & Account
+      summary: Đăng ký tài khoản (chỉ dành cho Patient)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        "201":
+          description: Tạo tài khoản thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        "400":
+          description: Email đã tồn tại hoặc dữ liệu sai định dạng
+        "500":
+          description: Lỗi hệ thống
+  /api/v1/auth/current-user:
     get:
+      tags:
+        - Auth & Account
+      summary: Lấy thông tin hồ sơ hiện tại (Tùy vào vai trò mà có thể trả thêm thuộc tính phù hợp)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "401":
+          description: Chưa đăng nhập
+    patch:
+      tags:
+        - Auth & Account
+      summary: Chỉnh sửa thông tin hồ sơ (chỉ dành cho patient)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        "200":
+          description: Cập nhật thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "403":
+          description: Không có quyền (chỉ Patient mới được sửa)
+  /api/v1/notifications:
+    get:
+      tags:
+        - Notifications
       summary: Xem danh sách thông báo
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Danh sách thông báo
@@ -53,355 +138,896 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Notification'
-
-  /patients/profile:
+    patch:
+      tags:
+        - Notifications
+      summary: Cập nhật tất cả thông báo qua đã xem
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Đã cập nhật thành công
+ 
+  /api/v1/public/specialties:
     get:
-      summary: Xem hồ sơ cá nhân
+      tags:
+        - Public
+      summary: Xem danh sách chuyên khoa
       responses:
         "200":
-          description: Thông tin bệnh nhân
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Patient'
-
-    put:
-      summary: Cập nhật hồ sơ cá nhân
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Patient'
-      responses:
-        "200":
-          description: Cập nhật thành công
-
-  /patients/medical-history:
-    get:
-      summary: Xem lịch sử khám bệnh
-      responses:
-        "200":
-          description: Danh sách lịch sử khám
+          description: Thành công
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MedicalRecord'
-
-  /doctors:
+                  $ref: '#/components/schemas/Specialty'
+  /api/v1/public/doctors:
     get:
+      tags:
+        - Public
       summary: Xem danh sách bác sĩ
-      parameters:
-        - name: specialty
-          in: query
-          schema:
-            type: string
-
-        - name: name
-          in: query
-          schema:
-            type: string
-
-        - name: available_date
-          in: query
-          schema:
-            type: string
-            format: date
-
       responses:
         "200":
-          description: Danh sách bác sĩ
+          description: Thành công
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Doctor'
-
-  /doctors/{id}/available-slots:
+                  $ref: '#/components/schemas/DoctorListPublic'
+  /api/v1/public/doctors/{doctor_id}:
     get:
-      summary: Xem giờ làm việc trống của bác sĩ
+      tags:
+        - Public
       parameters:
-        - name: id
+        - name: doctor_id
           in: path
           required: true
           schema:
-            type: integer
-
-        - name: date
-          in: query
-          schema:
             type: string
-            format: date
-
       responses:
         "200":
-          description: Danh sách giờ trống
+          description: Chi tiết bác sĩ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorPublic'
+        "404":
+          description: Bác sĩ không tồn tại hoặc không hoạt động
+  /api/v1/public/doctors/{doctor_id}/time-slots:
+    get:
+      tags:
+        - Public
+      parameters:
+        - name: doctor_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Danh sách khung giờ trống
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/TimeSlot'
-
-  /appointments:
+  /api/v1/appointments:
+    get:
+      tags:
+        - Patient & Doctor & Receptionist
+      summary: Truy vấn danh sách lịch hẹn tổng quan
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Thành công (Dữ liệu trả về filter theo Role)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListAppointment'
     post:
-      summary: Đặt lịch khám
+      tags:
+        - Patient
+      summary: Đặt lịch hẹn trực tuyến
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AppointmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AppointmentRequest'
       responses:
         "201":
           description: Đặt lịch thành công
-
-    get:
-      summary: Xem danh sách lịch hẹn
-      responses:
-        "200":
-          description: Danh sách lịch hẹn
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Appointment'
+                $ref: '#/components/schemas/Appointment'
+        "409":
+          description: Trùng lịch hẹn
 
-  /appointments/{id}:
-    delete:
-      summary: Huỷ lịch khám
+  /api/v1/receptionist/appointments: 
+    post:
+      tags:
+        - Receptionist
+      summary: Đặt lịch hẹn trực tuyến
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceptionistAppointmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReceptionistAppointmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReceptionistAppointmentRequest'
+      responses:
+        "201":
+          description: Đặt lịch thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        "409":
+          description: Trùng lịch hẹn
+  /api/v1/appointments/{appointment_id}:
+    get:
+      tags:
+        - Patient & Doctor & Receptionist
       parameters:
-        - name: id
+        - name: appointment_id
           in: path
           required: true
           schema:
-            type: integer
-
+            type: string
+      security:
+        - bearerAuth: []
       responses:
         "200":
-          description: Huỷ lịch thành công
-
-  /patients:
-    get:
-      summary: Xem danh sách bệnh nhân
-      responses:
-        "200":
-          description: Danh sách bệnh nhân
+          description: Chi tiết lịch hẹn
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Patient'
-
-  /treatments:
-    post:
-      summary: Lập phiếu điều trị
+                $ref: '#/components/schemas/Appointment'
+    patch:
+      tags:
+        - Receptionist
+      summary: Cập nhật lịch hẹn
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Treatment'
+              $ref: '#/components/schemas/AppointmentUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AppointmentUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AppointmentUpdate'
       responses:
-        "201":
-          description: Tạo phiếu điều trị thành công
-
-  /prescriptions:
+        "200":
+          description: Cập nhật thành công
+    delete:
+      tags:
+        - Receptionist
+      summary: Xóa lịch hẹn (Khi lịch hẹn đã bị hủy)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Hủy thành công
+        "403":
+          description: Lịch hẹn chỉ được phép xóa khi lịch hẹn đã hủy
+  /api/v1/patient/my-medical-records:
+    get:
+      tags:
+        - Patient
+      summary: Xem danh sách phiếu khám cá nhân (phân trang)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MedicalRecord'
+                  total:
+                    type: integer
+  /api/v1/medical-records/{medical_record_id}:
+    get:
+      tags:
+        - Patient & Doctor & Receptionist
+      parameters:
+        - name: medical_record_id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Chi tiết phiếu khám
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalRecord'
+  /api/v1/my-schedule:
+    get:
+      tags:
+        - Doctor
+      summary: Xem lịch làm việc và lịch khám cá nhân
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorSchedule'
+  /api/v1/schedule-requests:
     post:
-      summary: Lập toa thuốc
+      tags:
+        - Doctor
+      summary: Gửi yêu cầu đổi lịch
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Prescription'
+              $ref: '#/components/schemas/ScheduleRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ScheduleRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ScheduleRequest'
       responses:
         "201":
-          description: Tạo toa thuốc thành công
-
-  /work-schedules:
+          description: Đã gửi yêu cầu
+        "403":
+          description: Có lịch hẹn ở trong phạm vi 7 ngày tới.
+  /api/v1/appointments/{appointment_id}/patient_profile:
     get:
-      summary: Xem lịch làm việc của bác sĩ
+      tags:
+        - Doctor
+      summary: Xem hồ sơ bệnh nhân từ lịch hẹn
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
       responses:
         "200":
-          description: Danh sách lịch làm việc
-
+          description: Thông tin hồ sơ bệnh nhân
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientProfile'
+  /api/v1/appointments/{appointment_id}/medical-record:
     post:
-      summary: Tạo lịch làm việc mới
+      tags:
+        - Doctor
+      summary: Tạo/Cập nhật kết quả khám cho lịch hẹn
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicalRecordUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MedicalRecordUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MedicalRecordUpdate'
       responses:
-        "201":
-          description: Tạo lịch thành công
-
-  /admin/doctors:
-    get:
-      summary: Xem danh sách bác sĩ
+        "204":
+          description: Thành công
+  /api/v1/medical-records/{medical_record_id}/:
+    patch:
+      tags:
+        - Doctor
+      summary: Chỉnh sửa phiếu khám
+      parameters:
+        - name: medical_record_id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicalRecordUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MedicalRecordUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MedicalRecordUpdate'
       responses:
-        "200":
-          description: Danh sách bác sĩ
-
-    post:
-      summary: Thêm bác sĩ
-      responses:
-        "201":
-          description: Thêm bác sĩ thành công
-
-  /admin/specialties:
-    get:
-      summary: Xem danh sách chuyên khoa
-      responses:
-        "200":
-          description: Danh sách chuyên khoa
-
-    post:
-      summary: Thêm chuyên khoa
-      responses:
-        "201":
-          description: Thêm chuyên khoa thành công
-
-  /admin/users:
-    get:
-      summary: Xem danh sách người dùng
-      responses:
-        "200":
-          description: Danh sách người dùng
-
-  /admin/statistics/doctors:
-    get:
-      summary: Thống kê bác sĩ
-      responses:
-        "200":
-          description: Thống kê bác sĩ
-
-  /admin/statistics/appointments:
-    get:
-      summary: Thống kê lịch hẹn
-      responses:
-        "200":
-          description: Thống kê lịch hẹn
-
-  /reminders/send:
-    post:
-      summary: Gửi nhắc lịch khám (mock email)
-      responses:
-        "200":
-          description: Đã gửi nhắc lịch
+        "204":
+          description: Thành công
 
 components:
-
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserResponse'
     RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - phone
+        - firstName
+        - lastName 
+        - address
+        - gender
+      properties:
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - other
+        avatar:
+          type: string
+          format: binary
+    RegisterResponse:
       type: object
       properties:
         name:
           type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
         email:
           type: string
-        password:
+          format: email
+        role:
           type: string
-
-    LoginRequest:
+        createdAt:
+          type: string
+          format: date-time        
+        profile:   
+          type: object
+          description: "CHỨA THÔNG TIN ĐẶC THÙ THEO ROLE"
+          properties:
+            address:
+              type: string
+            avatar:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              type: string
+            phone:
+              type: string
+            medicalHistory:
+              type: string 
+    UpdateProfileRequest:
       type: object
       properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        address:
+          type: string
+        avatar:
+          type: string
+        birthday:
+          type: string
+          format: date
+        gender:
+          type: string
+        phone:
+          type: string
+        medicalHistory:
+          type: string
+          description: "CHỈ DÀNH CHO BỆNH NHÂN"
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
         email:
           type: string
-        password:
+          format: email
+        role:
           type: string
-
-    LoginResponse:
-      type: object
-      properties:
-        token:
+        createdAt:
           type: string
-
+          format: date-time        
+        profile:   
+          type: object
+          description: "CHỨA THÔNG TIN ĐẶC THÙ THEO ROLE"
+          properties:
+            address:
+              type: string
+            avatar:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              type: string
+            phone:
+              type: string
+            medicalHistory:
+              type: string
+              description: "CHỈ DÀNH CHO BỆNH NHÂN"
+            title:
+              type: string
+              description: "CHỈ DÀNH CHO BÁC SĨ"
+            specialtyId:
+              type: integer
+              description: "CHỈ DÀNH CHO BÁC SĨ"
+            bio:
+              type: string
+              description: "CHỈ DÀNH CHO BÁC SĨ"
     Notification:
       type: object
       properties:
         id:
           type: integer
+        title:
+          type: string
         message:
           type: string
-
-    Patient:
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Specialty:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        level:
+          type: string
+        ctaLabel:
+          type: string
+          enum:
+            - CK3
+            - CK2
+            - CK1 
+    DoctorListPublic:
       type: object
       properties:
         id:
           type: integer
-        name:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatar:
+          type: string
+        gender:
+          type: string
+        title:
+          type: string
+          description: "CHỈ DÀNH CHO BÁC SĨ"
+        specialtyId:
+          type: integer
+          description: "CHỈ DÀNH CHO BÁC SĨ"
+        bio:
+          type: string
+          description: "CHỈ DÀNH CHO BÁC SĨ"
+    DoctorPublic:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
           type: string
         email:
           type: string
+          format: email
+        profile:   
+          type: object
+          description: "CHỨA THÔNG TIN ĐẶC THÙ THEO ROLE"
+          properties:
+            avatar:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            gender:
+              type: string
+            phone:
+              type: string
+            title:
+              type: string
+              description: "CHỈ DÀNH CHO BÁC SĨ"
+            specialtyId:
+              type: integer
+              description: "CHỈ DÀNH CHO BÁC SĨ"
+            bio:
+              type: string
+              description: "CHỈ DÀNH CHO BÁC SĨ"
+        workSchedule:   
+          type: object
+          description: "Work schedule chia theo slot thời gian (dùng thuật toán tự chia work schedule)"
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+            startTime:
+              type: string
+            endTime:
+              type: string
+            workDate:
+              type: array
+              description: "Các thứ làm việc trong tuần. Phần này phức tạp nên có gì Phát nhắn hỏi mình nếu khó hiểu nhé."
+              items:
+                type: string
+                enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]                
+    TimeSlot:
+      type: object
+      properties:
+        workSchedule:   
+          type: object
+          description: "Work schedule chia theo slot thời gian (dùng thuật toán tự chia work schedule)"
+          properties:
+            startTime:
+              type: string
+            endTime:
+              type: string
+            workDate:
+              type: array
+              description: "Các thứ làm việc trong tuần. Phần này phức tạp nên có gì Phát nhắn hỏi mình nếu khó hiểu nhé."
+              items:
+                type: string
+                enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]  
+        appointment:
+          type: array 
+          description: "Danh sách các lịch hẹn"
+          items: 
+            type: object
+            properties:
+              id:
+                type: string
+                description: "ID của lịch hẹn"
+                example: "1"
+              status:
+                type: string
+                description: "trạng thái của lịch hẹn"
+              created_date:
+                type: string
+                format: date-time
+                description: "Ngày tạo lịch hẹn"
+                example: "2026-03-21T14:30:00Z"
+    
+    ReceptionistAppointmentRequest: 
+      type: object
+      properties: 
+        firstName:
+          type: string
+        lastName:
+          type: string
+        address:
+          type: string
+        birthday:
+          type: string
+          format: date
+        gender:
+          type: string
         phone:
           type: string
-
-    Doctor:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
+        medicalHistory:
           type: string
-        specialty:
+          description: "CHỈ DÀNH CHO BỆNH NHÂN"
+        doctorId:
           type: string
-
-    AppointmentRequest:
-      type: object
-      properties:
-        doctor_id:
-          type: integer
-        patient_id:
-          type: integer
-        appointment_time:
+        appointmentDate:
           type: string
           format: date-time
-
-    Appointment:
+        note:
+          type: string
+    AppointmentRequest:
+      type: object
+      required:
+        - doctorId
+        - appointmentDate
+      properties:
+        doctorId:
+          type: string
+        appointmentDate:
+          type: string
+          format: date-time
+        note: 
+          type: string
+    AppointmentUpdate:
       type: object
       properties:
-        id:
-          type: integer
-        doctor_id:
-          type: integer
-        patient_id:
-          type: integer
-        appointment_time:
+        appointmentDate:
           type: string
           format: date-time
         status:
           type: string
-
+          enum:
+            - pending
+            - confirmed
+            - completed
+            - cancelled
+        note:
+          type: string 
+    ListAppointment:
+      type: object
+      properties:
+        id:
+          type: string
+        patientName:
+          type: string
+        doctorName:
+          type: string       
+        status:
+          type: string
+        appointmentDate:
+          type: string
+          format: date-time
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        patientName:
+          type: string
+        doctorName:
+          type: string       
+        appointmentDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+        note:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     MedicalRecord:
       type: object
       properties:
         id:
-          type: integer
+          type: string
+        type:
+          type: string
+        appointmentId:
+          type: string
+        patientName:
+          type: string
+        doctorName:
+          type: string
+        specialty:
+          type: string
+        status:
+          type: string
         diagnosis:
           type: string
-        treatment:
+        notes:
           type: string
-
-    Treatment:
+        prescriptionText:
+          type: string
+        treatmentOrders:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    MedicalRecordUpdate:
       type: object
       properties:
-        patient_id:
-          type: integer
-        description:
+        status:
           type: string
-
-    Prescription:
+          enum:
+            - DONE
+            - FOLLOW_UP 
+        diagnose:
+          type: string
+        notes:
+          type: string
+        prescriptionText:
+          type: string
+        treatmentOrders:
+          type: string
+    PatientProfile:
       type: object
       properties:
-        patient_id:
-          type: integer
-        medicine:
+        firstName:
           type: string
-        dosage:
+        lastName:
           type: string
-
-    TimeSlot:
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        avatar:
+          type: string
+        medicalHistory:
+          type: string
+    DoctorSchedule:
       type: object
       properties:
-        time:
+        workSchedule:   
+          type: object
+          description: "Work schedule chia theo slot thời gian (dùng thuật toán tự chia work schedule)"
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+            startTime:
+              type: string
+            endTime:
+              type: string
+            workDate:
+              type: array
+              description: "Các thứ làm việc trong tuần. Phần này phức tạp nên có gì Phát nhắn hỏi mình nếu khó hiểu nhé."
+              items:
+                type: string
+                enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]                
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+    ScheduleRequest:
+      type: object
+      properties:
+        newWorkSchedule:   
+          type: object
+          description: "Work schedule chia theo slot thời gian (dùng thuật toán tự chia work schedule)"
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+            start_time:
+              type: string
+            end_time:
+              type: string
+            work_date:
+              type: array
+              description: "Các thứ làm việc trong tuần. Phần này phức tạp nên có gì Phát nhắn hỏi mình nếu khó hiểu nhé."
+              items:
+                type: string
+                enum: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]                
+        reason:
+          type: string 
+    ImpromptuRequest:
+      type: object
+      required:
+        - from_date
+        - to_date
+        - reason
+      properties:
+        from_date:
+          type: string
+          format: date
+        to_date:
+          type: string
+          format: date
+        reason:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        message:
           type: string

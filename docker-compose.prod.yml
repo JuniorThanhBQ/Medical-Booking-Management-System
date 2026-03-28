@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  frontend:
+    restart: always
+    ports:
+      - "${FRONTEND_PORT_PROD}:8080"
+    environment:
+      - VITE_API_URL=${BACKEND_PROD_API_URL}
+
+
+  backend:
+    restart: always
+    ports:
+      - "${BACKEND_PORT_PROD}:8000"
+    env_file:
+      - .env
+    environment:
+      - FLASK_MODE=production
+      - DATABASE_URL=${DATABASE_URL_PROD}
+
+
+  db:
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "${DB_USER_PROD}", "-p${DB_PASSWORD_PROD}", "-e", "USE $DB_NAME_PROD; SELECT 1;"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    environment:
+      - MYSQL_USER=${DB_USER_PROD}
+      - MYSQL_PASSWORD=${DB_PASSWORD_PROD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD_PROD}
+      - MYSQL_DATABASE=${DB_NAME_PROD}
+    ports:
+      - "${DB_PORT_PROD}:3306" 
+
+  redis:
+    restart: always    
+
+  rabbitmq:
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME_PROD}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD_PROD}
+    ports:
+      - "${RABBITMQ_PORT_PROD_1}:5672"
+      - "${RABBITMQ_PORT_PROD_2}:15672"

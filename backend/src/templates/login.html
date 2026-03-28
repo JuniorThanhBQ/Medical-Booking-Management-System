@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+<div class="login-container">
+    <h2>Đăng nhập</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="error">
+                <ul style="margin:0; padding-left:20px;">
+                    {% for msg in messages %}
+                        <li>{{ msg }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('login_view') }}">
+        <div>
+            <label for="email_field">Email</label>
+            <input type="text" id="email_field" name="email" placeholder="Nhập email" required>
+        </div>
+        <br>
+        <div>
+            <label for="password_field">Password</label>
+            <input type="password" id="password_field" name="password" placeholder="Nhập password" required>
+        </div>
+        <button type="submit" class="btn-login">Đăng nhập</button>
+    </form>
+</div>
+</body>
+</html>
