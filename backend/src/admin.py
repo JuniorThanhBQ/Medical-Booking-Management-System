@@ -19,7 +19,7 @@ class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role.name == 'ADMIN'
 
-    def inaccessible_callback(self, name, **kwargs):
+    def inaccessible_callback(self, name, **kwargs): # pylint: disable=unused-argument
         return redirect(url_for('login_view', next=request.url))
 
 
@@ -27,7 +27,7 @@ class MyModelView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role.name == 'ADMIN'
 
-    def inaccessible_callback(self, name, **kwargs):
+    def inaccessible_callback(self, name, **kwargs): # pylint: disable=unused-argument
         return redirect(url_for('login_view', next=request.url))
 
 
