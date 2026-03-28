@@ -4,7 +4,7 @@
     --surface: #ffffff;
     --bg: #f8fafc;
     --text-main: #18253a;
-    --text-muted: #64748b;
+    --text-muted: #475569;
     --border: #e2e8f0;
 }
 
@@ -26,7 +26,7 @@ body {
     color: #0f172a !important;
     font-weight: 800 !important;
     font-size: 1.25rem !important;
-    letter-spacing: -0.025em !important;
+    letter-spacing: -0.025em;
 }
 
 .navbar-dark .navbar-nav .nav-link,
@@ -164,7 +164,7 @@ table.table {
     color: var(--text-muted) !important;
     font-size: 0.7rem !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.05em;
     font-weight: 700 !important;
 }
 
@@ -183,7 +183,7 @@ table.table {
     color: var(--text-muted) !important;
     font-size: 0.7rem !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.05em;
     font-weight: 700 !important;
     text-decoration: none !important;
 }

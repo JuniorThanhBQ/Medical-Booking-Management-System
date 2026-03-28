@@ -8,7 +8,9 @@ def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     app.config["SECRET_KEY"] = "never-said-never-never-ever-here-we-go"
+    app.config["RATELIMIT_STORAGE_URI"] = "memory://"
     db.init_app(app)
+
 
     @app.route("/")
     def index():

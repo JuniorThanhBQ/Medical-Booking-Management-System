@@ -21,13 +21,13 @@
     {% endwith %}
     <form method="POST" action="{{ url_for('login_view') }}">
         <div>
-            <label>Email</label>
-            <input type="text" name="email" placeholder="Nhập email" required>
+            <label for="email_field">Email</label>
+            <input type="text" id="email_field" name="email" placeholder="Nhập email" required>
         </div>
         <br>
         <div>
-            <label>Password</label>
-            <input type="password" name="password" placeholder="Nhập password" required>
+            <label for="password_field">Password</label>
+            <input type="password" id="password_field" name="password" placeholder="Nhập password" required>
         </div>
         <button type="submit" class="btn-login">Đăng nhập</button>
     </form>

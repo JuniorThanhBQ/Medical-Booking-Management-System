@@ -68,14 +68,15 @@ class PatientProfileView(AdminModelView):
 
 
 def auth_profile(admin, db):
-    admin.add_view(UserModelView(User, db.session, category='Tài khoản và hồ sơ',
+    account_profile_label = 'Tài khoản và hồ sơ'
+    admin.add_view(UserModelView(User, db.session, category=account_profile_label,
                                  name='Tài khoản User'))
     admin.add_view(ProfileModelView(Profile, db.session,
-                                    category='Tài khoản và hồ sơ', name='Hồ sơ chung'))
+                                    category=account_profile_label, name='Hồ sơ chung'))
     admin.add_view(DoctorProfileView(DoctorProfile, db.session,
-                                     category='Tài khoản và hồ sơ', name='Hồ sơ Bác sĩ'))
+                                     category=account_profile_label, name='Hồ sơ Bác sĩ'))
     admin.add_view(PatientProfileView(PatientProfile, db.session,
-                                      category='Tài khoản và hồ sơ', name='Hồ sơ Bệnh nhân'))
+                                      category=account_profile_label, name='Hồ sơ Bệnh nhân'))
     admin.add_view(AdminModelView(Specialty, db.session,
                                   name='Chuyên khoa'))
     admin.add_view(AdminModelView(AuditLog, db.session,

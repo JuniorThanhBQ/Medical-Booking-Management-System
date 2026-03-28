@@ -53,7 +53,7 @@ def login_view():
 
 
 @login_required
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout_view():
     logout_user()
     flash("Đăng xuất thành công.")
