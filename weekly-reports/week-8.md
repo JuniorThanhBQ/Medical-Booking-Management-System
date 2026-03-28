@@ -1,8 +1,8 @@
 # Báo cáo Tuần 8 
 **Tuần:** 8 (06/04/2026 - 12/04/2026)   
-**Nhóm:** 8
-**Đề tài:** [B3] - [Hệ thống đặt lịch khám bệnh (Medical Appointment)]   
-**Nhóm trưởng:** [Văn Trung Thành] - [2351050164] 
+**Nhóm:** 5<br>
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh trực tuyến 
+**Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 
 
@@ -44,4 +44,4 @@
 --- 
 
 *Ngày nộp: 12/04/2026*   
-*Xác nhận của Nhóm trưởng: [Văn Trung Thành]*
+*Xác nhận của Nhóm trưởng: Văn Trung Thành*

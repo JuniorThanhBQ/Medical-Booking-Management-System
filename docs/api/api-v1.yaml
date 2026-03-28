@@ -1,407 +1,1176 @@
 openapi: 3.0.0
-
 info:
-  title: Appointment Booking API
-  description: API cho hệ thống đặt lịch khám bệnh
-  version: 1.0.0
-
+  title: Medical Appointment B3 API
+  version: v1
+  description: API for Medical Appointment System B3
 servers:
-  - url: http://localhost:8000
-    description: Local server
-
-paths:
-
-  /auth/register:
-    post:
-      summary: Đăng ký tài khoản
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        "201":
-          description: Đăng ký thành công
-
-  /auth/login:
-    post:
-      summary: Đăng nhập
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        "200":
-          description: Đăng nhập thành công
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-
-  /notifications:
-    get:
-      summary: Xem danh sách thông báo
-      responses:
-        "200":
-          description: Danh sách thông báo
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Notification'
-
-  /patients/profile:
-    get:
-      summary: Xem hồ sơ cá nhân
-      responses:
-        "200":
-          description: Thông tin bệnh nhân
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Patient'
-
-    put:
-      summary: Cập nhật hồ sơ cá nhân
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Patient'
-      responses:
-        "200":
-          description: Cập nhật thành công
-
-  /patients/medical-history:
-    get:
-      summary: Xem lịch sử khám bệnh
-      responses:
-        "200":
-          description: Danh sách lịch sử khám
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MedicalRecord'
-
-  /doctors:
-    get:
-      summary: Xem danh sách bác sĩ
-      parameters:
-        - name: specialty
-          in: query
-          schema:
-            type: string
-
-        - name: name
-          in: query
-          schema:
-            type: string
-
-        - name: available_date
-          in: query
-          schema:
-            type: string
-            format: date
-
-      responses:
-        "200":
-          description: Danh sách bác sĩ
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Doctor'
-
-  /doctors/{id}/available-slots:
-    get:
-      summary: Xem giờ làm việc trống của bác sĩ
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-
-        - name: date
-          in: query
-          schema:
-            type: string
-            format: date
-
-      responses:
-        "200":
-          description: Danh sách giờ trống
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimeSlot'
-
-  /appointments:
-    post:
-      summary: Đặt lịch khám
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AppointmentRequest'
-      responses:
-        "201":
-          description: Đặt lịch thành công
-
-    get:
-      summary: Xem danh sách lịch hẹn
-      responses:
-        "200":
-          description: Danh sách lịch hẹn
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Appointment'
-
-  /appointments/{id}:
-    delete:
-      summary: Huỷ lịch khám
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-
-      responses:
-        "200":
-          description: Huỷ lịch thành công
-
-  /patients:
-    get:
-      summary: Xem danh sách bệnh nhân
-      responses:
-        "200":
-          description: Danh sách bệnh nhân
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Patient'
-
-  /treatments:
-    post:
-      summary: Lập phiếu điều trị
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Treatment'
-      responses:
-        "201":
-          description: Tạo phiếu điều trị thành công
-
-  /prescriptions:
-    post:
-      summary: Lập toa thuốc
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Prescription'
-      responses:
-        "201":
-          description: Tạo toa thuốc thành công
-
-  /work-schedules:
-    get:
-      summary: Xem lịch làm việc của bác sĩ
-      responses:
-        "200":
-          description: Danh sách lịch làm việc
-
-    post:
-      summary: Tạo lịch làm việc mới
-      responses:
-        "201":
-          description: Tạo lịch thành công
-
-  /admin/doctors:
-    get:
-      summary: Xem danh sách bác sĩ
-      responses:
-        "200":
-          description: Danh sách bác sĩ
-
-    post:
-      summary: Thêm bác sĩ
-      responses:
-        "201":
-          description: Thêm bác sĩ thành công
-
-  /admin/specialties:
-    get:
-      summary: Xem danh sách chuyên khoa
-      responses:
-        "200":
-          description: Danh sách chuyên khoa
-
-    post:
-      summary: Thêm chuyên khoa
-      responses:
-        "201":
-          description: Thêm chuyên khoa thành công
-
-  /admin/users:
-    get:
-      summary: Xem danh sách người dùng
-      responses:
-        "200":
-          description: Danh sách người dùng
-
-  /admin/statistics/doctors:
-    get:
-      summary: Thống kê bác sĩ
-      responses:
-        "200":
-          description: Thống kê bác sĩ
-
-  /admin/statistics/appointments:
-    get:
-      summary: Thống kê lịch hẹn
-      responses:
-        "200":
-          description: Thống kê lịch hẹn
-
-  /reminders/send:
-    post:
-      summary: Gửi nhắc lịch khám (mock email)
-      responses:
-        "200":
-          description: Đã gửi nhắc lịch
-
+  - url: /api/v1
+    description: Base URL for API v1
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+    description: Các API xác thực và tài khoản
+  - name: Appointments
+    description: Các API lịch hẹn
+  - name: Doctors
+    description: Các API liên quan đến lịch làm việc bác sĩ
+  - name: Medical Records
+    description: Các API của hồ sơ khám bệnh
+  - name: Notifications
+    description: Các API của thông báo
+  - name: Public
+    description: Các API không cần đăng nhập
 components:
-
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
-
-    RegisterRequest:
+    User:
       type: object
       properties:
+        id:
+          type: integer
         name:
           type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
         email:
           type: string
-        password:
+          format: email
+        role:
           type: string
-
-    LoginRequest:
+          enum: [PATIENT, DOCTOR, RECEPTIONIST, ADMIN]
+        createdAt:
+          type: string
+          format: date-time
+        profile:
+          $ref: "#/components/schemas/Profile"
+    Profile:
       type: object
       properties:
-        email:
+        id:
+          type: integer
+        address:
           type: string
-        password:
+        dateOfBirth:
           type: string
-
-    LoginResponse:
+          format: date
+        phone:
+          type: string
+        gender:
+          type: string
+          enum: [MALE, FEMALE, OTHER, NOT_SET]
+        avatar:
+          type: string
+        medicalHistory:
+          type: string
+        title:
+          type: string
+        bio:
+          type: string
+        specialty:
+          $ref: "#/components/schemas/Specialty"
+    Specialty:
       type: object
       properties:
-        token:
+        id:
+          type: integer
+        name:
           type: string
-
+        description:
+          type: string
+        level:
+          type: string
+        ctaLabel:
+          type: string
+          enum: [CK1, CK2, CK3]
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        patientName:
+          type: string
+        doctorName:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, APPROVED, COMPLETED, CANCEL]
+        appointmentDate:
+          type: string
+          format: date-time
+        note:
+          type: string
+    MedicalRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [CK1, CK2, CK3]
+        appointmentId:
+          type: string
+        patientName:
+          type: string
+        doctorName:
+          type: string
+        specialty:
+          type: string
+        status:
+          type: string
+          enum: [DONE, FOLLOW_UP]
+        diagnosis:
+          type: string
+        notes:
+          type: string
+        prescriptionText:
+          type: string
+        treatmentOrders:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Notification:
       type: object
       properties:
         id:
           type: integer
+        title:
+          type: string
         message:
           type: string
-
-    Patient:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-
-    Doctor:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        specialty:
-          type: string
-
-    AppointmentRequest:
-      type: object
-      properties:
-        doctor_id:
-          type: integer
-        patient_id:
-          type: integer
-        appointment_time:
+        is_read:
+          type: boolean
+        created_at:
           type: string
           format: date-time
-
-    Appointment:
+    WorkSchedule:
       type: object
       properties:
-        id:
-          type: integer
-        doctor_id:
-          type: integer
-        patient_id:
-          type: integer
-        appointment_time:
+        title:
           type: string
-          format: date-time
-        status:
-          type: string
-
-    MedicalRecord:
-      type: object
-      properties:
-        id:
-          type: integer
-        diagnosis:
-          type: string
-        treatment:
-          type: string
-
-    Treatment:
-      type: object
-      properties:
-        patient_id:
-          type: integer
         description:
           type: string
-
-    Prescription:
+        startTime:
+          type: string
+          format: time
+        endTime:
+          type: string
+          format: time
+        workDate:
+          type: array
+          items:
+            type: string
+            enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+    PaginationMeta:
       type: object
       properties:
-        patient_id:
+        total:
           type: integer
-        medicine:
-          type: string
-        dosage:
-          type: string
-
-    TimeSlot:
+        pages:
+          type: integer
+        currentPage:
+          type: integer
+        perPage:
+          type: integer
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
+    ErrorResponse:
       type: object
       properties:
-        time:
+        message:
           type: string
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Đăng nhập
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [PATIENT, DOCTOR, RECEPTIONIST, ADMIN]
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Đăng ký
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - firstName
+                - lastName
+                - dayOfBirth
+                - gender
+                - phone
+                - address
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                dayOfBirth:
+                  type: string
+                  format: date
+                gender:
+                  type: string
+                  enum: [MALE, FEMALE, OTHER, NOT_SET]
+                phone:
+                  type: string
+                address:
+                  type: string
+                medicalHistory:
+                  type: string
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/email-validator:
+    post:
+      tags:
+        - Auth
+      summary: Xác thực Email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Email available
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_valid:
+                    type: boolean
+        "400":
+          description: Email exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_valid:
+                    type: boolean
+  /auth/current-user:
+    get:
+      tags:
+        - Auth
+      summary: Lấy thông tin user đã đăng nhập
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+    patch:
+      tags:
+        - Auth
+      summary: Cập nhật thông tin user đã đăng nhập 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                dayOfBirth:
+                  type: string
+                  format: date
+                gender:
+                  type: string
+                  enum: [MALE, FEMALE, OTHER, NOT_SET]
+                phone:
+                  type: string
+                address:
+                  type: string
+                medicalHistory:
+                  type: string
+                avatar:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Update successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /appointments:
+    get:
+      tags:
+        - Appointments
+      summary: Danh sách lịch hẹn
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Appointment"
+                  meta:
+                    $ref: "#/components/schemas/PaginationMeta"
+    post:
+      tags:
+        - Appointments
+      summary: Tạo lịch hẹn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doctorId
+                - appointmentDate
+              properties:
+                doctorId:
+                  type: integer
+                appointmentDate:
+                  type: string
+                  format: date-time
+                note:
+                  type: string
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /appointments/{appointment_id}:
+    get:
+      tags:
+        - Appointments
+      summary: Chi tiết lịch hẹn
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+        - Appointments
+      summary: Cập nhật lịch hẹn
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [PENDING, APPROVED, COMPLETED, CANCEL]
+                note:
+                  type: string
+                appointmentDate:
+                  type: string
+                  format: date-time
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags:
+        - Appointments
+      summary: Xóa lịch hẹn
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No content
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /appointments/{appointment_id}/patient-profile:
+    get:
+      tags:
+        - Appointments
+      summary: Lấy hồ sơ bệnh nhân
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  dateOfBirth:
+                    type: string
+                    format: date
+                  gender:
+                    type: string
+                    enum: [MALE, FEMALE, OTHER, NOT_SET]
+                  phone:
+                    type: string
+                  address:
+                    type: string
+                  avatar:
+                    type: string
+                  medicalHistory:
+                    type: string
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /appointments/receptionist-appointments:
+    post:
+      tags:
+        - Appointments
+      summary: Tạo lịch hẹn (Lễ tân)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - doctorId
+                - appointmentDate
+                - firstName
+                - lastName
+                - phone
+                - gender
+                - birthday
+                - address
+              properties:
+                doctorId:
+                  type: integer
+                appointmentDate:
+                  type: string
+                  format: date-time
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                phone:
+                  type: string
+                gender:
+                  type: string
+                  enum: [MALE, FEMALE, OTHER, NOT_SET]
+                birthday:
+                  type: string
+                  format: date
+                address:
+                  type: string
+                note:
+                  type: string
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /doctors/my-schedule:
+    get:
+      tags:
+        - Doctors
+      summary: Lịch làm việc
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  workSchedule:
+                    $ref: "#/components/schemas/WorkSchedule"
+                  appointments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Appointment"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /doctors/schedule-requests:
+    post:
+      tags:
+        - Doctors
+      summary: Xin đổi lịch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newWorkSchedule
+              properties:
+                newWorkSchedule:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    start_time:
+                      type: string
+                      format: time
+                    end_time:
+                      type: string
+                      format: time
+                    work_date:
+                      type: array
+                      items:
+                        type: string
+                        enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /medical-records/{medical_record_id}:
+    get:
+      tags:
+        - Medical Records
+      summary: Chi tiết hồ sơ y tế
+      parameters:
+        - name: medical_record_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicalRecord"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+        - Medical Records
+      summary: Cập nhật hồ sơ y tế
+      parameters:
+        - name: medical_record_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                diagnosis:
+                  type: string
+                prescriptionText:
+                  type: string
+                treatmentOrders:
+                  type: string
+                notes:
+                  type: string
+                status:
+                  type: string
+                  enum: [DONE, FOLLOW_UP]
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicalRecord"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /medical-records/appointments/{appointment_id}:
+    post:
+      tags:
+        - Medical Records
+      summary: Tạo hồ sơ y tế
+      parameters:
+        - name: appointment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - diagnosis
+                - prescriptionText
+                - treatmentOrders
+                - notes
+                - status
+              properties:
+                diagnosis:
+                  type: string
+                prescriptionText:
+                  type: string
+                treatmentOrders:
+                  type: string
+                notes:
+                  type: string
+                status:
+                  type: string
+                  enum: [DONE, FOLLOW_UP]
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicalRecord"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Danh sách thông báo
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    patch:
+      tags:
+        - Notifications
+      summary: Đánh dấu đã xem
+      responses:
+        "200":
+          description: Success
+  /public/specialties:
+    get:
+      tags:
+        - Public
+      summary: Danh sách chuyên khoa
+      security: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: keywords
+          in: query
+          schema:
+            type: string
+        - name: ctaLabel
+          in: query
+          schema:
+            type: string
+            enum: [CK1, CK2, CK3]
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Specialty"
+                      meta:
+                        $ref: "#/components/schemas/PaginationMeta"
+  /public/specialties/{specialty_id}:
+    get:
+      tags:
+        - Public
+      summary: Chi tiết chuyên khoa
+      security: []
+      parameters:
+        - name: specialty_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Specialty"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /public/doctors:
+    get:
+      tags:
+        - Public
+      summary: Danh sách bác sĩ
+      security: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: keywords
+          in: query
+          schema:
+            type: string
+        - name: specialtyId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            firstName:
+                              type: string
+                            lastName:
+                              type: string
+                            avatar:
+                              type: string
+                            gender:
+                              type: string
+                              enum: [MALE, FEMALE, OTHER, NOT_SET]
+                            title:
+                              type: string
+                            specialtyId:
+                              type: integer
+                            bio:
+                              type: string
+                      meta:
+                        $ref: "#/components/schemas/PaginationMeta"
+  /public/doctors/{doctor_id}:
+    get:
+      tags:
+        - Public
+      summary: Chi tiết bác sĩ
+      security: []
+      parameters:
+        - name: doctor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  profile:
+                    type: object
+                    properties:
+                      avatar:
+                        type: string
+                      dateOfBirth:
+                        type: string
+                        format: date
+                      gender:
+                        type: string
+                        enum: [MALE, FEMALE, OTHER, NOT_SET]
+                      phone:
+                        type: string
+                      title:
+                        type: string
+                      specialtyId:
+                        type: integer
+                      bio:
+                        type: string
+                  workSchedule:
+                    $ref: "#/components/schemas/WorkSchedule"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /public/doctors/{doctor_id}/time-slots:
+    get:
+      tags:
+        - Public
+      summary: Khung giờ trống
+      security: []
+      parameters:
+        - name: doctor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: string
+                      format: date-time
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"

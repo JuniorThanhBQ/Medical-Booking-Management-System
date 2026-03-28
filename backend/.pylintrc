@@ -1,0 +1,35 @@
+[MASTER]
+ignore=venv
+jobs=0
+
+[MESSAGES CONTROL]
+disable=
+    C0114,
+    C0115,
+    C0116,
+    C0103,
+    R0903,
+    R0913,
+    R0914,
+    R0915,
+    R0801,
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=8
+max-locals=20
+max-returns=6
+max-branches=15
+
+[BASIC]
+good-names=i,j,k,ex,Run,_
+
+[TYPECHECK]
+disable=import-error
+
+[REPORTS]
+output-format=colorized
+reports=no
+score=no

@@ -1,0 +1,96 @@
+version: '3.8'
+
+services: 
+  frontend:
+    build: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - frontend-network
+
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    volumes:
+      - ./backend/src:/app/src
+      - ./database/migrations:/app/migrations
+      - ./backend/.env:/app/.env:ro
+    networks:
+      - frontend-network
+      - backend-network
+
+
+  db:
+    image: mysql:8.0-debian
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE $DB_NAME; SELECT 1;"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    networks:
+      - backend-network
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-network
+    volumes:
+      - redis-data:/data
+
+
+  rabbitmq:
+    image: rabbitmq:4.2.5-management-alpine
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+ 
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+
+
+volumes:
+  mysql-data:
+  redis-data:
+  rabbitmq-data:

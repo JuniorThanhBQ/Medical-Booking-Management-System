@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Medical Appointment B3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">Medical Appointment B3</div>
+    <nav>
+        <a href="/">Trang chủ</a>
+        <a href="/link-to-vitejs">Đặt lịch</a>
+
+        {% if current_user.is_authenticated %}
+            {% if current_user.role and current_user.role.name == 'ADMIN' %}
+                <a href="/api/v1/docs">Trang API</a>
+                <a href="{{ url_for('admin.index') }}" class="nav-login">Trang Quản trị</a>
+            {% else %}
+                <a href="{{ url_for('logout_view') }}" class="nav-login">Đăng xuất</a>
+            {% endif %}
+        {% else %}
+            <a href="{{ url_for('login_view') }}" class="nav-login">Đăng nhập</a>
+        {% endif %}
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Chào mừng đến với OU Dental Clinic</h1>
+        <p>Hệ thống đặt lịch khám nha khoa trực tuyến chuyên nghiệp, tận tâm và nhanh chóng.</p>
+        <a href="/appointments" class="btn">Đặt lịch ngay</a>
+
+        {% if not current_user.is_authenticated %}
+            <div class="google-login-wrapper">
+                <div id="g_id_onload"
+                     data-client_id="YOUR_CLIENT_ID"
+                     data-callback="handleCredentialResponse">
+                </div>
+                <div class="g_id_signin" data-type="standard"></div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="about">
+    <div class="about-container">
+        <h2>Giới thiệu</h2>
+        <p>
+            OU Dental Clinic cung cấp dịch vụ chăm sóc răng miệng chất lượng cao.
+            Người dùng có thể đặt lịch khám với bác sĩ một cách nhanh chóng và tiện lợi ngay trên nền tảng của chúng
+            tôi.
+        </p>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>© 2026 OU Dental Clinic. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
