@@ -59,26 +59,31 @@ export default function WeeklyScheduleCard({
       </div>
 
       <div className="schedule-page__time-row">
-        <label>Giờ bắt đầu</label>
-        <select
-          className="schedule-page__select"
-          value={startTime}
-          onChange={(e) => setTime("startTime", e.target.value)}
-        >
-          {timeOptions.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-        <label>Giờ kết thúc</label>
-        <select
-          className="schedule-page__select"
-          value={endTime}
-          onChange={(e) => setTime("endTime", e.target.value)}
-        >
-          {timeOptions.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
+        <div className="schedule-page__time-field">
+          <span className="schedule-page__time-label">Giờ bắt đầu</span>
+          <select
+            className="schedule-page__select"
+            value={startTime}
+            onChange={(e) => setTime("startTime", e.target.value)}
+          >
+            {timeOptions.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+        <span className="schedule-page__time-arrow">→</span>
+        <div className="schedule-page__time-field">
+          <span className="schedule-page__time-label">Giờ kết thúc</span>
+          <select
+            className="schedule-page__select"
+            value={endTime}
+            onChange={(e) => setTime("endTime", e.target.value)}
+          >
+            {timeOptions.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="schedule-page__card-footer">

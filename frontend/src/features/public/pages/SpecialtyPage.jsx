@@ -105,9 +105,6 @@ export default function SpecialtyPage() {
                         Đăng nhập để đặt lịch
                       </Link>
                     )}
-                    <a href="#doctors" className="specialty__secondary-cta">
-                      Xem danh sách bác sĩ
-                    </a>
                   </div>
                 </div>
 

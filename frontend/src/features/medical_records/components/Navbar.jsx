@@ -1,8 +1,8 @@
-import { useNavbarMenu } from "../hooks/use-navbar-menu";
+import { useNavbarMenu } from "../../users/hooks/use-navbar-menu.js";
 import { BellIcon } from "@/assets/icons";
 import "@/assets/css/users/navbar.css";
 import { DEFAULT_MENU_ITEMS } from "@/configs/const";
-import { handleLogout } from "../../auth/services/authService";
+import { handleLogout } from "../../auth/services/authService.jsx";
 import { getRoleNavLinks, getRoleMenuItems } from "@/utils/utils";
 import { isAuthenticated } from "@/utils/auth-helpers";
 

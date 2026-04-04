@@ -14,8 +14,13 @@ export const endpoints = {
   public_doctor_detail: (id) => `/api/v1/public/doctors/${id}`,
   public_doctor_time_slots: (id) => `/api/v1/public/doctors/${id}/time-slots`,
   appointments: "/api/v1/appointments",
-  doctor_my_schedule: "/api/v1/my-schedule",
-  doctor_schedule_request: "/api/v1/schedule-requests",
+  appointment_detail: (id) => `/api/v1/appointments/${id}`,
+  appointment_patient_profile: (id) => `/api/v1/appointments/${id}/patient-profile`,
+  medical_record_detail: (id) => `/api/v1/medical-records/${id}`,
+  medical_record_by_appointment: (appointmentId) =>
+    `/api/v1/medical-records/appointments/${appointmentId}`,
+  doctor_my_schedule: "/api/v1/doctors/my-schedule",
+  doctor_schedule_request: "/api/v1/doctors/schedule-requests",
 };
 
 const Apis = axios.create({

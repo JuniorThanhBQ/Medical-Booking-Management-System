@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import "@/assets/css/users/dashboard.css";
-import Navbar from "../components/Navbar";
+import Navbar from "../../medical_records/components/Navbar.jsx";
 import { getSpecialties } from "@/services/public-api-service";
-import SpecialtyCard from "../components/SpecialtyCard";
-import DashboardHero from "../components/DashboardHero";
+import SpecialtyCard from "../../booking/components/SpecialtyCard.jsx";
+import DashboardHero from "../../public/components/DashboardHero.jsx";
 import { useNavigate } from "react-router-dom";
-import { useDashboardSearch } from "../hooks/use-dashboard-search";
+import { useDashboardSearch } from "../../public/hooks/use-dashboard-search.js";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Dashboard = () => {

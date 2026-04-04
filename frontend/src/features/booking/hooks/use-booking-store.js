@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { STEPS } from "../utils/booking-utils";
 import { getSpecialtyDetail, getDoctors, getTimeSlots } from "@/services/public-api-service";
 import { getUserToken } from "@/utils/auth-helpers";
-import { createAppointment } from "../services/appointment-api-service";
+import { createAppointment } from "@/features/users/services/appointment-api-service";
 
 const initialState = {
   stepIndex: 0,
@@ -52,8 +52,10 @@ export const useBookingStore = create((set) => ({
     try {
       const [specialtyData, doctorsData] = await Promise.all([
         getSpecialtyDetail(specialtyId),
-        getDoctors({ specialty_id: specialtyId }),
+        getDoctors({ specialtyId: specialtyId }),
       ]);
+      console.log("specialtyData", specialtyData)
+      console.log("doctorsData", doctorsData)
       set({ specialty: specialtyData, doctors: doctorsData, loading: false });
     } catch (err) {
       console.error("Failed to fetch booking data:", err);
@@ -77,22 +79,43 @@ export const useBookingStore = create((set) => ({
 
   confirmBooking: async ({ doctorId, date, time, notes }) => {
     set({ submitting: true, submitError: null });
+
     try {
       const token = getUserToken();
+
       if (!token) {
-        set({ submitting: false, submitError: "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." });
+        set({
+          submitting: false,
+          submitError: "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
+        });
         return;
       }
+
+      const appointmentDateTime =
+        date && time ? `${date}T${time}` : null;
+
+      if (!appointmentDateTime) {
+        set({
+          submitting: false,
+          submitError: "Thiếu ngày hoặc thời gian.",
+        });
+        return;
+      }
+
       await createAppointment(token, {
         doctorId,
-        appointmentDate: date,
-        startTime: time,
+        appointmentDate: appointmentDateTime,
         note: notes || "",
       });
+
       set({ confirmed: true, submitting: false });
     } catch (err) {
       console.error("Booking failed:", err);
-      set({ submitting: false, submitError: "Đặt lịch thất bại. Vui lòng thử lại." });
+
+      set({
+        submitting: false,
+        submitError: "Đặt lịch thất bại. Vui lòng thử lại.",
+      });
     }
   },
 }));

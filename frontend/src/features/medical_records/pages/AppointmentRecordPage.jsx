@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import "@/assets/css/users/appointment-record.css";
-import Navbar from "../components/Navbar";
-import { useExamStore } from "../../doctor/hooks/use-exam-store";
+import Navbar from "../components/Navbar.jsx";
+import { useExamStore } from "../../doctor/hooks/use-exam-store.js";
 
 export default function AppointmentRecordPage() {
   const { appointmentId } = useParams();

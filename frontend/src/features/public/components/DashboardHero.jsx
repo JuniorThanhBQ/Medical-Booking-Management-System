@@ -1,4 +1,4 @@
-import SearchCard from "./SearchCard";
+import SearchCard from "./SearchCard.jsx";
 
 const DashboardHero = ({ onSearch, searching }) => {
   return (
@@ -9,7 +9,7 @@ const DashboardHero = ({ onSearch, searching }) => {
         </h1>
 
         <p className="dashboard__subtitle">
-          Dễ dàng tra cứu bác sĩ theo chuyên khoa, tên hoặc ngày rảnh
+          Dễ dàng tra cứu bác sĩ theo chuyên khoa hoặc tên
         </p>
 
         <p className="dashboard__description">

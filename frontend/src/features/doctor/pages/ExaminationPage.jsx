@@ -1,85 +1,42 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "@/assets/css/users/examination.css";
-import Navbar from "../../users/components/Navbar";
-import { EXAM_STATUS } from "@/configs/const";
-import { mockTodayAppointments } from "@/data/mocks/doctor-schedule";
-import { mockPatients } from "@/data/mocks/patients";
+import Navbar from "../../medical_records/components/Navbar.jsx";
 import { useExamStore } from "../hooks/use-exam-store";
 import PatientHistoryPanel from "../components/PatientHistoryPanel";
 import ExamForm from "../components/ExamForm";
 import { getStoredUser } from "@/utils/auth-helpers";
 
-const EMPTY_FORM = {
-  diagnosis: "",
-  notes: "",
-  prescriptionText: "",
-  treatmentOrders: "",
-};
-
 export default function ExaminationPage() {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
-  const saveRecord = useExamStore((s) => s.saveRecord);
-  const getRecord = useExamStore((s) => s.getRecord);
-  const getPatientHistory = useExamStore((s) => s.getPatientHistory);
-  const completeExam = useExamStore((s) => s.completeExam);
-
-  const appointment = mockTodayAppointments.find((a) => a.id === appointmentId);
-  const patient = appointment
-    ? mockPatients.find((p) => p.id === appointment.patientId)
-    : null;
+  const examination = useExamStore((s) => s.examination);
+  const setExamFormData = useExamStore((s) => s.setExamFormData);
+  const loadExamination = useExamStore((s) => s.loadExamination);
+  const resetExaminationState = useExamStore((s) => s.resetExaminationState);
+  const saveDraftToServer = useExamStore((s) => s.saveDraftToServer);
+  const completeExamToServer = useExamStore((s) => s.completeExamToServer);
 
   const user = getStoredUser();
   const doctorName = user?.name || "Bác sĩ";
 
-  const [formData, setFormData] = useState(EMPTY_FORM);
-  const [isCompleted, setIsCompleted] = useState(false);
-
   useEffect(() => {
-    const existing = getRecord(appointmentId);
-    if (existing) {
-      setFormData({
-        diagnosis: existing.diagnosis || "",
-        notes: existing.notes || "",
-        prescriptionText: existing.prescriptionText || "",
-        treatmentOrders: existing.treatmentOrders || "",
-      });
-      setIsCompleted(existing.status === EXAM_STATUS.COMPLETED);
-    }
-  }, [appointmentId]);
+    loadExamination(appointmentId);
 
-  if (!appointment) {
-    return (
-      <>
-        <Navbar />
-        <main className="exam-page">
-          <p className="exam-page__error">
-            Không tìm thấy lịch hẹn. <a href="/doctor/today">Quay lại</a>
-          </p>
-        </main>
-      </>
-    );
-  }
-
-  const history = getPatientHistory(appointment.patientId);
+    return () => {
+      resetExaminationState();
+    };
+  }, [appointmentId, loadExamination, resetExaminationState]);
 
   function handleSaveDraft() {
-    saveRecord(appointmentId, {
-      ...formData,
-      patientId: appointment.patientId,
-      doctorName,
-    });
+    saveDraftToServer(appointmentId, doctorName);
   }
 
   function handleComplete() {
-    completeExam(appointmentId, {
-      ...formData,
-      patientId: appointment.patientId,
-      doctorName,
-    });
-    setIsCompleted(true);
+    completeExamToServer(appointmentId, doctorName);
   }
+
+  const hasNotFound = !examination.loading && !examination.error && !examination.appointment;
 
   return (
     <>
@@ -96,21 +53,38 @@ export default function ExaminationPage() {
 
         <h1 className="exam-page__title">Phiếu khám bệnh</h1>
 
-        <div className="exam-page__layout">
-          <PatientHistoryPanel
-            patient={patient}
-            notes={appointment.notes}
-            history={history}
-          />
+        {examination.loading && <p className="exam-page__error">Đang tải dữ liệu khám bệnh...</p>}
+        {!examination.loading && examination.error && (
+          <p className="exam-page__error">{examination.error}</p>
+        )}
+        {hasNotFound && (
+          <p className="exam-page__error">
+            Không tìm thấy lịch hẹn. <a href="/doctor/today">Quay lại</a>
+          </p>
+        )}
 
-          <ExamForm
-            formData={formData}
-            onChange={setFormData}
-            onSaveDraft={handleSaveDraft}
-            onComplete={handleComplete}
-            isCompleted={isCompleted}
-          />
-        </div>
+        {!examination.loading && !examination.error && examination.appointment && (
+          <div className="exam-page__layout">
+            <PatientHistoryPanel
+              patient={examination.patient}
+              notes={examination.appointment.notes}
+              history={examination.history}
+            />
+
+            <div>
+              {examination.actionError && (
+                <p className="exam-page__error">{examination.actionError}</p>
+              )}
+              <ExamForm
+                formData={examination.formData}
+                onChange={setExamFormData}
+                onSaveDraft={handleSaveDraft}
+                onComplete={handleComplete}
+                isCompleted={examination.isCompleted}
+              />
+            </div>
+          </div>
+        )}
       </main>
     </>
   );
