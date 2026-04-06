@@ -12,6 +12,14 @@ jobs:
       steps:
         - name: Checkout Code
           uses: actions/checkout@v4
+        
+        - name: Tạo file .env ảo
+          run: |
+            if [ -f .env.example ]; then
+              cp .env.example .env
+            else
+              touch .env
+            fi
 
         - name: Build và chạy docker compose trong production
           run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
