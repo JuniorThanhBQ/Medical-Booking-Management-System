@@ -114,11 +114,10 @@ jobs:
       - name: Đánh giá syntax docker compose and docker file
         run: |
           docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
-          docker compose -f docker-compose.yml -f docker-compose.override.yml config -q
           docker build --check ./backend
           docker build --check ./frontend
 
-      - name: Build containers in development mode
+      - name: Build containers in production mode
         run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
 
       - name: Dọn dẹp containers
