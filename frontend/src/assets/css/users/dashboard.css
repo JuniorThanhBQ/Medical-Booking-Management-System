@@ -62,82 +62,117 @@
   justify-content: flex-end;
 }
 
-.dashboard__search-card {
+/* ── Search Card ───────────────────────────────────────── */
+.search-card {
   width: 100%;
-  max-width: 460px;
+  max-width: 480px;
   background: #ffffff;
-  border-radius: 20px;
-  padding: 24px 24px 20px;
-  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.09);
+  border-radius: 24px;
+  padding: 28px 28px 24px;
+  box-shadow:
+    0 4px 6px rgba(15, 23, 42, 0.04),
+    0 20px 60px rgba(15, 23, 42, 0.10);
   border: 1px solid var(--lp-border);
-}
-
-.dashboard__search-row {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 20px;
-  margin-bottom: 16px;
-}
-
-.dashboard__field {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
-.dashboard__label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--lp-body);
+/* Header block */
+.search-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.dashboard__input-wrap {
+
+.search-card__title {
+  font-family: var(--lp-font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--lp-heading);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.search-card__desc {
+  font-size: 0.825rem;
+  line-height: 1.6;
+  color: var(--lp-muted);
+  margin: 0;
+}
+
+/* Input + button row */
+.search-card__field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-card__input-group {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--lp-border);
-  background: var(--lp-bg-light);
 }
 
-.dashboard__input-wrap svg {
-  width: 16px;
-  height: 16px;
+.search-card__icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
   color: var(--lp-muted);
+  pointer-events: none;
   flex-shrink: 0;
 }
 
-.dashboard__input {
-  border: none;
-  outline: none;
-  background: transparent;
+.search-card__input {
+  width: 100%;
+  padding: 13px 42px 13px 44px;
+  border-radius: 12px;
+  border: 1.5px solid var(--lp-border);
+  background: var(--lp-bg-light);
   font-size: 0.875rem;
   color: var(--lp-body);
-  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.dashboard__input::placeholder {
+.search-card__input::placeholder {
   color: var(--lp-subtle);
 }
 
-.dashboard__search-footer {
+.search-card__input:focus {
+  border-color: var(--lp-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  background: #ffffff;
+}
+
+.search-card__clear {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.dashboard__hint {
-  font-size: 0.75rem;
-  width: 70%;
+  padding: 2px;
   color: var(--lp-subtle);
+  border-radius: 4px;
 }
 
-.dashboard__search-btn {
-  padding: 10px 22px;
-  border-radius: 999px;
+.search-card__clear:hover {
+  color: var(--lp-body);
+}
+
+.search-card__clear svg {
+  width: 15px;
+  height: 15px;
+}
+
+.search-card__btn {
+  width: 100%;
+  padding: 13px 24px;
+  border-radius: 12px;
   border: none;
   background: var(--lp-primary);
   color: #ffffff;
@@ -146,17 +181,44 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  transition: background 0.15s, transform 0.1s;
 }
 
-.dashboard__search-btn:hover {
+.search-card__btn:hover:not(:disabled) {
   background: var(--lp-primary-dark);
 }
 
-.dashboard__search-btn svg {
-  width: 14px;
-  height: 14px;
+.search-card__btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
+
+.search-card__btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.search-card__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Loading spinner */
+.search-card__spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: search-card-spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes search-card-spin {
+  to { transform: rotate(360deg); }
+}
+
 
 .dashboard__specialties-section {
   background: #ffffff;

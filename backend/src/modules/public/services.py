@@ -58,7 +58,7 @@ def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
         )
 
     if specialty_id:
-        query = query.filter(Profile.specialty_id == specialty_id)
+        query = query.join(DoctorProfile).filter(DoctorProfile.specialty_id == specialty_id)
 
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
 

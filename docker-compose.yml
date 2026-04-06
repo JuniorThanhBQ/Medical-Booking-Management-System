@@ -1,13 +1,16 @@
-version: '3.8'
-
-services: 
+services:
   frontend:
+    restart: unless-stopped
     build: ./frontend
     depends_on:
       backend:
         condition: service_healthy
+    ports: 
+      - "${FRONTEND_PORT}:8080"
+    environment:
+      - VITE_API_URL=http://localhost:8000
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      test: [ "CMD", "curl", "-f", "http://localhost:${FRONTEND_PORT}/" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,6 +22,7 @@ services:
 
 
   backend:
+    restart: unless-stopped
     build: ./backend
     depends_on:
       db:
@@ -27,12 +31,19 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_MODE=development
+      - DATABASE_URL=${DATABASE_URL}
+    env_file:
+      - .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 120s
+      start_period: 90s
     volumes:
       - ./backend/src:/app/src
       - ./database/migrations:/app/migrations
@@ -43,13 +54,21 @@ services:
 
 
   db:
+    restart: unless-stopped
     image: mysql:8.0-debian
     healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE $DB_NAME; SELECT 1;"]
+      test: [ "CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE $DB_NAME; SELECT 1;" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 120s
+    environment:
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    ports:
+      - "3307:3306"
     networks:
       - backend-network
     volumes:
@@ -58,12 +77,14 @@ services:
 
 
   redis:
+    restart: unless-stopped
     image: redis:7-alpine
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
     networks:
       - backend-network
     volumes:
@@ -71,18 +92,26 @@ services:
 
 
   rabbitmq:
-    image: rabbitmq:4.2.5-management-alpine
+    restart: unless-stopped
+    image: rabbitmq:4.0-management-alpine
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
+      start_period: 20s
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - backend-network
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
- 
+
 networks:
   frontend-network:
     driver: bridge

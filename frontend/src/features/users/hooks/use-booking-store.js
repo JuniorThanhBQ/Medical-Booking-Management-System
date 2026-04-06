@@ -52,8 +52,10 @@ export const useBookingStore = create((set) => ({
     try {
       const [specialtyData, doctorsData] = await Promise.all([
         getSpecialtyDetail(specialtyId),
-        getDoctors({ specialty_id: specialtyId }),
+        getDoctors({ specialtyId: specialtyId }),
       ]);
+      console.log("specialtyData", specialtyData)
+      console.log("doctorsData", doctorsData)
       set({ specialty: specialtyData, doctors: doctorsData, loading: false });
     } catch (err) {
       console.error("Failed to fetch booking data:", err);
@@ -85,8 +87,7 @@ export const useBookingStore = create((set) => ({
       }
       await createAppointment(token, {
         doctorId,
-        appointmentDate: date,
-        startTime: time,
+        appointmentDate: time,
         note: notes || "",
       });
       set({ confirmed: true, submitting: false });

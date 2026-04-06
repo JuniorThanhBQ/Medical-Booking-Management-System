@@ -50,7 +50,7 @@ export default function BookAppointmentPage() {
     const base = new Date();
     base.setHours(0, 0, 0, 0);
     const days = [];
-    for (let i = 0; i < AVAILABLE_BOOKING_DAYS; i += 1) {
+    for (let i = 1; i <= AVAILABLE_BOOKING_DAYS; i += 1) {
       const d = new Date(base);
       d.setDate(base.getDate() + i);
       days.push(d);

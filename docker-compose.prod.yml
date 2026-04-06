@@ -1,29 +1,39 @@
-version: '3.8'
-
 services:
   frontend:
+    image: "${FRONTEND_IMAGE_NAME}"
     restart: always
-    ports:
+    ports: 
       - "${FRONTEND_PORT_PROD}:8080"
     environment:
       - VITE_API_URL=${BACKEND_PROD_API_URL}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://${FRONTEND_HOST_NAME}:${FRONTEND_PORT_PROD}/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
 
 
   backend:
+    image: "${BACKEND_IMAGE_NAME}"
     restart: always
     ports:
       - "${BACKEND_PORT_PROD}:8000"
-    env_file:
-      - .env
     environment:
       - FLASK_MODE=production
       - DATABASE_URL=${DATABASE_URL_PROD}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://${BACKEND_HOST_NAME}:${BACKEND_PORT_PROD}/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
 
 
   db:
     restart: always
     healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "${DB_USER_PROD}", "-p${DB_PASSWORD_PROD}", "-e", "USE $DB_NAME_PROD; SELECT 1;"]
+      test: [ "CMD", "mysql", "-h", "${DB_HOST_PROD}", "-u", "${DB_USER_PROD}", "-p${DB_PASSWORD_PROD}", "-e", "USE $DB_NAME_PROD; SELECT 1;" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,13 +44,14 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD_PROD}
       - MYSQL_DATABASE=${DB_NAME_PROD}
     ports:
-      - "${DB_PORT_PROD}:3306" 
+      - "${DB_PORT_PROD}:3306"
 
   redis:
-    restart: always    
+    restart: always
 
   rabbitmq:
     restart: always
+    image: rabbitmq:4.0-alpine
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME_PROD}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD_PROD}
