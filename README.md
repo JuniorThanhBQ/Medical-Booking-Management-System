@@ -1,34 +1,37 @@
-# Hệ thống đặt lịch khám bệnh (Medical Appointment)
+# Hệ thống đặt lịch khám bệnh trực tuyến (Medical Appointment B3)
 
 ## Mô tả 
-Hệ thống cho phép bệnh nhân đặt lịch khám bệnh online, tìm bác sĩ theo chuyên khoa. Hỗ trợ lưu trữ và quản lý hồ sơ bệnh nhân và quản lý bác sĩ, lịch làm việc và theo dõi các lịch khám đã đặt cho các Phòng khám/bệnh viện.
+Hệ thống đặt lịch khám online cho phòng khám: bệnh nhân, lễ tân đặt lịch khám theo slot thời gian thông qua tìm kiếm bác sĩ, chuyên khoa và được xem hồ sơ trong phạm vi cho phép. Bên cạnh đó, bác sĩ có thể quản lý lịch làm việc và hồ sơ bệnh nhân liên quan. Ngoài ra, hệ thống tự động nhắc lịch hẹn, admin có quyền quản lý bác sĩ và chuyên khoa.
 
 ## Thành viên nhóm 
-| MSSV | Họ tên | Vai trò | 
-|------|--------|---------|
-| 2351050164 | Văn Trung Thành | Nhóm trưởng | 
-| 2351050133 | Nguyễn Thanh Phong | Thành viên |
-| 2351050154 | Trương Hưng Phát | Thành viên |
+| MSSV | Họ tên | Vai trò | Đảm nhiệm |
+|------|--------|---------|---------|
+| 2351050164 | Văn Trung Thành | Nhóm trưởng | DevOps |
+| 2351050133 | Nguyễn Thanh Phong | Thành viên | Backend |
+| 2351010154 | Trương Hưng Phát | Thành viên | Frontend |
 
 ## Công nghệ sử dụng
-- Backend: Flask + RESTful API 
-- Frontend: React + Vite 
-- Database: MySQL 
-- Message Queue: RabbitMQ 
+
+### Các công nghệ chính
+| Container | Công nghệ | Phiên bản |
+|------|--------|----------|
+| Backend | Flask + Flask-RESTX | Flask: 3.1.3 <br>flask-restx: 1.3.2 |
+| Frontend | React + Vite | React: 19.2.4 <br>Vite: 7.3.1 |
+| Database | MySQL debian | mysql:8.0-debian |
+| Message Queue | RabbitMQ | rabbitmq:4.2.5-management-alpine |
+| Cache | Redis | redis:7-alpine |
+
+### Các công nghệ khác
 - Container: Docker + Docker Compose 
 - Version control: Git + Github 
 
-## Kiến trúc 
-Hệ thống đặt lịch khám bệnh được chúng em thiết kế dựa trên mẫu kiến trúc 
-Client–Server với phong cách kiến trúc là REST. Trong đó, frontend và backend 
-hoạt động độc lập và giao tiếp với nhau dựa trên chuẩn thiết kế RESTful API. 
-Đối với phía client, chúng em sử dụng React với Vite để thiết kế và xây dựng 
-frontend. Về phía server, chúng em áp dụng kiến trúc phân tầng, công nghệ sử 
-dụng cho backend là framework Flask với thư viện Flask-RESTful. Ngoài ra, 
-chúng em còn sử dụng MySQL để lưu trữ dữ liệu, RabbitMQ để xử lý các thao 
-tác bất đồng bộ, Docker và Docker Compose để đóng gói hệ thống ứng dụng và 
-github để kiểm soát phiên bản hệ thống  
+## Kiến trúc
+Hệ thống được thiết kế dựa trên cấu trúc
+Client–Server với phong cách kiến trúc là REST. Bốn đặc tính được chọn là tính phù hợp chức năng, bảo mật, độ tin cậy và hiệu suất. Các quy tắc và hướng dẫn được nhóm trình bày ở mục tài liệu. Trong đó, hệ thống có 5 containers được định nghĩa và chạy lệnh qua docker-compose.yml. Luồng hoạt động có thể tóm gọn như sau: Client-side (Browser) đến API Server, từ API Server có thể đi qua Redis (Để lấy url cloudinary và TTL e.g.), MySQL (Database chính và thực hiện truy vấn dữ liệu nếu Redis nếu không có cache), RabbitMQ (Xử lý bất đồng bộ giữa các thông báo lịch hẹn). Để trực quan, nhóm đã mô tả containers qua mô hình C4 bên dưới. 
+<br>   
+**Mô hình C4 - Container** 
 ![b3_client_server_ architecture_image](docs/architecture/c4-container.png) 
+
 
 ## Cài đặt và chạy 
 
@@ -37,12 +40,12 @@ github để kiểm soát phiên bản hệ thống
 - Git
 
 ### Chạy với Docker Compose 
-git clone https://github.com/username/project-name 
-cd project-name 
-docker-compose up -d 
+- git clone https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8
+- cd Medical-Appointment-B3-8
+- docker-compose -f docker-compose.prod.yml up -d
 
 ### Truy cập
-- Frontend: http://localhost:5173 
+- Frontend: http://localhost:80 
 - Backend API: http://localhost:8000 
 - RabbitMQ Management: http://localhost:15672 
 

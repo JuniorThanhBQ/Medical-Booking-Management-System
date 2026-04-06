@@ -1,7 +1,7 @@
 # Báo cáo Tuần 1 
 **Tuần:** 1 (26/01/2026 - 01/02/2026)   
-**Nhóm:** MAB/8 </br> 
-**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
+**Nhóm:** 5 </br> 
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh trực tuyến   
 **Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 

@@ -3,6 +3,8 @@ name: Triển khai Docker Image lên Docker Hub
 on:
   push:
     branches: [ main ] 
+  pull_request:
+    branches: [ main ] 
 
 jobs:
   deploy-docker-image:
@@ -35,6 +37,8 @@ jobs:
         with:
           context: ./frontend 
           push: true
+          build-args: |
+            VITE_API_URL=${{ secrets.BACKEND_DEV_API_URL }}
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-frontend:latest
             ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-frontend:${{ github.sha }}

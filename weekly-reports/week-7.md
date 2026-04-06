@@ -1,7 +1,7 @@
 # Báo cáo Tuần 7 
 **Tuần:** 7 (30/03/2026 - 05/04/2026)   
-**Nhóm:** MAB/8 </br> 
-**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh   
+**Nhóm:** 5<br>
+**Đề tài:** B3 - Hệ thống đặt lịch khám bệnh trực tuyến 
 **Nhóm trưởng:** Văn Trung Thành - 2351050164 
 
 --- 
@@ -44,4 +44,4 @@
 --- 
 
 *Ngày nộp: 05/04/2026*   
-*Xác nhận của Nhóm trưởng: [Văn Trung Thành]*
+*Xác nhận của Nhóm trưởng: Văn Trung Thành*
