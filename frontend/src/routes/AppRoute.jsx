@@ -7,11 +7,11 @@ import SchedulePage from "../features/doctor/pages/SchedulePage.jsx";
 import ExaminationPage from "../features/doctor/pages/ExaminationPage.jsx";
 import RoleRoute from "./RoleRoute.jsx";
 import { ROLE } from "@/configs/const";
-import SpecialtyPage from "../features/users/pages/SpecialtyPage.jsx";
-import BookAppointmentPage from "../features/users/pages/BookAppointmentPage.jsx";
+import SpecialtyPage from "../features/public/pages/SpecialtyPage.jsx";
+import BookAppointmentPage from "../features/booking/pages/BookAppointmentPage.jsx";
 import ProfilePage from "../features/users/pages/ProfilePage.jsx";
 import ActivityPage from "../features/users/pages/ActivityPage.jsx";
-import AppointmentRecordPage from "../features/users/pages/AppointmentRecordPage.jsx";
+import AppointmentRecordPage from "../features/medical_records/pages/AppointmentRecordPage.jsx";
 
 export default function AppRoute() {
   return (

@@ -12,11 +12,13 @@ export const getDoctors = async (params = {}) => {
 
 export const getSpecialtyDetail = async (specialtyId) => {
   const res = await Apis.get(endpoints.public_specialty_detail(specialtyId));
+  console.log("specialty detail url: ", endpoints.public_specialty_detail(specialtyId))
   return res.data;
 };
 
 export const getDoctorDetail = async (doctorId) => {
   const res = await Apis.get(endpoints.public_doctor_detail(doctorId));
+  console.log("doctor detail url: ", endpoints.public_doctor_detail(doctorId))
   return res.data;
 };
 

@@ -1,10 +1,16 @@
 import { useState, useMemo } from "react";
-import ActivityFilters from "./ActivityFilters";
-import UpcomingActivityCard from "./UpcomingActivityCard";
-import PastActivityList from "./PastActivityList";
-import ActivityDetailPanel from "./ActivityDetailPanel";
+import ActivityFilters from "../../../public/components/activity/ActivityFilters.jsx";
+import UpcomingActivityCard from "../../../medical_records/components/activity/UpcomingActivityCard.jsx";
+import PastActivityList from "../../../medical_records/components/activity/PastActivityList.jsx";
+import ActivityDetailPanel from "../../../medical_records/components/activity/ActivityDetailPanel.jsx";
 
-const ActivityView = ({ filters = [], items = [], upcomingItems = [] }) => {
+const ActivityView = ({
+  filters = [],
+  items = [],
+  upcomingItems = [],
+  loading = false,
+  error = "",
+}) => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedId, setSelectedId] = useState(items[0]?.id ?? null);
 
@@ -21,10 +27,26 @@ const ActivityView = ({ filters = [], items = [], upcomingItems = [] }) => {
     setSelectedId(nextItems[0]?.id ?? null);
   };
 
-  if (!items.length) {
+  if (loading) {
     return (
       <section className="profile-activity">
-        <p className="profile-activity__muted">Tính năng đang phát triển</p>
+        <p className="profile-activity__muted">Đang tải hoạt động...</p>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="profile-activity">
+        <p className="profile-activity__muted">{error}</p>
+      </section>
+    );
+  }
+
+  if (!items.length && !upcomingItems.length) {
+    return (
+      <section className="profile-activity">
+        <p className="profile-activity__muted">Chưa có hoạt động nào.</p>
       </section>
     );
   }
@@ -61,4 +83,3 @@ const ActivityView = ({ filters = [], items = [], upcomingItems = [] }) => {
 };
 
 export default ActivityView;
-

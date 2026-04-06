@@ -1,11 +1,11 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "@/assets/css/users/today-patients.css";
-import Navbar from "../../users/components/Navbar";
+import Navbar from "../../medical_records/components/Navbar.jsx";
 import { APPOINTMENT_STATUS } from "@/configs/const";
-import { mockTodayAppointments } from "@/data/mocks/doctor-schedule";
-import { mockPatients } from "@/data/mocks/patients";
 import { useExamStore } from "../hooks/use-exam-store";
 import PatientCard from "../components/PatientCard";
+import { fetchDoctorTodayPatients } from "../api/appointments-api";
+import { getUserToken } from "@/utils/auth-helpers";
 
 const FILTER_TABS = [
   { key: "all", label: "Tất cả" },
@@ -16,11 +16,51 @@ const FILTER_TABS = [
 
 export default function TodayPatientsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const getPatientHistory = useExamStore((s) => s.getPatientHistory);
 
+  useEffect(() => {
+    let mounted = true;
+
+    const loadTodayPatients = async () => {
+      const token = getUserToken();
+      if (!token) {
+        if (!mounted) return;
+        setAppointments([]);
+        setError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const result = await fetchDoctorTodayPatients(token);
+        if (!mounted) return;
+        setAppointments(Array.isArray(result) ? result : []);
+        setError("");
+      } catch {
+        if (!mounted) return;
+        setAppointments([]);
+        setError("Không thể tải danh sách bệnh nhân hôm nay.");
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadTodayPatients();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const visibleAppointments = useMemo(
-    () => mockTodayAppointments.filter((a) => a.status !== APPOINTMENT_STATUS.PENDING),
-    []
+    () => appointments.filter((a) => a.status !== APPOINTMENT_STATUS.PENDING),
+    [appointments]
   );
 
   const filtered = useMemo(() => {
@@ -55,11 +95,24 @@ export default function TodayPatientsPage() {
         </div>
 
         <div className="today-patients__list">
-          {filtered.length === 0 && (
-            <p className="today-patients__empty">Không có bệnh nhân nào.</p>
+          {loading && (
+            <p className="today-patients__empty">Đang tải danh sách bệnh nhân...</p>
           )}
-          {filtered.map((appointment) => {
-            const patient = mockPatients.find((p) => p.id === appointment.patientId);
+
+          {!loading && error && (
+            <p className="today-patients__empty">{error}</p>
+          )}
+
+          {!loading && !error && filtered.length === 0 && (
+            <p className="today-patients__empty">Hôm nay chưa có bệnh nhân nào.</p>
+          )}
+
+          {!loading && !error && filtered.map((appointment) => {
+            const patient = {
+              id: appointment.patientId,
+              dateOfBirth: appointment.dateOfBirth,
+              gender: appointment.gender,
+            };
             const history = getPatientHistory(appointment.patientId);
             const lastRecord = history.length > 0 ? history[history.length - 1] : null;
 
