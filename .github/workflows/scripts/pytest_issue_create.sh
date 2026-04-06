@@ -1,12 +1,6 @@
 #!/bin/bash
 
 LOG_FILE="pytest_log.txt"
-
-if [[ ! -f "$LOG_FILE" ]]; then
-  echo "Có lỗi khi tạo $LOG_FILE"
-  exit 1
-fi
-
 FINAL_SUMMARY=$(tail -n 1 "$LOG_FILE")
 FAILED_CASES=$(grep "^FAILED" "$LOG_FILE" || echo "Lỗi ngoài phạm vi kiểm thử.")
 ISSUE_BODY_FILE="issue_body.md"

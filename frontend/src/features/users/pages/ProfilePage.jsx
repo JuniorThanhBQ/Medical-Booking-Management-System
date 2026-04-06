@@ -3,7 +3,7 @@ import { useProfileStore } from '../hooks/use-profile-store';
 import ProfileSidebar from '../components/ProfileSidebar';
 import ProfileCard from '../components/ProfileCard';
 import EditProfileForm from '../components/EditProfileForm';
-import Navbar from '../../medical_records/components/Navbar.jsx';
+import Navbar from '../components/Navbar';
 import { getUserToken } from '@/utils/auth-helpers';
 import '@/assets/css/users/profile.css';
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import "@/assets/css/users/today-patients.css";
-import Navbar from "../../medical_records/components/Navbar.jsx";
+import Navbar from "../../users/components/Navbar";
 import { APPOINTMENT_STATUS } from "@/configs/const";
 import { useExamStore } from "../hooks/use-exam-store";
 import PatientCard from "../components/PatientCard";

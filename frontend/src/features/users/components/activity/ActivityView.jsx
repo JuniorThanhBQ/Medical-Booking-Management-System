@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
-import ActivityFilters from "../../../public/components/activity/ActivityFilters.jsx";
-import UpcomingActivityCard from "../../../medical_records/components/activity/UpcomingActivityCard.jsx";
-import PastActivityList from "../../../medical_records/components/activity/PastActivityList.jsx";
-import ActivityDetailPanel from "../../../medical_records/components/activity/ActivityDetailPanel.jsx";
+import ActivityFilters from "./ActivityFilters";
+import UpcomingActivityCard from "./UpcomingActivityCard";
+import PastActivityList from "./PastActivityList";
+import ActivityDetailPanel from "./ActivityDetailPanel";
 
 const ActivityView = ({
   filters = [],

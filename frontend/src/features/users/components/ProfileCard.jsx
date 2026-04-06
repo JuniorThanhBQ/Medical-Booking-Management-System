@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { EditPenIcon } from "@/assets/icons";
-import { readAvatarFile } from "../utils/profile-utils.js";
+import { readAvatarFile } from "../utils/profile-utils";
 
 const ProfileCard = ({ profile, onAvatarChange }) => {
   const fileInputRef = useRef(null);

@@ -1,8 +1,8 @@
-import Navbar from "../../medical_records/components/Navbar.jsx";
+import Navbar from "../components/Navbar";
 import HeroSection from "../components/HeroSection";
-import FeatureSections from "../../medical_records/components/FeatureSections.jsx";
+import FeatureSections from "../components/FeatureSections";
 import FeatureHighlightBand from "../components/FeatureHighlightBand";
-import ServicesSection from "../../booking/components/ServicesSection.jsx";
+import ServicesSection from "../components/ServicesSection";
 import CtaBanner from "../components/CtaBanner";
 import SiteFooter from "../components/SiteFooter";
 

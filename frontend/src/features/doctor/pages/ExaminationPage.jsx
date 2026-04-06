@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "@/assets/css/users/examination.css";
-import Navbar from "../../medical_records/components/Navbar.jsx";
+import Navbar from "../../users/components/Navbar";
 import { useExamStore } from "../hooks/use-exam-store";
 import PatientHistoryPanel from "../components/PatientHistoryPanel";
 import ExamForm from "../components/ExamForm";

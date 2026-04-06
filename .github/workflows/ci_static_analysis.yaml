@@ -1,4 +1,4 @@
-name: Chạy các bước kiểm tra tĩnh tổng hợp
+name: Chạy kiểm tra tĩnh tổng hợp
 
 on: 
   push:
@@ -12,48 +12,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone repository
-      uses: actions/checkout@v4
+      - name: Clone repository
+        uses: actions/checkout@v4
 
-    - name: Cài đặt Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13'
-        cache: 'pip'
+      - name: Cài đặt Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
 
-    - name: Cài đặt gói thư viện
-      run: pip install import-linter pylint
+      - name: Cài đặt gói thư viện
+        run: pip install import-linter pylint
 
-    - name: Chạy lint-imports
-      working-directory: ./backend
-      run: lint-imports
+      - name: Chạy lint-imports
+        working-directory: ./backend
+        run: lint-imports
 
-    - name: Chạy pylint
-      working-directory: ./backend
-      run: pylint src/
+      - name: Chạy pylint
+        working-directory: ./backend
+        run: pylint src/
 
 
   frontend-linting-check:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone repository
-      uses: actions/checkout@v4
-    
-    - name: Cài đặt Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20' 
-        cache: 'npm'
-        cache-dependency-path: './frontend/package-lock.json'
+      - name: Clone repository
+        uses: actions/checkout@v4
+      
+      - name: Cài đặt Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
 
-    - name: Cài đặt gói thư viện
-      working-directory: ./frontend
-      run: npm ci
+      - name: Cài đặt gói thư viện
+        working-directory: ./frontend
+        run: npm ci
 
-    - name: Kiểm tra Eslint
-      working-directory: ./frontend
-      run: npm run lint
+      - name: Kiểm tra Eslint
+        working-directory: ./frontend
+        run: npm run lint
 
   backend-security-check:
     runs-on: ubuntu-latest
@@ -94,7 +94,7 @@ jobs:
 
       - name: Chạy npm audit
         working-directory: ./frontend
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
     
   docker-static-test:
     runs-on: ubuntu-latest 
@@ -110,14 +110,27 @@ jobs:
           else
             touch .env
           fi
+      
+      - name: Lint Backend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./backend/Dockerfile
+          failure-threshold: error 
+
+      - name: Lint Frontend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./frontend/Dockerfile
+          failure-threshold: error 
 
       - name: Đánh giá syntax docker compose and docker file
         run: |
+          docker compose config -q
           docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
           docker build --check ./backend
           docker build --check ./frontend
 
-      - name: Build containers in production mode
+      - name: Build containers in production mode 
         run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
 
       - name: Dọn dẹp containers

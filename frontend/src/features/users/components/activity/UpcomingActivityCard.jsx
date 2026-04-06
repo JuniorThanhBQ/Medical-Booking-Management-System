@@ -1,6 +1,6 @@
 import { BriefcaseIcon } from "@/assets/icons";
 import { getStatusLabel } from "@/configs/const";
-import { getStatusClassName } from "../../../users/utils/profile-utils.js";
+import { getStatusClassName } from "../../utils/profile-utils";
 
 const UpcomingActivityCard = ({ items = [] }) => {
   if (items.length === 0) {

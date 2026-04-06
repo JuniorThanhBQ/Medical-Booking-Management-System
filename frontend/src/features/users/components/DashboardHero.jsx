@@ -1,4 +1,4 @@
-import SearchCard from "./SearchCard.jsx";
+import SearchCard from "./SearchCard";
 
 const DashboardHero = ({ onSearch, searching }) => {
   return (
