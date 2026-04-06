@@ -1,4 +1,4 @@
-name: Chạy các bài kiểm tra chất lượng QA
+name: Chạy kiểm tra chất lượng QA
 
 on:
   push:

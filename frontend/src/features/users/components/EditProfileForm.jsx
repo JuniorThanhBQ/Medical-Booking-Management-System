@@ -15,18 +15,18 @@ const EditProfileForm = ({ profile, onSave }) => {
   });
 
   useEffect(() => {
-    const { firstName, lastName } = splitName(profile.name);
-    const { day, month, year } = splitBirthday(profile.dateOfBirth);
+    const { firstName, lastName } = splitName(profile?.name || '');
+    const { day, month, year } = splitBirthday(profile?.dayOfBirth || profile?.dateOfBirth || '');
 
     setFormData({
       firstName,
       lastName,
-      phone: profile.phone || '',
-      email: profile.email || '',
+      phone: profile?.phone || '',
+      email: profile?.email || '',
       birthDay: day,
       birthMonth: month,
       birthYear: year,
-      gender: profile.gender || '',
+      gender: profile?.gender || '',
     });
   }, [profile]);
 
@@ -35,10 +35,15 @@ const EditProfileForm = ({ profile, onSave }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedProfile = formatProfileUpdate(formData);
-    onSave(updatedProfile);
+    await onSave({
+      ...updatedProfile,
+      dayOfBirth: updatedProfile.dateOfBirth,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+    });
   };
 
   return (
