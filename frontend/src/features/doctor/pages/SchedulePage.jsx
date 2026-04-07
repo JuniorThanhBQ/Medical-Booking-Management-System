@@ -4,13 +4,12 @@ import Navbar from "../../users/components/Navbar";
 import { useScheduleStore } from "../hooks/use-schedule-store";
 import SchedulePageHeader from "../components/SchedulePageHeader";
 import WeeklyScheduleCard from "../components/WeeklyScheduleCard";
-import LeaveRequestsCard from "../components/LeaveRequestsCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function SchedulePage() {
   const {
-    workDate, startTime, endTime, leaveRequests, newRequest, timeOptions,
-    toggleWorking, setTime, updateNewRequest, addLeaveRequest,
+    workDate, startTime, endTime, timeOptions,
+    toggleWorking, setTime,
     isLoading, scheduleError, saveSuccess,
     loadSchedule, saveSchedule, clearScheduleError,
   } = useScheduleStore((state) => state);
@@ -22,11 +21,6 @@ export default function SchedulePage() {
     const timer = setTimeout(() => clearScheduleError(), 3000);
     return () => clearTimeout(timer);
   }, [saveSuccess, clearScheduleError]);
-
-  function handleAddRequest(event) {
-    event.preventDefault();
-    addLeaveRequest();
-  }
 
   return (
     <>
@@ -51,27 +45,16 @@ export default function SchedulePage() {
           <LoadingSpinner />
         ) : (
           <section className="schedule-page__content">
-            <div className="schedule-page__grid">
-              <WeeklyScheduleCard
-                workDate={workDate}
-                startTime={startTime}
-                endTime={endTime}
-                timeOptions={timeOptions}
-                toggleWorking={toggleWorking}
-                setTime={setTime}
-                onSave={() => saveSchedule()}
-                isSaving={isLoading}
-              />
-
-              <div className="schedule-page__side-column">
-                <LeaveRequestsCard
-                  newRequest={newRequest}
-                  updateNewRequest={updateNewRequest}
-                  leaveRequests={leaveRequests}
-                  onSubmit={handleAddRequest}
-                />
-              </div>
-            </div>
+            <WeeklyScheduleCard
+              workDate={workDate}
+              startTime={startTime}
+              endTime={endTime}
+              timeOptions={timeOptions}
+              toggleWorking={toggleWorking}
+              setTime={setTime}
+              onSave={() => saveSchedule()}
+              isSaving={isLoading}
+            />
           </section>
         )}
       </main>

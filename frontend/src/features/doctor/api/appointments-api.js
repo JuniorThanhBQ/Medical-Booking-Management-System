@@ -24,6 +24,13 @@ export async function fetchAppointmentsInDay({ date }) {
   return mockAvailableAppointmentsInLeave;
 }
 
+export async function fetchDoctorAppointments(token) {
+  if (!token) return [];
+  const client = AuthApis(token);
+  const response = await client.get(endpoints.appointments);
+  return Array.isArray(response?.data?.items) ? response.data.items : [];
+}
+
 export async function fetchDoctorTodayPatients(token) {
   if (!token) return [];
 
