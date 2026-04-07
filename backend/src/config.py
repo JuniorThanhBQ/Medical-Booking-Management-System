@@ -35,8 +35,8 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    HOST = os.getenv("PRODUCTION_HOST")
-    PORT = os.getenv("PORT")
+    HOST = os.getenv("PRODUCTION_HOST", "127.0.0.1")
+    PORT = os.getenv("PORT", "8000")
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_PROD')
 
     if not SQLALCHEMY_DATABASE_URI:
