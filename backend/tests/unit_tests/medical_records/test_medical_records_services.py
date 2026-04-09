@@ -2,13 +2,13 @@ from datetime import datetime
 
 import pytest
 
-from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.auth_profiles.models import (DoctorProfile, PatientProfile,
-                                              Specialty, User, UserRole)
-from src.modules.medical_records.models import MedicalRecord
-from src.modules.medical_records.services import (
+from src.modules.appointments.models import (Appointment, MedicalRecord,
+                                             StatusRole)
+from src.modules.appointments.services import (
     create_medical_record_service, get_detail_medical_record_service,
     update_medical_record_service)
+from src.modules.doctors.models import DoctorProfile, Specialty
+from src.modules.users.models import PatientProfile, User, UserRole
 from tests.test_base import test_app, test_session
 
 

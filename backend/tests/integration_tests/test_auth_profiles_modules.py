@@ -5,10 +5,9 @@ from flask_restx import Api
 from werkzeug.security import generate_password_hash
 
 from src.extensions import limiter
-from src.modules.auth_profiles.models import (DoctorProfile, GenderRole,
-                                              PatientProfile, Specialty, User,
-                                              UserRole)
-from src.modules.auth_profiles.views import auth_namespace
+from src.modules.doctors.models import DoctorProfile, Specialty
+from src.modules.users.models import GenderRole, PatientProfile, User, UserRole
+from src.modules.users.views import auth_namespace
 from src.utils.utils import create_token
 from tests.test_base import test_app, test_session
 

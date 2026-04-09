@@ -1,51 +1,63 @@
-from sqlalchemy import event, select
+from sqlalchemy import event
 
+from flask import current_app
+
+from src.modules.notification.models import NotificationType, DeliveryStatus
 from src.modules.appointments.models import Appointment
-from src.modules.auth_profiles.models import DoctorProfile, PatientProfile
-from src.modules.notification.models import Notification
+from src.modules.notification.repositories import (get_doctor_user_info,
+                                                   get_patient_user_info,
+                                                   insert_notifications_list)
+from src.modules.notification.tasks import reminder_email_task
 
 
-def insert_notifications(connection, appointment, action: str):
-    doctor_user_id = connection.scalar(
-        select(DoctorProfile.user_id).where(
-            DoctorProfile.id == appointment.doctor_profile_id
-        )
-    )
+def insert_appointment_notifications(appointment, action_name):
+    doctor = get_doctor_user_info(appointment.doctor_profile_id)
+    patient = get_patient_user_info(appointment.patient_profile_id)
 
-    patient_user_id = connection.scalar(
-        select(PatientProfile.user_id).where(
-            PatientProfile.id == appointment.patient_profile_id
-        )
-    )
+    if doctor and patient:
+        doctor_name = f"{doctor.last_name} {doctor.first_name}"
+        patient_name = f"{patient.last_name} {patient.first_name}"
 
-    patient_notification = {
-        "title": f"Lịch hẹn đã được {action}",
-        "message": f"Lịch hẹn của bạn đã được {action} với Mã: {appointment.id}.",
-        "is_read": False,
-        "user_id": patient_user_id,
-        "appointment_id": appointment.id
-    }
+        created_notifications = [
+            {
+                "title": f"Lịch hẹn {appointment.name} đã được {action_name}",
+                "message": f"Chào {patient_name}, lịch hẹn của bạn với BS. {doctor_name} đã được {action_name}.",
+                "user_id": patient.id,
+                "appointment_id": appointment.id,
+                "type": NotificationType["APPOINTMENT"],
+                "is_read": False,
+                "send_email": True,
+                "email_status": DeliveryStatus["PENDING"]
+            },
+            {
+                "title": f"Thông báo {action_name} trong lịch hẹn {appointment.name}",
+                "message": f"Chào BS. {doctor_name}, lịch hẹn của bệnh nhân {patient_name} vừa được {action_name}.",
+                "user_id": doctor.id,
+                "appointment_id": appointment.id,
+                "type": NotificationType["APPOINTMENT"],
+                "is_read": False,
+                "send_email": True,
+                "email_status": DeliveryStatus["PENDING"]
+            }
+        ]
 
-    doctor_notification = {
-        "title": f"Có cập nhật lịch hẹn: {action}",
-        "message": f"Hệ thống vừa {action} một lịch hẹn có Mã: {appointment.id}.",
-        "is_read": False,
-        "user_id": doctor_user_id,
-        "appointment_id": appointment.id
-    }
+        notification_list = insert_notifications_list(created_notifications)
 
-    if doctor_user_id and patient_user_id:
-        connection.execute(
-            Notification.__table__.insert(),
-            [patient_notification, doctor_notification]
-        )
+        for notification_id in notification_list:
+            reminder_email_task.apply_async(args=[notification_id], countdown=5)
 
 
 @event.listens_for(Appointment, 'after_insert')
-def appointment_after_insert_listener(_mapper, connection, target):
-    insert_notifications(connection, target, action="tạo mới")
+def appointment_insert_listener(_mapper, connection, target):
+    if current_app.config.get("DISABLE_SIGNALS"):
+        return
+
+    insert_appointment_notifications(target, action_name="chấp thuận")
 
 
 @event.listens_for(Appointment, 'after_update')
-def appointment_after_update_listener(_mapper, connection, target):
-    insert_notifications(connection, target, action="cập nhật")
+def appointment_update_listener(_mapper, connection, target):
+    if current_app.config.get("DISABLE_SIGNALS"):
+        return
+
+    insert_appointment_notifications(target, action_name="thay đổi")

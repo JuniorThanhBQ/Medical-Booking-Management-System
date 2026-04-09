@@ -2,8 +2,11 @@ from datetime import datetime, timedelta
 
 from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
-from src.modules.doctors.models import DayOfWeek, WorkDate, WorkSchedule
-from src.modules.shared.services import format_appointment_summary
+from src.modules.doctors.models import (CtaLabel, DayOfWeek, DoctorProfile,
+                                        Specialty, WorkDate, WorkSchedule)
+from src.modules.shared.services import (format_appointment,
+                                         format_speciality_output)
+from src.modules.users.models import Profile, User, UserRole
 from src.utils.handle_db_errors import handle_db_errors
 
 
@@ -41,7 +44,7 @@ def get_my_schedule_service(current_user):
         doctor_user = current_user
         specialty = profile.specialty
         appointment_data.append(
-            format_appointment_summary(appointment, patient_user, doctor_user, specialty)
+            format_appointment(appointment, patient_user, doctor_user, specialty)
         )
 
     result = {
@@ -107,3 +110,153 @@ def request_schedule_change_service(current_user, data):
 
     db.session.commit()
     return {"message": "Đã gửi yêu cầu đổi lịch"}, "SUCCESS"
+
+
+@handle_db_errors
+def get_specialties_service(page=1, per_page=10, keywords=None, cta_label=None):
+    query = Specialty.query
+
+    if keywords:
+        query = query.filter(
+            Specialty.name.ilike(f"%{keywords}%") | Specialty.description.ilike(f"%{keywords}%")
+        )
+
+    if cta_label:
+        try:
+            query = query.filter(Specialty.cta_label == CtaLabel[cta_label])
+        except KeyError:
+            pass
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+    items = [format_speciality_output(specialty) for specialty in pagination.items]
+
+    result = {
+        "items": items,
+        "meta": {
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "currentPage": pagination.page,
+            "perPage": pagination.per_page,
+            "hasNext": pagination.has_next,
+            "hasPrev": pagination.has_prev
+        }
+    }
+
+    return result, "SUCCESS"
+
+
+@handle_db_errors
+def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None):
+    query = User.query.join(User.profile).filter(
+        User.is_active,
+        User.role == UserRole.DOCTOR,
+        Profile.profile_type == "doctor"
+    )
+
+    if keywords:
+        query = query.filter(
+            User.first_name.ilike(f"%{keywords}%") |
+            User.last_name.ilike(f"%{keywords}%")
+        )
+
+    if specialty_id:
+        query = query.join(DoctorProfile).filter(DoctorProfile.specialty_id == specialty_id)
+
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+    items = []
+
+    for doctor in pagination.items:
+        profile = doctor.profile
+        items.append(
+            {
+                "id": profile.id,
+                "firstName": doctor.first_name,
+                "lastName": doctor.last_name,
+                "avatar": profile.avatar,
+                "gender": profile.gender.name if profile.gender else None,
+                "title": profile.title,
+                "specialtyId": profile.specialty_id,
+                "bio": profile.bio,
+            }
+        )
+
+    result = {
+        "items": items,
+        "meta": {
+            "total": pagination.total,
+            "pages": pagination.pages,
+            "currentPage": pagination.page,
+            "perPage": pagination.per_page,
+            "hasNext": pagination.has_next,
+            "hasPrev": pagination.has_prev
+        }
+    }
+
+    return result, "SUCCESS"
+
+
+@handle_db_errors
+def get_specialty_detail_service(specialty_id):
+    specialty = Specialty.query.filter(Specialty.id == specialty_id).first()
+
+    if not specialty:
+        return {"message": "Không tồn tại chuyên khoa này"}, "NOT_FOUND"
+
+    result = format_speciality_output(specialty)
+
+    return result, "SUCCESS"
+
+
+@handle_db_errors
+def get_doctor_detail_service(doctor_id):
+    doctor = get_doctor_by_id(doctor_id)
+
+    if not doctor or not doctor.profile:
+        return {"message": "Bác sĩ không tồn tại"}, "NOT_FOUND"
+
+    profile = doctor.profile
+    schedule_data = None
+
+    if profile.work_schedule:
+        work_schedule = profile.work_schedule
+        schedule_data = format_work_schedule(work_schedule)
+
+    result = {
+        "id": profile.id,
+        "firstName": doctor.first_name,
+        "lastName": doctor.last_name,
+        "email": doctor.email,
+        "profile": {
+            "avatar": profile.avatar,
+            "dateOfBirth": profile.birthday.isoformat() if profile.birthday else None,
+            "gender": profile.gender.name if profile.gender else None,
+            "phone": profile.phone,
+            "title": profile.title,
+            "specialtyId": profile.specialty_id,
+            "bio": profile.bio,
+        },
+        "workSchedule": schedule_data,
+    }
+    return result, "SUCCESS"
+
+
+def get_doctor_by_id(doctor_id):
+    return User.query.join(DoctorProfile).filter(DoctorProfile.id == doctor_id).first()
+
+
+def format_work_schedule(work_schedule):
+    if not work_schedule:
+        return None
+
+    return {
+        "title": work_schedule.title,
+        "description": work_schedule.description,
+        "startTime":
+            work_schedule.start_time.strftime("%H:%M:%S") if work_schedule.start_time else None,
+        "endTime":
+            work_schedule.end_time.strftime("%H:%M:%S") if work_schedule.end_time else None,
+        "workDate": [work_schedule.day_of_week.name.capitalize()
+                     for work_schedule in work_schedule.work_dates],
+    }

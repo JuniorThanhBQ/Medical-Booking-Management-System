@@ -6,9 +6,8 @@ from flask_restx import Api
 
 from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.appointments.views import appointments_namespace
-from src.modules.auth_profiles.models import (DoctorProfile, GenderRole,
-                                              PatientProfile, Specialty, User,
-                                              UserRole)
+from src.modules.doctors.models import DoctorProfile, Specialty
+from src.modules.users.models import GenderRole, PatientProfile, User, UserRole
 from src.utils.utils import create_token
 from tests.test_base import test_app, test_session
 

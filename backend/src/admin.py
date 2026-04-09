@@ -1,15 +1,14 @@
-from flask import redirect, request, url_for
+from flask import redirect, url_for
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.menu import MenuLink
 from flask_admin.theme import Bootstrap4Theme
 from flask_login import current_user
 
-from src.modules.appointments.admin import appointments
-from src.modules.auth_profiles.admin import auth_profile
+from src.modules.appointments.admin import appointments, medical_records
 from src.modules.doctors.admin import doctor
-from src.modules.medical_records.admin import medical_records
 from src.modules.notification.admin import notification
+from src.modules.users.admin import auth_profile
 
 
 class MyAdminIndexView(AdminIndexView):
@@ -19,16 +18,16 @@ class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role.name == 'ADMIN'
 
-    def inaccessible_callback(self, name, **kwargs): # pylint: disable=unused-argument
-        return redirect(url_for('login_view', next=request.url))
+    def inaccessible_callback(self, name, **kwargs):  # pylint: disable=unused-argument
+        return redirect(url_for('login_view'))
 
 
 class MyModelView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role.name == 'ADMIN'
 
-    def inaccessible_callback(self, name, **kwargs): # pylint: disable=unused-argument
-        return redirect(url_for('login_view', next=request.url))
+    def inaccessible_callback(self, name, **kwargs):  # pylint: disable=unused-argument
+        return redirect(url_for('login_view'))
 
 
 admin = Admin(name="Medical Appointment B3", theme=Bootstrap4Theme(), index_view=MyAdminIndexView())

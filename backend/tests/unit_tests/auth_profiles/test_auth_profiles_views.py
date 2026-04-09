@@ -4,8 +4,8 @@ import pytest
 from flask_restx import Api
 
 from src.extensions import limiter
-from src.modules.auth_profiles.models import User, UserRole
-from src.modules.auth_profiles.views import auth_namespace
+from src.modules.users.models import User, UserRole
+from src.modules.users.views import auth_namespace
 from src.utils.utils import create_token
 from tests.test_base import test_app, test_session
 
@@ -134,7 +134,7 @@ class TestRegisterAPI:
 
 
 class TestEmailValidatorAPI:
-    @patch("src.modules.auth_profiles.views.check_email_exists_service")
+    @patch("src.modules.auth_profiles.views.is_email_available")
     def test_email_validator_valid(self, mock_service, configured_client):
         mock_service.return_value = True
         payload = {"email": "new@example.com"}
@@ -148,7 +148,7 @@ class TestEmailValidatorAPI:
         assert response.status_code == 400
         assert response.json["is_valid"] is False
 
-    @patch("src.modules.auth_profiles.views.check_email_exists_service")
+    @patch("src.modules.auth_profiles.views.is_email_available")
     def test_email_validator_exists(self, mock_service, configured_client):
         mock_service.return_value = False
         payload = {"email": "exist@example.com"}

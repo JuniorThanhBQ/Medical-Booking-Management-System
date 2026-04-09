@@ -1,8 +1,13 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
 
-from src.middlewares.auth import token_required
-from src.modules.doctors.services import (get_my_schedule_service,
+from src.middlewares.auth import auth_required
+from src.modules.appointments.views import public_namespace
+from src.modules.doctors.services import (get_doctor_detail_service,
+                                          get_doctors_service,
+                                          get_my_schedule_service,
+                                          get_specialties_service,
+                                          get_specialty_detail_service,
                                           request_schedule_change_service)
 from src.utils.utils import check_xss_violation, format_api_response
 
@@ -22,7 +27,7 @@ schedule_change_request_model = doctors_namespace.model('ScheduleChangeRequest',
 
 
 class RetrieveMyScheduleAPI(Resource):
-    method_decorators = [token_required]
+    method_decorators = [auth_required]
 
     @doctors_namespace.doc(security='api_key')
     def get(self, current_user):
@@ -30,7 +35,7 @@ class RetrieveMyScheduleAPI(Resource):
 
 
 class ScheduleRequestAPI(Resource):
-    method_decorators = [token_required]
+    method_decorators = [auth_required]
 
     @doctors_namespace.doc(security='api_key')
     @doctors_namespace.expect(schedule_change_request_model)
@@ -43,3 +48,47 @@ class ScheduleRequestAPI(Resource):
         return format_api_response(
             *request_schedule_change_service(current_user, data), success_code=201
         )
+
+
+class PublicSpecialtyListAPI(Resource):
+    def get(self):
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("limit", 10, type=int)
+        keywords = request.args.get("keywords", type=str)
+        cta_label = request.args.get("ctaLabel", type=str)
+
+        data, message = get_specialties_service(
+            page=page, per_page=per_page, keywords=keywords, cta_label=cta_label
+        )
+
+        return {
+            "message": message,
+            "data": data
+        }, 200
+
+
+class PublicSpecialtyRetrieveAPI(Resource):
+    def get(self, specialty_id):
+        return format_api_response(*get_specialty_detail_service(specialty_id))
+
+
+class PublicDoctorListAPI(Resource):
+    def get(self):
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("limit", 10, type=int)
+        keywords = request.args.get("keywords", type=str)
+        specialty_id = request.args.get("specialtyId", type=int)
+
+        data, message = get_doctors_service(
+            page=page, per_page=per_page, keywords=keywords, specialty_id=specialty_id
+        )
+
+        return {
+            "message": message,
+            "data": data
+        }, 200
+
+
+class PublicDoctorRetrieveAPI(Resource):
+    def get(self, doctor_id):
+        return format_api_response(*get_doctor_detail_service(doctor_id))

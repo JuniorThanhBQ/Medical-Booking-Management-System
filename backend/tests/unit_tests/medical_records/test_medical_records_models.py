@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
+from src.modules.appointments.models import MedicalRecord, MedicalRecordType
 from tests.test_base import test_app, test_session
 
 

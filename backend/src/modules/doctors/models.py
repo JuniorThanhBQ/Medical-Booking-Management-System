@@ -1,10 +1,9 @@
 import enum
 
-from sqlalchemy import (Column, DateTime, Enum, ForeignKey, Integer, String,
-                        Text, Time, func)
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Enum, ForeignKey, Integer, String, Text, Time
+from sqlalchemy.orm import backref, relationship
 
-from src.extensions import db
+from src.modules.users.models import Base, Profile
 
 
 class DayOfWeek(enum.Enum):
@@ -15,13 +14,6 @@ class DayOfWeek(enum.Enum):
     FRIDAY = 5
     SATURDAY = 6
     SUNDAY = 7
-
-
-class Base(db.Model):
-    __abstract__ = True
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    created_date = Column(DateTime, default=func.now())  # pylint: disable=not-callable
-    updated_date = Column(DateTime, default=func.now(), onupdate=func.now())  # pylint: disable=not-callable
 
 
 class WorkSchedule(Base):
@@ -48,3 +40,41 @@ class WorkDate(Base):
 
     def __str__(self):
         return self.day_of_week.name
+
+
+class CtaLabel(enum.Enum):
+    CK1 = 1
+    CK2 = 2
+    CK3 = 3
+
+
+class Specialty(Base):
+    __tablename__ = "specialty"
+    name = Column(String(255), nullable=False, unique=True)
+    description = Column(Text)
+    level = Column(String(255), nullable=False)
+    cta_label = Column(Enum(CtaLabel), default=CtaLabel.CK1)
+
+    def __str__(self):
+        return self.name
+
+
+class DoctorProfile(Profile):
+    __tablename__ = "doctor_profile"
+    __mapper_args__ = {"polymorphic_identity": "doctor"}
+    id = Column(Integer,
+                ForeignKey("profile.id", ondelete="CASCADE"),
+                primary_key=True)
+    title = Column(String(255), nullable=False)
+    bio = Column(Text, nullable=False)
+    specialty_id = Column(Integer,
+                          ForeignKey("specialty.id", ondelete="RESTRICT"),
+                          nullable=False)
+    specialty = relationship("Specialty", backref="doctors", lazy="joined")
+    work_schedule = relationship(
+        "WorkSchedule",
+        backref=backref("doctor", uselist=False),
+        uselist=False,
+        cascade="all, delete-orphan",
+        single_parent=True,
+    )

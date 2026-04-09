@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ notification.title }}</title>
+    <style>
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            color: #3c4043;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 40px 20px;
+        }
+
+        .email-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #dadce0;
+            overflow: hidden;
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .email-header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+
+        .email-body {
+            padding: 40px 32px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .email-body h2 {
+            font-size: 20px;
+            color: #202124;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message-box {
+            background-color: #e8f0fe;
+            border-left: 4px solid #1a73e8;
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+
+        .content-text {
+            color: #3c4043;
+            margin-bottom: 30px;
+        }
+
+
+        .cta-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b0;
+        }
+
+        .signature {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f3f4;
+            font-size: 15px;
+        }
+
+        .highlight-name {
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .email-footer {
+            text-align: center;
+            padding: 24px;
+            color: #70757a;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .email-footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+
+        @media screen and (max-width: 600px) {
+            .email-wrapper { padding: 20px 10px; }
+            .email-body { padding: 30px 20px; }
+            .email-header { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <table class="email-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <table class="email-card" role="presentation" border="0" cellpadding="0" cellspacing="0">
+
+                    <tr>
+                        <td class="email-header">
+                            <h1>Medical Appointment B3</h1>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="email-body">
+                            <h2>{{ notification.title }}</h2>
+
+                            <div class="message-box">
+                                {{ notification.message }}
+                            </div>
+
+                            <div class="content-text">
+                                <p>Cảm ơn bạn đã sử dụng dịch vụ của hệ thống <strong>Medical Appointment B3</strong>. Để theo dõi thông tin chi tiết hoặc quản lý lịch hẹn của mình, vui lòng truy cập vào hệ thống.</p>
+                            </div>
+
+                            <div class="cta-container">
+                                <a href="#" class="btn-primary">Truy cập Hệ thống</a>
+                            </div>
+
+                            <div class="signature">
+                                <p>Trân trọng,<br>
+                                <span class="highlight-name">Đội ngũ Chăm sóc khách hàng</span></p>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto;">
+                    <tr>
+                        <td class="email-footer">
+                            <p>Email này được tạo tự động. Vui lòng không trả lời thư này.</p>
+                            <p>Nếu bạn cần hỗ trợ, vui lòng liên hệ <a href="mailto:support@b3medical.com">support@b3medical.com</a></p>
+                            <p>© 2026 Medical Appointment B3. All rights reserved.</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

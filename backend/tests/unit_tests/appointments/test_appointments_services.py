@@ -12,9 +12,8 @@ from src.modules.appointments.services import (
     handle_status_update, patch_appointment_service,
     validate_appointment_booking, validate_appointment_request,
     validate_doctor)
-from src.modules.auth_profiles.models import (DoctorProfile, GenderRole,
-                                              PatientProfile, Specialty, User,
-                                              UserRole)
+from src.modules.doctors.models import DoctorProfile, Specialty
+from src.modules.users.models import GenderRole, PatientProfile, User, UserRole
 from tests.test_base import test_app, test_session
 
 

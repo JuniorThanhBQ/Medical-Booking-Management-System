@@ -3,8 +3,8 @@ from unittest.mock import patch
 import pytest
 from flask_restx import Api
 
-from src.modules.auth_profiles.models import User, UserRole
-from src.modules.medical_records.views import medical_records_namespace
+from src.modules.appointments.views import medical_records_namespace
+from src.modules.users.models import User, UserRole
 from src.utils.utils import create_token
 from tests.test_base import test_app, test_session
 

@@ -8,7 +8,7 @@ from src.modules.appointments.views import (AppointmentListCreateAPI,
                                             PatientRetrieveAPI,
                                             ReceptionistAppointmentCreateAPI,
                                             appointments_namespace)
-from src.modules.auth_profiles.models import User, UserRole
+from src.modules.users.models import User, UserRole
 from src.utils.utils import create_token
 from tests.test_base import test_app, test_session
 

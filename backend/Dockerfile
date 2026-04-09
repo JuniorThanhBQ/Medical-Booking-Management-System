@@ -1,29 +1,30 @@
 FROM python:3.13-slim AS builder
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+COPY backend/requirements/requirements.txt .
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential  \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir -r requirements.txt
+
 
 FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONFAULTHANDLER=1 \
-    PATH="/home/appuser/.local/bin:${PATH}" \
+    PATH="/venv/bin:$PATH" \
     PYTHONPATH=/app
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
 RUN groupadd -r appuser && useradd -r -g appuser -m appuser
+COPY --from=builder --chown=appuser:appuser /venv /venv
+COPY --chown=appuser:appuser backend/src ./src
+COPY --chown=appuser:appuser database/migrations ./migrations
 RUN mkdir -p /app/instance && chown -R appuser:appuser /app/instance
-COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
-COPY --chmod=555 ./src ./src
+COPY --chown=appuser:appuser backend/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 USER appuser
 EXPOSE 8000
-CMD ["bash", "-c", " \
-    while ! flask --app src.index:app db upgrade; do \
-        echo 'Services is unhealthy. Retrying in 5 seconds'; \
-        sleep 5; \
-    done && \
-    echo 'Migrations applied!' && \
-    python src/fixtures/fixtures.py && \
-    exec gunicorn --workers=4 --bind=0.0.0.0:8000 --access-logfile=- --error-logfile=- src.index:app \
-"]
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=30s \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "--access-logfile=-", "--error-logfile=-", "src.index:app"]

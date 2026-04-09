@@ -3,10 +3,9 @@ from datetime import date
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from src.modules.auth_profiles.models import (AuditLog, CtaLabel,
-                                              DoctorProfile, GenderRole,
-                                              PatientProfile, Profile,
-                                              Specialty, User, UserRole)
+from src.modules.doctors.models import CtaLabel, DoctorProfile, Specialty
+from src.modules.users.models import (AuditLog, GenderRole, PatientProfile,
+                                      Profile, User, UserRole)
 from tests.test_base import test_app, test_session
 
 

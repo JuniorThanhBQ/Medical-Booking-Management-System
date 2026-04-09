@@ -1,11 +1,12 @@
+import datetime
 import enum
 
 from flask_login import UserMixin
-from sqlalchemy import (Boolean, Column, Date, Enum, ForeignKey, Integer,
-                        String, Text)
+from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
+                        Integer, String, Text)
 from sqlalchemy.orm import backref, relationship
 
-from src.modules.doctors.models import Base
+from src.extensions import db
 
 
 class UserRole(enum.Enum):
@@ -22,10 +23,12 @@ class GenderRole(enum.Enum):
     NOT_SET = 4
 
 
-class CtaLabel(enum.Enum):
-    CK1 = 1
-    CK2 = 2
-    CK3 = 3
+class Base(db.Model):
+    __abstract__ = True
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    created_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    updated_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC),
+                          onupdate=datetime.datetime.now(datetime.UTC))
 
 
 class User(Base, UserMixin):
@@ -64,38 +67,6 @@ class Profile(Base):
         return f"{self.user.last_name} {self.user.first_name}"
 
 
-class Specialty(Base):
-    __tablename__ = "specialty"
-    name = Column(String(255), nullable=False, unique=True)
-    description = Column(Text)
-    level = Column(String(255), nullable=False)
-    cta_label = Column(Enum(CtaLabel), default=CtaLabel.CK1)
-
-    def __str__(self):
-        return self.name
-
-
-class DoctorProfile(Profile):
-    __tablename__ = "doctor_profile"
-    __mapper_args__ = {"polymorphic_identity": "doctor"}
-    id = Column(Integer,
-                ForeignKey("profile.id", ondelete="CASCADE"),
-                primary_key=True)
-    title = Column(String(255), nullable=False)
-    bio = Column(Text, nullable=False)
-    specialty_id = Column(Integer,
-                          ForeignKey("specialty.id", ondelete="RESTRICT"),
-                          nullable=False)
-    specialty = relationship("Specialty", backref="doctors", lazy="joined")
-    work_schedule = relationship(
-        "WorkSchedule",
-        backref=backref("doctor", uselist=False),
-        uselist=False,
-        cascade="all, delete-orphan",
-        single_parent=True,
-    )
-
-
 class PatientProfile(Profile):
     __tablename__ = "patient_profile"
     __mapper_args__ = {"polymorphic_identity": "patient"}
@@ -103,11 +74,3 @@ class PatientProfile(Profile):
                 ForeignKey("profile.id", ondelete="CASCADE"),
                 primary_key=True)
     medical_history = Column(Text)
-
-
-class AuditLog(Base):
-    __tablename__ = "audit_log"
-    action_name = Column(String(500), nullable=False)
-    description = Column(Text, nullable=False)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
-    user = relationship("User", backref="audit_log")
