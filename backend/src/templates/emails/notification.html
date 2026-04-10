@@ -5,9 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ notification.title }}</title>
     <style>
-        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        body, a {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        td {
+            padding: 0;
+        }
+
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
 
         body {
             font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -19,9 +38,12 @@
         }
 
         .email-wrapper {
-            width: 100%;
             background-color: #f8f9fa;
             padding: 40px 20px;
+        }
+
+        .wrapper-inner {
+            text-align: center;
         }
 
         .email-card {
@@ -31,6 +53,7 @@
             border-radius: 12px;
             border: 1px solid #dadce0;
             overflow: hidden;
+            width: 100%;
         }
 
         .email-header {
@@ -44,14 +67,14 @@
             margin: 0;
             font-size: 24px;
             font-weight: 500;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
-
 
         .email-body {
             padding: 40px 32px;
             font-size: 16px;
             line-height: 1.6;
+            text-align: left;
         }
 
         .email-body h2 {
@@ -77,6 +100,38 @@
             margin-bottom: 30px;
         }
 
+        .appointment-details {
+            background-color: #f8f9fa;
+            border: 1px solid #e8eaed;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .appointment-details p {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            display: table;
+            width: 100%;
+        }
+
+        .appointment-details p:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #202124;
+            display: table-cell;
+            width: 120px;
+            vertical-align: top;
+        }
+
+        .detail-content {
+            display: table-cell;
+            vertical-align: top;
+            word-break: break-word;
+        }
 
         .cta-container {
             text-align: center;
@@ -111,6 +166,12 @@
             font-weight: 600;
         }
 
+        .footer-table {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
         .email-footer {
             text-align: center;
             padding: 24px;
@@ -124,63 +185,89 @@
             text-decoration: none;
         }
 
-
         @media screen and (max-width: 600px) {
-            .email-wrapper { padding: 20px 10px; }
-            .email-body { padding: 30px 20px; }
-            .email-header { padding: 25px 20px; }
+            .email-wrapper {
+                padding: 20px 10px;
+            }
+
+            .email-body {
+                padding: 30px 20px;
+            }
+
+            .email-header {
+                padding: 25px 20px;
+            }
+
+            .appointment-details p {
+                display: block;
+            }
+
+            .detail-label {
+                display: block;
+                margin-bottom: 4px;
+                width: 100%;
+            }
+
+            .detail-content {
+                display: block;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <table class="email-wrapper" role="presentation" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center">
-                <table class="email-card" role="presentation" border="0" cellpadding="0" cellspacing="0">
+<table class="email-wrapper" role="presentation">
+    <tr>
+        <td class="wrapper-inner">
+            <table class="email-card" role="presentation">
+                <tr>
+                    <td class="email-header">
+                        <h1>Medical Appointment B3</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-body">
+                        <h2>{{ notification.title }}</h2>
+                        <div class="message-box">
+                            {{ notification.message }}
+                        </div>
 
-                    <tr>
-                        <td class="email-header">
-                            <h1>Medical Appointment B3</h1>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="email-body">
-                            <h2>{{ notification.title }}</h2>
-
-                            <div class="message-box">
-                                {{ notification.message }}
+                        <div class="content-text">
+                            <div class="appointment-details">
+                                <p><span class="detail-label">Mã lịch hẹn:</span> <span class="detail-content">{{ notification.appointment_id }}</span></p>
+                                <p><span class="detail-label">Thời gian:</span> <span class="detail-content">{{ notification.appointment.appointment_date.strftime('%H:%M - %d/%m/%Y') }}</span></p>
+                                <p><span class="detail-label">Bệnh nhân:</span> <span class="detail-content">{{ notification.appointment.patient }}</span></p>
+                                <p><span class="detail-label">Bác sĩ:</span> <span class="detail-content">{{ notification.appointment.doctor }}</span></p>
+                                <p><span class="detail-label">Địa điểm:</span> <span class="detail-content">97 Võ Văn Tần</span></p>
+                                <p><span class="detail-label">Ghi chú:</span> <span class="detail-content">{{ notification.appointment.note }}</span></p>
                             </div>
 
-                            <div class="content-text">
-                                <p>Cảm ơn bạn đã sử dụng dịch vụ của hệ thống <strong>Medical Appointment B3</strong>. Để theo dõi thông tin chi tiết hoặc quản lý lịch hẹn của mình, vui lòng truy cập vào hệ thống.</p>
-                            </div>
+                            <p>Cảm ơn bạn đã tin tưởng sử dụng dịch vụ từ Medical Appointment B3. Để xem chi tiết nội dung thông báo trên, bạn vui lòng truy cập vào hệ thống đặt lịch khám qua link sau hoặc trực tiếp trên website của chúng tôi.</p>
+                        </div>
 
-                            <div class="cta-container">
-                                <a href="#" class="btn-primary">Truy cập Hệ thống</a>
-                            </div>
+                        <div class="cta-container">
+                            <a href="#" class="btn-primary">Xem chi tiết thông báo</a>
+                        </div>
+                        <div class="signature">
+                            <p>Trân trọng,<br>
+                                <span class="highlight-name">Đội ngũ quản lý Medical Appointment B3</span></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
-                            <div class="signature">
-                                <p>Trân trọng,<br>
-                                <span class="highlight-name">Đội ngũ Chăm sóc khách hàng</span></p>
-                            </div>
-                        </td>
-                    </tr>
-
-                </table>
-
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto;">
-                    <tr>
-                        <td class="email-footer">
-                            <p>Email này được tạo tự động. Vui lòng không trả lời thư này.</p>
-                            <p>Nếu bạn cần hỗ trợ, vui lòng liên hệ <a href="mailto:support@b3medical.com">support@b3medical.com</a></p>
-                            <p>© 2026 Medical Appointment B3. All rights reserved.</p>
-                        </td>
-                    </tr>
-                </table>
-
-            </td>
-        </tr>
-    </table>
+            <table class="footer-table" role="presentation">
+                <tr>
+                    <td class="email-footer">
+                        <p>Vui lòng không phản hồi email này.</p>
+                        <p>Liên hệ gmail sau để được hỗ trợ và tư vấn: <a href="mailto:juniorthanh09@gmail.com">juniorthanh09@gmail.com</a>
+                        </p>
+                        <p>© 2026 Medical Appointment B3. All rights reserved.</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

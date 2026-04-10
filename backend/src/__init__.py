@@ -6,6 +6,7 @@ from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_cors import CORS
 
+import src.modules.notification.rabbitmq  # noqa: F401
 from src.admin import init_admin
 from src.extensions import cache, celery_app, db, limiter, login, mail, migrate
 from src.middlewares.middlewares import middlewares
@@ -18,7 +19,7 @@ def init_celery(app, celery):
     celery.conf.update(
         broker_url=app.config.get('CELERY_BROKER_URL'),
         result_backend=app.config.get('CELERY_RESULT_BACKEND'),
-        include=['src.modules.notification.tasks'],
+        include=['src.modules.notification.rabbitmq.tasks'],
         enable_utc=False,
         timezone="Asia/Ho_Chi_Minh"
     )
@@ -31,9 +32,13 @@ def init_celery(app, celery):
     celery.Task = ContextTask
 
     celery.conf.beat_schedule = {
-        'check-notification-every-hour': {
-            'task': 'src.modules.notification.tasks.reminders_task_schedule',
-            'schedule': crontab(minute=0),
+        'daily-reminder-at-15pm': {
+            'task': 'src.modules.notification.rabbitmq.tasks.reminders_task_schedule',
+            'schedule': crontab(minute=0, hour=15),
+        },
+        'check-pending-emails-8-hours': {
+            'task': 'src.modules.notification.rabbitmq.tasks.pending_emails_task_schedule',
+            'schedule': crontab(minute=0, hour='*/8'),
         },
     }
 
@@ -66,6 +71,10 @@ def create_app():
     cache.init_app(app)
     mail.init_app(app)
     init_celery(app, celery_app)
+
+    # Ensure SQLAlchemy event listeners in the notification module are loaded
+    import src.modules.notification.rabbitmq  # noqa: F401
+
     app.register_blueprint(api_v1)
 
     cloudinary.config(

@@ -10,6 +10,7 @@ class NotificationType(enum.Enum):
     SYSTEM = 1
     APPOINTMENT = 2
     PROMOTION = 3
+    REMINDER = 4
 
 
 class DeliveryStatus(enum.Enum):

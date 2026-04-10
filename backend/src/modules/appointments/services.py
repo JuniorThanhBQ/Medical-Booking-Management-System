@@ -1,7 +1,6 @@
 import uuid
 from datetime import date, datetime, timedelta
 
-from flask import current_app
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash
 
@@ -9,7 +8,6 @@ from src.extensions import db
 from src.modules.appointments.models import (Appointment, MedicalRecord,
                                              MedicalRecordType, StatusRole)
 from src.modules.doctors.services import format_work_schedule, get_doctor_by_id
-from src.modules.notification.signals import insert_appointment_notifications
 from src.modules.shared.services import (check_is_conflicting,
                                          format_appointment, get_slot_duration,
                                          parse_appointment_datetime,
@@ -165,7 +163,6 @@ def create_patient_appointment_service(current_user, data):
     if error:
         return error
 
-    current_app.config["DISABLE_SIGNALS"] = True
     full_name = f"{current_user.last_name} {current_user.first_name}"
     new_appointment = Appointment(
         name=f"KB - {appointment_date}",
@@ -178,9 +175,6 @@ def create_patient_appointment_service(current_user, data):
 
     db.session.add(new_appointment)
     db.session.commit()
-
-    insert_appointment_notifications(new_appointment, action_name="chấp thuận")
-    current_app.config["DISABLE_SIGNALS"] = False
 
     return format_appointment(appointment=new_appointment,
                               doctor=doctor,
@@ -230,8 +224,6 @@ def patch_appointment_service(current_user, appointment_id, data):
     if not appointment:
         return {"message": "Lịch hẹn không tồn tại"}, "NOT_FOUND"
 
-    current_app.config["DISABLE_SIGNALS"] = True
-
     if "note" in data:
         appointment.note = data["note"]
 
@@ -244,9 +236,6 @@ def patch_appointment_service(current_user, appointment_id, data):
         return date_error
 
     db.session.commit()
-
-    insert_appointment_notifications(appointment, action_name="thay đổi")
-    current_app.config["DISABLE_SIGNALS"] = False
 
     return "", "SUCCESS"
 

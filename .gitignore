@@ -14,12 +14,15 @@ venv/
 env/
 .env
 .env.secret
+.env.prod
 instance/
 .pytest_cache/
 .coverage
 htmlcov/
 *.db
 *.sqlite3
+.import_linter_cache/
+.import_linter_cache
 
 .idea/
 .vscode/
