@@ -41,6 +41,8 @@ class Config:
     PREFERRED_URL_SCHEME = os.getenv('PREFERRED_URL_SCHEME', 'http')
     SERVER_NAME = os.getenv('SERVER_NAME', 'localhost:8000')
 
+    EMAIL_VALIDATOR = os.getenv('EMAIL_VALIDATOR')
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

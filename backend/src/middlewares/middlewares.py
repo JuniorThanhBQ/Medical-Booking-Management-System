@@ -2,7 +2,7 @@ import gzip
 import logging
 import time
 
-from flask import g, jsonify, request
+from flask import g, request
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -72,16 +72,16 @@ def middlewares(app):
     @app.errorhandler(Exception)
     def handle_exception(e):
         if isinstance(e, HTTPException):
-            return jsonify({
+            return {
                 "status": "error",
                 "code": e.code,
                 "message": getattr(e, 'description', 'Lỗi không xác định')
-            }), e.code
+            }, e.code
 
         logger.error("Server Error: %s", str(e), exc_info=True)
 
-        return jsonify({
+        return {
             "status": "error",
             "code": 500,
             "message": "Internal Server Error."
-        }), 500
+        }, 500

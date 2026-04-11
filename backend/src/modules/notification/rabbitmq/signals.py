@@ -1,29 +1,33 @@
-import random
+import secrets
 from functools import partial
 
 from flask import current_app
 from sqlalchemy import event
 
 from src.extensions import db
-from src.modules.appointments.models import Appointment
+from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.notification.rabbitmq.tasks import reminder_email_task
 from src.modules.notification.services import insert_appointment_notifications
 
 
 def hook_after_commit(_session, notification_list):
     for notification_id in notification_list:
-        jitter = random.randint(1, 10)
+        jitter = secrets.SystemRandom().randint(1, 10)
         reminder_email_task.apply_async(
             args=[notification_id],
             countdown=jitter
         )
 
 
-def processing_appointment_notification(target, connection=None, action_name=None):
-    if current_app.config.get("DISABLE_SIGNALS") or connection is None:
+def processing_appointment_notification(appointment=None, connection=None, action_name=None):
+    if (current_app.config.get("DISABLE_SIGNALS")
+            or connection is None or appointment is None):
         return
 
-    notification_list = insert_appointment_notifications(appointment=target, connection=connection,
+    if appointment.status == StatusRole.COMPLETED.name:
+        return
+
+    notification_list = insert_appointment_notifications(appointment=appointment, connection=connection,
                                                          action_name=action_name)
 
     if not notification_list:
@@ -35,9 +39,9 @@ def processing_appointment_notification(target, connection=None, action_name=Non
 
 @event.listens_for(Appointment, 'after_insert')
 def appointment_insert_listener(_mapper, connection, target):
-    processing_appointment_notification(target, connection=connection, action_name="tạo như sau")
+    processing_appointment_notification(appointment=target, connection=connection, action_name="tạo như sau")
 
 
 @event.listens_for(Appointment, 'after_update')
 def appointment_update_listener(_mapper, connection, target):
-    processing_appointment_notification(target, connection=connection, action_name="cập nhật như sau")
+    processing_appointment_notification(appointment=target, connection=connection, action_name="thay đổi")

@@ -1,0 +1,305 @@
+name: Production-ready CI Pipeline
+
+on:
+  push:
+    branches: [ main ] 
+  pull_request:
+    branches: [ main ] 
+
+jobs:
+  backend-linting-check-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Cài đặt Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Cài đặt gói thư viện
+        run: |
+          pip install -r requirements/requirements.txt
+          pip install import-linter pylint
+
+      - name: Chạy lint-imports
+        working-directory: ./backend
+        run: lint-imports
+
+      - name: Chạy pylint
+        working-directory: ./backend
+        run: pylint src/
+
+  frontend-linting-check-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      
+      - name: Cài đặt Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Cài đặt gói thư viện
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Kiểm tra Eslint
+        working-directory: ./frontend
+        run: npm run lint
+
+  backend-security-check-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Cài đặt Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'        
+
+      - name: Cài đặt Bandit
+        run: pip install bandit
+
+      - name: Chạy Bandit
+        run: bandit -c .github/configs/bandit.yaml -r backend
+
+  frontend-security-check-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Cài đặt dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Chạy npm audit
+        working-directory: ./frontend
+        run: npm audit --omit=dev --audit-level=high
+    
+  docker-static-test-prod:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Tạo file .env ảo
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
+          fi
+      
+      - name: Lint Backend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./backend/Dockerfile
+          failure-threshold: error 
+
+      - name: Lint Frontend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./frontend/Dockerfile
+          failure-threshold: error 
+
+      - name: Đánh giá syntax docker compose and docker file
+        run: |
+          docker compose config -q
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
+          docker build --check ./backend
+          docker build --check ./frontend
+
+      - name: Build containers in production mode 
+        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
+
+      - name: Dọn dẹp containers
+        if: always()
+        run: docker compose down -v
+
+  pytest-test-prod:
+    runs-on: ubuntu-latest
+    needs: [backend-linting-check-prod, frontend-linting-check-prod, backend-security-check-prod, frontend-security-check-prod, docker-static-test-prod]
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cài đặt thư viện pytest và pytest-cov
+        working-directory: ./backend
+        run: |
+          pip install -r requirements/requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Tạo file .env 
+        working-directory: ./backend
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
+          fi
+
+      - name: Chạy Pytest
+        id: pytest_step
+        run: |
+          chmod +x .github/workflows/scripts/pytest_run_test.sh
+          bash .github/workflows/scripts/pytest_run_test.sh
+
+  test-build-prod:
+    runs-on: ubuntu-latest
+    needs: [pytest-test-prod, backend-linting-check-prod, frontend-linting-check-prod, backend-security-check-prod, frontend-security-check-prod, docker-static-test-prod]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Tạo file .env ảo
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
+          fi
+
+      - name: Build và chạy docker compose trong production
+        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
+
+      - name: Dọn dẹp môi trường
+        run: docker compose down -v
+
+  build-deploy-backend-prod:
+    needs: test-build-prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Thiết lập Docker Buildx v3.8.0
+        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5
+
+      - name: Đăng nhập Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Backend Image
+        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+        with:
+          context: ./backend 
+          load: true
+          tags: backend:scan
+
+      - name: Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'backend:scan'
+          format: 'table'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      - name: Push Backend
+        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+        with:
+          context: ./backend 
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-backend:latest
+            ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-backend:${{ github.sha }}
+
+  build-deploy-frontend-prod:
+    needs: test-build-prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Thiết lập Docker Buildx v3.8.0
+        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5
+
+      - name: Đăng nhập Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Frontend Image
+        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+        with:
+          context: ./frontend 
+          load: true
+          build-args: |
+            VITE_API_URL=${{ secrets.BACKEND_DEV_API_URL }}
+          tags: frontend:scan
+
+      - name: Trivy Vulnerability Scanner - Frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'frontend:scan'
+          format: 'table'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      - name: Push Frontend
+        uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+        with:
+          context: ./frontend 
+          push: true
+          build-args: |
+            VITE_API_URL=${{ secrets.BACKEND_DEV_API_URL }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-frontend:latest
+            ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-frontend:${{ github.sha }}
+    
+  check-deployed-images-prod:
+    needs: [build-deploy-backend-prod, build-deploy-frontend-prod]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 
+
+      - name: Đăng nhập Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Kéo image mới nhất từ Docker Hub
+        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml pull
+
+      - name: Chạy kiểm tra images
+        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --wait
+
+      - name: Log nếu có lỗi
+        if: failure()
+        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml logs
+
+      - name: Dọn dẹp môi trường
+        run: docker compose down -v

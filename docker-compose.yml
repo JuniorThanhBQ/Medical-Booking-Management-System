@@ -137,49 +137,6 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
-  # cadvisor:
-  #   image: gcr.io/cadvisor/cadvisor:v0.47.2
-  #   container_name: cadvisor
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - /:/rootfs:ro
-  #     - /var/run:/var/run:rw
-  #     - /sys:/sys:ro
-  #     - /var/lib/docker/:/var/lib/docker:ro
-  #   networks:
-  #     - backend-network
-  
-  # prometheus:
-  #   image: prom/prometheus:latest
-  #   container_name: prometheus
-  #   restart: unless-stopped
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-  #     - prometheus-data:/prometheus
-  #   depends_on:
-  #     - cadvisor
-  #   networks:
-  #     - backend-network
-
-  # grafana:
-  #   image: grafana/grafana:latest
-  #   container_name: grafana
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=admin
-  #   volumes:
-  #     - grafana-data:/var/lib/grafana
-  #   depends_on:
-  #     - prometheus
-  #   networks:
-  #     - backend-network
-
 networks:
   frontend-network:
     driver: bridge
@@ -190,5 +147,3 @@ volumes:
   mysql-data:
   redis-data:
   rabbitmq-data:
-  # prometheus-data:
-  # grafana-data:

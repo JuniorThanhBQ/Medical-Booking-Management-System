@@ -2,6 +2,9 @@ services:
   frontend:
     image: "${FRONTEND_IMAGE_NAME}"
     restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
     deploy:
       resources:
         limits:
@@ -12,9 +15,12 @@ services:
 
   backend:
     image: "${BACKEND_IMAGE_NAME}"
+    restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - FLASK_MODE=production
-    restart: always
     deploy:
       resources:
         limits:

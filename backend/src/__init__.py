@@ -14,7 +14,6 @@ from src.routes import api_v1
 
 load_dotenv(find_dotenv())
 
-
 def init_celery(app, celery):
     celery.conf.update(
         broker_url=app.config.get('CELERY_BROKER_URL'),
@@ -71,9 +70,6 @@ def create_app():
     cache.init_app(app)
     mail.init_app(app)
     init_celery(app, celery_app)
-
-    # Ensure SQLAlchemy event listeners in the notification module are loaded
-    import src.modules.notification.rabbitmq  # noqa: F401
 
     app.register_blueprint(api_v1)
 

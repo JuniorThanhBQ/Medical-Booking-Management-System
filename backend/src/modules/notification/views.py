@@ -1,13 +1,12 @@
-from flask_restx import Namespace, Resource
+from flask_restx import Resource
 
 from src.middlewares.auth import auth_required
+from src.modules.notification import notification_namespace
 from src.modules.notification.services import (
     delete_notification_service, get_detail_notification_service,
     get_notifications_service, mark_all_notification_service,
     mark_detail_notification_service)
 from src.utils.utils import format_api_response
-
-notification_namespace = Namespace("notifications", description="Thông báo hệ thống")
 
 pagination_parser = notification_namespace.parser()
 pagination_parser.add_argument('page', type=int, required=False, default=1, help='Số trang hiện tại')

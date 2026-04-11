@@ -4,71 +4,135 @@
       "id": 1,
       "name": "Nội tổng quát",
       "description": "Khám nội tạng và bệnh mãn tính",
-      "level": "Cơ sở",
-      "cta_label": "CK1"
+      "level": "Cơ sở"
     },
     {
       "id": 2,
       "name": "Tim mạch",
       "description": "Điều trị các bệnh lý về tim và mạch máu",
-      "level": "Chuyên sâu",
-      "cta_label": "CK2"
+      "level": "Chuyên sâu"
     },
     {
       "id": 3,
       "name": "Nhi khoa",
       "description": "Chăm sóc sức khỏe trẻ em từ sơ sinh đến 15 tuổi",
-      "level": "Cơ sở",
-      "cta_label": "CK1"
+      "level": "Cơ sở"
     },
     {
       "id": 4,
       "name": "Da liễu",
       "description": "Điều trị các bệnh về da, tóc, móng và thẩm mỹ nội khoa",
-      "level": "Cơ sở",
-      "cta_label": "CK1"
+      "level": "Cơ sở"
     },
     {
       "id": 5,
       "name": "Sản phụ khoa",
       "description": "Chăm sóc sức khỏe phụ nữ, thai sản và kế hoạch hóa gia đình",
-      "level": "Chuyên sâu",
-      "cta_label": "CK3"
+      "level": "Chuyên sâu"
     },
     {
       "id": 6,
       "name": "Tai Mũi Họng",
       "description": "Khám và điều trị các bệnh lý đường hô hấp trên",
-      "level": "Cơ sở",
-      "cta_label": "CK1"
+      "level": "Cơ sở"
     },
     {
       "id": 7,
       "name": "Răng Hàm Mặt",
       "description": "Nha khoa tổng quát và phẫu thuật hàm mặt",
-      "level": "Cơ sở",
-      "cta_label": "CK1"
+      "level": "Cơ sở"
     },
     {
       "id": 8,
       "name": "Tâm lý lâm sàng",
       "description": "Tư vấn và điều trị các rối loạn tâm lý, trầm cảm",
-      "level": "Chuyên sâu",
-      "cta_label": "CK2"
+      "level": "Chuyên sâu"
     },
     {
       "id": 9,
       "name": "Chấn thương chỉnh hình",
       "description": "Cơ xương khớp và phục hồi chức năng sau tai nạn",
-      "level": "Chuyên sâu",
-      "cta_label": "CK3"
+      "level": "Chuyên sâu"
     },
     {
       "id": 10,
       "name": "Nhãn khoa",
       "description": "Khám mắt và điều trị các tật khúc xạ",
-      "level": "Cơ sở",
-      "cta_label": "CK1"
+      "level": "Cơ sở"
+    }
+  ],
+  "medical_services": [
+    {
+      "id": 1,
+      "name": "Khám sức khỏe tổng quát",
+      "description": "Kiểm tra sức khỏe toàn diện cơ bản",
+      "specialty_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Siêu âm tim và điện tâm đồ",
+      "description": "Chẩn đoán hình ảnh và nhịp tim",
+      "specialty_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Khám nhi tiêu chuẩn",
+      "description": "Kiểm tra tổng quát cho trẻ",
+      "specialty_id": 3
+    },
+    {
+      "id": 4,
+      "name": "Khám và điều trị da liễu",
+      "description": "Chẩn đoán bệnh lý về da",
+      "specialty_id": 4
+    },
+    {
+      "id": 5,
+      "name": "Khám thai định kỳ",
+      "description": "Siêu âm và sàng lọc trước sinh",
+      "specialty_id": 5
+    }
+  ],
+  "visit_types": [
+    {
+      "id": 1,
+      "name": "Khám tiêu chuẩn",
+      "duration_minutes": 30,
+      "buffer_before": 5,
+      "buffer_after": 5,
+      "medical_service_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Siêu âm chuyên sâu",
+      "duration_minutes": 45,
+      "buffer_before": 10,
+      "buffer_after": 10,
+      "medical_service_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Khám nhi cơ bản",
+      "duration_minutes": 20,
+      "buffer_before": 5,
+      "buffer_after": 5,
+      "medical_service_id": 3
+    },
+    {
+      "id": 4,
+      "name": "Khám da liễu nhanh",
+      "duration_minutes": 15,
+      "buffer_before": 0,
+      "buffer_after": 5,
+      "medical_service_id": 4
+    },
+    {
+      "id": 5,
+      "name": "Siêu âm thai",
+      "duration_minutes": 40,
+      "buffer_before": 5,
+      "buffer_after": 10,
+      "medical_service_id": 5
     }
   ],
   "users": [
@@ -477,6 +541,7 @@
       "appointment_date": "2026-03-20T08:30:00",
       "doctor_id": 1,
       "patient_id": 1,
+      "medical_service_id": 1,
       "medical_record_id": 1
     },
     {
@@ -487,6 +552,7 @@
       "appointment_date": "2026-04-10T14:00:00",
       "doctor_id": 2,
       "patient_id": 2,
+      "medical_service_id": 2,
       "medical_record_id": null
     },
     {
@@ -497,6 +563,7 @@
       "appointment_date": "2026-04-12T09:30:00",
       "doctor_id": 3,
       "patient_id": 3,
+      "medical_service_id": 3,
       "medical_record_id": null
     },
     {
@@ -507,6 +574,7 @@
       "appointment_date": "2026-03-25T15:00:00",
       "doctor_id": 4,
       "patient_id": 4,
+      "medical_service_id": 4,
       "medical_record_id": 2
     },
     {
@@ -517,6 +585,7 @@
       "appointment_date": "2026-03-26T08:00:00",
       "doctor_id": 5,
       "patient_id": 6,
+      "medical_service_id": 5,
       "medical_record_id": 3
     },
     {
@@ -527,6 +596,7 @@
       "appointment_date": "2026-04-05T15:00:00",
       "doctor_id": 6,
       "patient_id": 2,
+      "medical_service_id": 2,
       "medical_record_id": null
     },
     {
@@ -537,6 +607,7 @@
       "appointment_date": "2026-04-10T13:30:00",
       "doctor_id": 1,
       "patient_id": 7,
+      "medical_service_id": 1,
       "medical_record_id": null
     }
   ],

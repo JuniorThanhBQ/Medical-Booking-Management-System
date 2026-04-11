@@ -1,10 +1,9 @@
 from flask import Blueprint
 from flask_restx import Api
 
-from src.modules.appointments.routers import (appointments_namespace,
-                                              public_namespace)
-from src.modules.appointments.views import medical_records_namespace
-from src.modules.doctors.routers import doctors_namespace
+from src.modules.appointments.routers import appointments_namespace
+from src.modules.doctors.routers import doctors_namespace, public_namespace
+from src.modules.medical_records.routers import medical_records_namespace
 from src.modules.notification.routers import notification_namespace
 from src.modules.users.routers import auth_namespace
 

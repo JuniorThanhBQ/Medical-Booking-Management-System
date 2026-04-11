@@ -2,9 +2,11 @@ name: Chạy kiểm tra chất lượng QA
 
 on:
   push:
-    branches: [ main, develop ]
+    branches-ignore:
+      - 'main'
   pull_request:
-    branches: [ main, develop ]
+    branches-ignore:
+      - 'main'
 
 jobs:
   pytest-test:

@@ -2,8 +2,11 @@ name: Chạy kiểm tra tĩnh tổng hợp
 
 on: 
   push:
+    branches-ignore:
+      - 'main'
   pull_request:
-    branches: [ main, develop ]
+    branches-ignore:
+      - 'main'
   schedule:
     - cron: '0 0 * * *'
 
@@ -22,7 +25,10 @@ jobs:
           cache: 'pip'
 
       - name: Cài đặt gói thư viện
-        run: pip install import-linter pylint
+        working-directory: ./backend
+        run: |
+          pip install -r requirements/requirements.txt
+          pip install import-linter pylint
 
       - name: Chạy lint-imports
         working-directory: ./backend

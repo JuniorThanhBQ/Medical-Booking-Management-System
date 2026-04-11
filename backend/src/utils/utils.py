@@ -1,8 +1,6 @@
 import re
 import unicodedata
 
-from flask import jsonify
-
 EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
 PASSWORD_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#_\-?])[A-Za-z\d@#_\-?]{9,}$")
 XSS_REGEX = re.compile(r"<[^>]*>")
@@ -28,11 +26,11 @@ def get_request_data(request):
 
 
 def error_response(message: str, code: int):
-    return jsonify({
+    return {
         "status": "error",
         "code": code,
         "message": message
-    }), code
+    }, code
 
 
 def get_http_status_code(status_type, default=400):

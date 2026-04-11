@@ -1,10 +1,12 @@
 import re
 
-from flask import request
-from flask_restx import Namespace, Resource, fields
+from flask import current_app, request
+from flask_restx import Resource, fields
 
 from src.extensions import limiter
+from src.libs.email_validator import verify_email_existence
 from src.middlewares.auth import auth_required
+from src.modules.users import auth_namespace
 from src.modules.users.services import (get_user_data, is_email_available,
                                         login_user_service,
                                         register_user_service,
@@ -12,8 +14,6 @@ from src.modules.users.services import (get_user_data, is_email_available,
 from src.utils.utils import (EMAIL_REGEX, check_xss_violation,
                              format_api_response, generate_username,
                              get_request_data, validate_email_password)
-
-auth_namespace = Namespace("auth", description="API tài khoản người dùng")
 
 login_payload = auth_namespace.model('LoginInput', {
     'email': fields.String(required=True),
@@ -107,6 +107,9 @@ class RegisterAPI(Resource):
         if invalid_input:
             return invalid_input, 400
 
+        if not verify_email_existence(current_app.config.get('EMAIL_VALIDATOR'),email):
+            return {"message": "Email không tồn tại trong thực tế"}, 400
+
         user_payload = {
             "username": username,
             "password": password,
@@ -144,7 +147,7 @@ class EmailValidatorAPI(Resource):
         if not is_valid:
             return {"is_valid": is_valid, }, 400
 
-        return {"is_valid": is_valid, }, 200
+        return {"is_valid": is_valid, }, 201
 
 
 class RetrieveCurrentUserAPI(Resource):

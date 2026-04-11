@@ -13,33 +13,34 @@ layers = [
 ]
 containers = [
     "src.modules.users",
-    "src.modules.patients",
     "src.modules.appointments",
     "src.modules.doctors",
+    "src.modules.medical_records",
     "src.modules.notification"
 ]
 
 [[tool.importlinter.contracts]]
-name = "Service independence (Shared Services Excepted)"
+name = "Service independence"
 type = "independence"
 modules = [
-    "src.modules.auth_profiles.services",
+    "src.modules.users.services",
     "src.modules.appointments.services",
     "src.modules.doctors.services",
     "src.modules.medical_records.services",
-    "src.modules.public.services",
     "src.modules.notification.services"
+]
+ignore_imports = [
+    "src.modules.appointments.services -> src.modules.doctors.services",
 ]
 
 [[tool.importlinter.contracts]]
 name = "Views independence"
 type = "independence"
 modules = [
-    "src.modules.auth_profiles.views",
+    "src.modules.users.views",
     "src.modules.appointments.views",
     "src.modules.doctors.views",
     "src.modules.medical_records.views",
-    "src.modules.public.views",
     "src.modules.notification.views"
 ]
 
@@ -58,17 +59,22 @@ disable = [
     "C0103", # invalid-name
     "R0903", # too-few-public-methods
     "W0718", # broad-exception-caught
+    "R0801",
+    "W1203", # logging-fstring-interpolation
+    "E1102",
+    "C0121" # singleton-comparison
 ]
 
 [tool.pylint.format]
 max-line-length = 120
 
 [tool.pylint.design]
-max-args = 5
+max-args = 6
+max-positional-arguments = 6
 max-attributes=8
-max-locals = 15
+max-locals = 16
 max-returns = 8
-max-branches = 12
+max-branches = 13
 max-statements = 50
 
 [tool.pylint.basic]

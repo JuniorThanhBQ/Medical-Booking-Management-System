@@ -1,7 +1,5 @@
 from datetime import date, datetime, timedelta
 
-from src.modules.doctors.models import CtaLabel
-
 
 def parse_appointment_datetime(str_appointment_date=None):
     try:
@@ -35,17 +33,14 @@ def validate_available_slot(appointment_datetime=None, available_slots=None):
     return None, None
 
 
-def format_appointment(appointment, doctor=None, patient_user=None, specialty=None, patient_name=None):
+def format_appointment(appointment=None, doctor=None, patient_user=None, patient_name=None):
     if patient_name is None:
-        user = patient_user or appointment.patient_profile.user
+        user = patient_user or appointment.patient_profile
         patient_name = f"{user.last_name} {user.first_name}"
-
-    if specialty is None and doctor:
-        specialty = doctor.profile.specialty
 
     return {
         "id": appointment.id,
-        "type": specialty.cta_label.name if specialty and specialty.cta_label else None,
+        "service": appointment.medical_service.name if appointment.medical_service else None,
         "name": appointment.name,
         "patientName": patient_name,
         "doctorName": f"{doctor.last_name} {doctor.first_name}" if doctor else None,
@@ -57,24 +52,28 @@ def format_appointment(appointment, doctor=None, patient_user=None, specialty=No
     }
 
 
-def get_slot_duration(doctor_profile=None):
-    specialty = doctor_profile.specialty
-    cta_label = specialty.cta_label.name if specialty and specialty.cta_label else "CK1"
+def check_is_conflicting(slot_start, duration, appointments):
+    if isinstance(duration, int):
+        duration_td = timedelta(minutes=duration)
+    else:
+        duration_td = duration
 
-    mapping = {item.name: item.value for item in CtaLabel}
-    hours = mapping.get(cta_label, 1)
-
-    return timedelta(hours=hours)
-
-
-def check_is_conflicting(slot_start=None, duration=None, appointments=None):
-    buffer = timedelta(minutes=30)
-    slot_end = slot_start + duration
+    slot_end = slot_start + duration_td
 
     for appointment in appointments:
-        start = appointment.appointment_date
-        end = start + duration
-        if (slot_end + buffer > start) and (end + buffer > slot_start):
+        appointment_start = appointment.appointment_date
+
+        if appointment.medical_service and appointment.medical_service.visit_type:
+            visit_type = appointment.medical_service.visit_type
+            appointment_duration_minutes = (visit_type.duration_minutes
+                                            + visit_type.buffer_before
+                                            + visit_type.buffer_after)
+        else:
+            appointment_duration_minutes = 30
+
+        appointment_end = appointment_start + timedelta(minutes=appointment_duration_minutes)
+
+        if slot_start < appointment_end and slot_end > appointment_start:
             return True
 
     return False
@@ -85,6 +84,5 @@ def format_speciality_output(specialty=None):
         "id": specialty.id,
         "name": specialty.name,
         "description": specialty.description,
-        "level": specialty.level,
-        "ctaLabel": specialty.cta_label.name if specialty.cta_label else None
+        "level": specialty.level
     }

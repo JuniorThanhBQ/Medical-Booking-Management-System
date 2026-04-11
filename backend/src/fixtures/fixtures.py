@@ -10,12 +10,12 @@ current_directory = os.path.dirname(__file__)
 root_directory = os.path.abspath(os.path.join(current_directory, "../../"))
 sys.path.insert(0, root_directory)
 
-# pylint: disable=wrong-import-position
 from src import create_app, db
 from src.modules.appointments.models import (Appointment, MedicalRecord,
                                              MedicalRecordType, StatusRole)
-from src.modules.doctors.models import (CtaLabel, DayOfWeek, DoctorProfile,
-                                        Specialty, WorkDate, WorkSchedule)
+from src.modules.doctors.models import (DayOfWeek, DoctorProfile,
+                                        MedicalService, Specialty, VisitType,
+                                        WorkDate, WorkSchedule)
 from src.modules.notification.models import (DeliveryStatus, Notification,
                                              NotificationType)
 from src.modules.users.models import GenderRole, PatientProfile, User, UserRole
@@ -25,6 +25,7 @@ class FixtureLoader:
     def __init__(self, data):
         self.data = data
         self.specialty_mapping = {}
+        self.medical_service_mapping = {}
         self.user_mapping = {}
         self.doctor_profile_mapping = {}
         self.patient_profile_mapping = {}
@@ -37,12 +38,33 @@ class FixtureLoader:
             specialty = Specialty(
                 name=specialty_data["name"],
                 description=specialty_data["description"],
-                level=specialty_data["level"],
-                cta_label=CtaLabel[specialty_data["cta_label"]]
+                level=specialty_data["level"]
             )
             db.session.add(specialty)
             db.session.flush()
             self.specialty_mapping[specialty_data["id"]] = specialty.id
+
+    def load_medical_services_and_visit_types(self):
+        for service_data in self.data.get("medical_services", []):
+            service = MedicalService(
+                name=service_data["name"],
+                description=service_data["description"],
+                specialty_id=self.specialty_mapping[service_data["specialty_id"]]
+            )
+            db.session.add(service)
+            db.session.flush()
+            self.medical_service_mapping[service_data["id"]] = service.id
+
+        for visit_data in self.data.get("visit_types", []):
+            visit_type = VisitType(
+                name=visit_data["name"],
+                duration_minutes=visit_data["duration_minutes"],
+                buffer_before=visit_data.get("buffer_before", 0),
+                buffer_after=visit_data.get("buffer_after", 0),
+                medical_service_id=self.medical_service_mapping[visit_data["medical_service_id"]]
+            )
+            db.session.add(visit_type)
+            db.session.flush()
 
     def load_users(self):
         for user_data in self.data.get("users", []):
@@ -141,6 +163,7 @@ class FixtureLoader:
                                                    "%Y-%m-%dT%H:%M:%S"),
                 doctor_profile_id=self.doctor_profile_mapping[appointment_data["doctor_id"]],
                 patient_profile_id=self.patient_profile_mapping[appointment_data["patient_id"]],
+                medical_service_id=self.medical_service_mapping[appointment_data["medical_service_id"]],
                 medical_record_id=medical_record_id
             )
             db.session.add(appointment)
@@ -176,6 +199,7 @@ class FixtureLoader:
     def load_data(self):
         try:
             self.load_specialties()
+            self.load_medical_services_and_visit_types()
             self.load_users()
             self.load_profiles()
             self.load_schedules()
@@ -185,7 +209,6 @@ class FixtureLoader:
             db.session.commit()
 
         except Exception as e:
-            print(f"Lỗi nạp dữ liệu: {str(e)}")
             db.session.rollback()
             traceback.print_exc()
             sys.exit(1)

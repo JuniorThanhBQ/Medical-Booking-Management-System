@@ -5,8 +5,9 @@ from flask_admin.menu import MenuLink
 from flask_admin.theme import Bootstrap4Theme
 from flask_login import current_user
 
-from src.modules.appointments.admin import appointments, medical_records
+from src.modules.appointments.admin import appointments
 from src.modules.doctors.admin import doctor
+from src.modules.medical_records.admin import medical_records
 from src.modules.notification.admin import notification
 from src.modules.users.admin import auth_profile
 

@@ -1,17 +1,18 @@
 from flask import request
-from flask_restx import Namespace, Resource, fields
+from flask_restx import Resource, fields
 
 from src.middlewares.auth import auth_required
-from src.modules.appointments.views import public_namespace
+from src.modules.doctors import doctors_namespace, public_namespace
 from src.modules.doctors.services import (get_doctor_detail_service,
                                           get_doctors_service,
+                                          get_medical_service_detail_service,
+                                          get_medical_services_service,
                                           get_my_schedule_service,
                                           get_specialties_service,
                                           get_specialty_detail_service,
+                                          get_time_slots_service,
                                           request_schedule_change_service)
 from src.utils.utils import check_xss_violation, format_api_response
-
-doctors_namespace = Namespace("doctors", description="Chức năng riêng của bác sĩ")
 
 work_schedule_detail_model = doctors_namespace.model('WorkScheduleDetail', {
     'title': fields.String(description='Tiêu đề lịch', example='Lịch làm việc mùa hè'),
@@ -51,14 +52,14 @@ class ScheduleRequestAPI(Resource):
 
 
 class PublicSpecialtyListAPI(Resource):
+    @public_namespace.doc(params={'keywords': 'Tên chuyên khoa cần lọc'})
     def get(self):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("limit", 10, type=int)
         keywords = request.args.get("keywords", type=str)
-        cta_label = request.args.get("ctaLabel", type=str)
 
         data, message = get_specialties_service(
-            page=page, per_page=per_page, keywords=keywords, cta_label=cta_label
+            page=page, per_page=per_page, keywords=keywords
         )
 
         return {
@@ -72,15 +73,43 @@ class PublicSpecialtyRetrieveAPI(Resource):
         return format_api_response(*get_specialty_detail_service(specialty_id))
 
 
-class PublicDoctorListAPI(Resource):
+
+class PublicMedicalServiceListAPI(Resource):
+    @public_namespace.doc(params={'keywords': 'Tên dịch vụ cần tìm', 'specialtyId': 'ID Chuyên khoa'})
     def get(self):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("limit", 10, type=int)
         keywords = request.args.get("keywords", type=str)
         specialty_id = request.args.get("specialtyId", type=int)
 
-        data, message = get_doctors_service(
+        data, message = get_medical_services_service(
             page=page, per_page=per_page, keywords=keywords, specialty_id=specialty_id
+        )
+
+        return {
+            "message": message,
+            "data": data
+        }, 200
+
+
+class PublicMedicalServiceRetrieveAPI(Resource):
+    def get(self, service_id):
+        return format_api_response(*get_medical_service_detail_service(service_id))
+
+
+class PublicDoctorListAPI(Resource):
+    @public_namespace.doc(params={'keywords': 'Tên bác sĩ cần tìm'
+                                  ,'specialtyId': 'mã chuyên khoa'
+                                  ,'workDates': 'Các ngày làm việc'})
+    def get(self):
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("limit", 10, type=int)
+        keywords = request.args.get("keywords", type=str)
+        specialty_id = request.args.get("specialtyId", type=int)
+        work_dates = request.args.getlist("workDates", type=int)
+
+        data, message = get_doctors_service(
+            page=page, per_page=per_page, keywords=keywords, specialty_id=specialty_id, work_dates=work_dates
         )
 
         return {
@@ -92,3 +121,12 @@ class PublicDoctorListAPI(Resource):
 class PublicDoctorRetrieveAPI(Resource):
     def get(self, doctor_id):
         return format_api_response(*get_doctor_detail_service(doctor_id))
+
+
+class PublicDoctorSlotListAPI(Resource):
+    @public_namespace.doc(params={'date': 'Ngày muốn xem lịch. Định dạng: YYYY-MM-DD',
+                                  'serviceId': 'Mã dịch vụ y tế'})
+    def get(self, doctor_id):
+        date_str = request.args.get("date")
+        service_id = request.args.get("serviceId", type=int)
+        return format_api_response(*get_time_slots_service(doctor_id, date_str, service_id))
