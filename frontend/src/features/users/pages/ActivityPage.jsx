@@ -10,11 +10,7 @@ import '@/assets/css/users/profile.css';
 
 const ActivityPage = () => {
   const { user } = useProfileStore();
-  const [activityData, setActivityData] = useState({
-    filters: [],
-    items: [],
-    upcomingItems: [],
-  });
+  const [activityData, setActivityData] = useState({ filters: [], items: [], upcomingItems: [], });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -61,7 +57,6 @@ const ActivityPage = () => {
   return (
     <>
       <Navbar />
-
       <div className="profile-layout">
         <ProfileSidebar userName={displayName} activeKey={TABS.ACTIVITY} />
 
@@ -78,6 +73,7 @@ const ActivityPage = () => {
       </div>
     </>
   );
+  
 };
 
 export default ActivityPage;
