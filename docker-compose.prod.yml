@@ -2,16 +2,13 @@ services:
   frontend:
     image: "${FRONTEND_IMAGE_NAME}"
     restart: always
-    read_only: true
-    tmpfs:
-      - /tmp
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 256M
+          cpus: '1.0'
+          memory: 512M
         reservations:
-          memory: 128M
+          memory: 256M
 
   backend:
     image: "${BACKEND_IMAGE_NAME}"

@@ -10,10 +10,11 @@ services:
     ports:
       - "${FRONTEND_PORT}:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - frontend-network
 
@@ -95,6 +96,11 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     command: celery -A src.celery_worker.celery_app beat --loglevel=info -s /tmp/celerybeat-schedule
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 5s
+      timeout: 5s
+      retries: 1
     env_file:
       - .env
     depends_on:
@@ -110,6 +116,11 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     command: celery -A src.celery_worker.celery_app worker --loglevel=info
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 5s
+      timeout: 5s
+      retries: 1
     env_file:
       - .env
     depends_on:

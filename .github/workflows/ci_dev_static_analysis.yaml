@@ -138,6 +138,12 @@ jobs:
 
       - name: Build containers in production mode 
         run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
+      
+      - name: Xem logs containers nếu có lỗi
+        if: failure()
+        run: | 
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml logs
 
       - name: Dọn dẹp containers
         if: always()

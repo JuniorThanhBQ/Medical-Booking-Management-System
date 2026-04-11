@@ -186,6 +186,12 @@ jobs:
 
       - name: Build và chạy docker compose trong production
         run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --wait
+      
+      - name: Xem logs containers nếu có lỗi
+        if: failure()
+        run: | 
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml logs
 
       - name: Dọn dẹp môi trường
         run: docker compose down -v
@@ -209,7 +215,8 @@ jobs:
       - name: Build Backend Image
         uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
         with:
-          context: ./backend 
+          context: .                           
+          file: ./backend/Dockerfile  
           load: true
           tags: backend:scan
 
@@ -226,7 +233,8 @@ jobs:
       - name: Push Backend
         uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
         with:
-          context: ./backend 
+          context: .                           
+          file: ./backend/Dockerfile  
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/medical-appointment-b3-8-backend:latest
