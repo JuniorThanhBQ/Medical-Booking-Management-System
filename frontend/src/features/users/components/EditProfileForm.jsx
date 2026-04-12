@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SUPPORTED_COUNTRIES, GENDER_OPTIONS } from '@/configs/const';
-import { splitName, splitBirthday, formatProfileUpdate, MONTH_OPTIONS } from '../utils/profile-utils';
+import { splitName, splitBirthday, formatProfileUpdate, MONTH_OPTIONS } from '../../../utils/profile-utils.js';
 
 const EditProfileForm = ({ profile, onSave }) => {
   const [formData, setFormData] = useState({

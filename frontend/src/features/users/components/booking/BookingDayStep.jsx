@@ -1,4 +1,4 @@
-import { formatDayLabel, toISODate } from "../../utils/booking-utils";
+import { formatDayLabel, toISODate } from "../../../../utils/booking-utils";
 import { BookingPanelHeader } from "./BookingPanelHeader";
 
 export function BookingDayStep({

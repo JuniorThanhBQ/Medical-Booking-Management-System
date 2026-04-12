@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchAppointmentsInDay } from "../api/appointments-api";
+import { fetchAppointmentsInDay } from "../services/appointments-api.js";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function AppointmentsPreviewModal({

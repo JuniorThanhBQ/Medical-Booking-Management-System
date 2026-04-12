@@ -2,7 +2,7 @@ import "@/assets/css/users/booking.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
-import { STEPS, toISODate } from "../utils/booking-utils";
+import { STEPS, toISODate } from "@/utils/booking-utils.js";
 import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import {

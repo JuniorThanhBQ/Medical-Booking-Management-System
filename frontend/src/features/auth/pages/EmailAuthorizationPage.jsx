@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../hooks/use-auth-store";
-import EmailStep from "../../components/EmailStep";
-import ProfileStep from "../../components/ProfileStep";
-import PasswordStep from "../../components/PasswordStep";
+import { useAuthStore } from "../hooks/use-auth-store.js";
+import EmailStep from "../components/EmailStep.jsx";
+import ProfileStep from "../components/ProfileStep.jsx";
+import PasswordStep from "../components/PasswordStep.jsx";
 import "@/assets/css/auth/email-authorization.css";
 import {
   isValidEmail, isValidName, isValidPhone,
   isValidDateOfBirth, isValidGender,
   getPasswordErrors, containsXss,
-} from "../../utils/validation";
-import { checkEmailExists, loginUser, registerUser, getCurrentUser } from "../../services/authService";
+} from "../../../utils/validation.jsx";
+import { checkEmailExists, loginUser, registerUser, getCurrentUser } from "../services/authService.jsx";
 
 function getAuthPageMeta(authStep, mode, role) {
   if (authStep === "email") return {

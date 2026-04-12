@@ -4,18 +4,13 @@ import ProfileSidebar from '../components/ProfileSidebar';
 import ActivityView from '../components/activity/ActivityView';
 import Navbar from '../components/Navbar';
 import { TABS } from './ProfilePage';
-import { getActivityConfig } from '../utils/activity-config';
-import { getProfileSidebarItems } from '@/configs/const';
+import { getActivityConfig } from '../../../utils/activity-config.js';
 import { getUserToken } from '@/utils/auth-helpers';
 import '@/assets/css/users/profile.css';
 
 const ActivityPage = () => {
   const { user } = useProfileStore();
-  const [activityData, setActivityData] = useState({
-    filters: [],
-    items: [],
-    upcomingItems: [],
-  });
+  const [activityData, setActivityData] = useState({ filters: [], items: [], upcomingItems: [], });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -62,7 +57,6 @@ const ActivityPage = () => {
   return (
     <>
       <Navbar />
-
       <div className="profile-layout">
         <ProfileSidebar userName={displayName} activeKey={TABS.ACTIVITY} items={getProfileSidebarItems(user?.role)} />
 

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { getDoctors } from "@/services/public-api-service";
-import { normalizeQuery } from "@/utils/utils";
+import { normalizeQuery } from "@/utils/utils.jsx";
 
 export function useDashboardSearch(specialties) {
   const [searchResults, setSearchResults] = useState(null);

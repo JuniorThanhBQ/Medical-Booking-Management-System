@@ -3,8 +3,7 @@ import {
   getAppointments,
   getAppointmentDetail,
   getMedicalRecordDetail,
-} from '../services/appointment-api-service';
-import { fetchDoctorAppointments } from '@/features/doctor/api/appointments-api';
+} from '../features/users/services/appointment-api-service.js';
 
 const ACTIVITY_FILTERS = [
   { key: 'all', label: 'Tất cả' },

@@ -4,7 +4,7 @@ import {
   EMPTY_PATIENT,
   isTodayAppointment,
   normalizeDoctorAppointment,
-} from "../utils/appointments-utils";
+} from "@/utils/appointments-utils.js";
 
 export async function fetchAppointmentsInDay({ date }) {
   if (!date) return [];

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../hooks/use-auth-store";
+import { useAuthStore } from "../hooks/use-auth-store.js";
 import { setToken, setUser, getUser } from "@/repository/local-storage-repository";
-import EmailAuthorizationPage from "./EmailAuthorizationPage";
+import EmailAuthorizationPage from "./EmailAuthorizationPage.jsx";
 import "@/assets/css/auth/auth-page.css";
 
 const OPTIONS = [
