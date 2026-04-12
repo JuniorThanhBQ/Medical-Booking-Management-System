@@ -1,8 +1,7 @@
 from src.modules.medical_records import medical_records_namespace
 from src.modules.medical_records.views import (CreateMedicalRecordAPI,
                                                MedicalRecordListAPI,
-                                               MedicalRecordRetrieveUpdateAPI,
-                                               )
+                                               MedicalRecordRetrieveUpdateAPI)
 
 medical_records_namespace.add_resource(MedicalRecordListAPI, "")
 medical_records_namespace.add_resource(MedicalRecordRetrieveUpdateAPI, "/<int:medical_record_id>")

@@ -73,7 +73,6 @@ class PublicSpecialtyRetrieveAPI(Resource):
         return format_api_response(*get_specialty_detail_service(specialty_id))
 
 
-
 class PublicMedicalServiceListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên dịch vụ cần tìm', 'specialtyId': 'ID Chuyên khoa'})
     def get(self):
@@ -99,8 +98,8 @@ class PublicMedicalServiceRetrieveAPI(Resource):
 
 class PublicDoctorListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên bác sĩ cần tìm'
-                                  ,'specialtyId': 'mã chuyên khoa'
-                                  ,'workDates': 'Các ngày làm việc'})
+        , 'specialtyId': 'mã chuyên khoa'
+        , 'workDates': 'Các ngày làm việc'})
     def get(self):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("limit", 10, type=int)

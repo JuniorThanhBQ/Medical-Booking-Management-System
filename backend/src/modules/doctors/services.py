@@ -20,6 +20,39 @@ from src.modules.shared.services import (check_is_conflicting,
 from src.utils.handle_db_errors import handle_db_errors
 
 
+def parse_and_validate_date(date_str, max_day_searching=30):
+    try:
+        if date_str:
+            target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        else:
+            target_date = date.today()
+
+        today = date.today()
+        if target_date < today or target_date > (today + timedelta(days=max_day_searching)):
+            return None, f"Chỉ xem được lịch trong vòng {max_day_searching} ngày tới"
+
+        return target_date, None
+    except ValueError:
+        return None, "Định dạng không hợp lệ (YYYY-MM-DD)"
+
+
+def is_valid_working_day(doctor, target_date):
+    if not doctor.profile or doctor.profile.profile_type != "doctor":
+        return False, None
+
+    schedule = doctor.profile.work_schedule
+    if not schedule:
+        return False, None
+
+    target_day_name = target_date.strftime('%A').upper()
+    working_days = [work_schedule.day_of_week.name for work_schedule in schedule.work_dates]
+
+    if target_day_name not in working_days:
+        return False, None
+
+    return True, schedule
+
+
 @handle_db_errors
 def get_my_schedule_service(current_user):
     if current_user.role.name != "DOCTOR":
@@ -264,22 +297,11 @@ def get_booked_appointments(doctor_id, target_date):
 
 
 def get_available_time_slots(doctor, target_date, medical_service):
-    if not doctor.profile or doctor.profile.profile_type != "doctor":
-        return []
-
-    schedule = doctor.profile.work_schedule
-    if not schedule:
-        return []
-
-    target_day_name = target_date.strftime('%A').upper()
-    working_days = [work_schedule.day_of_week.name for work_schedule in schedule.work_dates]
-    if target_day_name not in working_days:
+    is_valid, schedule = is_valid_working_day(doctor, target_date)
+    if not is_valid or not medical_service.visit_type:
         return []
 
     visit_type = medical_service.visit_type
-    if not visit_type:
-        return []
-
     duration = visit_type.duration_minutes + visit_type.buffer_before + visit_type.buffer_after
 
     appointments = get_booked_appointments(doctor.profile.id, target_date)
@@ -289,13 +311,8 @@ def get_available_time_slots(doctor, target_date, medical_service):
     available = []
 
     while current_date + timedelta(minutes=duration) <= end_date:
-        if current_date <= now_date:
-            current_date += timedelta(minutes=duration)
-            continue
-
-        if not check_is_conflicting(current_date, duration, appointments):
+        if current_date > now_date and not check_is_conflicting(current_date, duration, appointments):
             available.append(current_date.isoformat() + "Z")
-
         current_date += timedelta(minutes=duration)
 
     return available
@@ -303,26 +320,16 @@ def get_available_time_slots(doctor, target_date, medical_service):
 
 @handle_db_errors
 def get_time_slots_service(doctor_id, date_str, service_id):
-    max_day_searching = 30
-    doctor = get_doctor_by_id(doctor_id)
+    if not service_id:
+        return {"message": "Thiếu mã dịch vụ"}, "ERROR_BAD_REQUEST"
 
+    doctor = get_doctor_by_id(doctor_id)
     if not doctor or not doctor.profile:
         return {"message": "Bác sĩ không tồn tại"}, "NOT_FOUND"
 
-    try:
-        if date_str:
-            target_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-        else:
-            target_date = date.today()
-    except ValueError:
-        return {"message": "Định dạng không hợp lệ (YYYY-MM-DD)"}, "ERROR_BAD_REQUEST"
-
-    today = date.today()
-    if target_date < today or target_date > (today + timedelta(days=max_day_searching)):
-        return {"message": f"Chỉ xem được lịch trong vòng {max_day_searching} ngày tới"}, "ERROR_BAD_REQUEST"
-
-    if not service_id:
-        return {"message": "Thiếu mã dịch vụ"}, "ERROR_BAD_REQUEST"
+    target_date, err_msg = parse_and_validate_date(date_str)
+    if err_msg:
+        return {"message": err_msg}, "ERROR_BAD_REQUEST"
 
     medical_service = get_medical_service_by_id(service_id)
     if not medical_service:
@@ -332,18 +339,13 @@ def get_time_slots_service(doctor_id, date_str, service_id):
     if profile.specialty_id != medical_service.specialty_id:
         return {"message": "Bác sĩ không cung cấp dịch vụ này"}, "ERROR_BAD_REQUEST"
 
-    if profile.work_schedule:
-        work_schedule = profile.work_schedule
-        work_schedule_data = format_work_schedule(work_schedule)
-    else:
+    if not profile.work_schedule:
         return {"message": "Bác sĩ không tồn tại"}, "404"
 
+    work_schedule_data = format_work_schedule(profile.work_schedule)
     available_slots = get_available_time_slots(doctor, target_date, medical_service)
 
-    result = [
-        {
-            "workSchedule": work_schedule_data,
-            "availableTimeSlots": available_slots,
-        }
-    ]
-    return result, "SUCCESS"
+    return [{
+        "workSchedule": work_schedule_data,
+        "availableTimeSlots": available_slots,
+    }], "SUCCESS"

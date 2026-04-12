@@ -1,8 +1,8 @@
 from flask import request
 from flask_restx import Resource, fields
 
-from src.modules.medical_records import medical_records_namespace
 from src.middlewares.auth import auth_required
+from src.modules.medical_records import medical_records_namespace
 from src.modules.medical_records.services import (
     create_medical_record_service, get_detail_medical_record_service,
     get_list_medical_record_service, update_medical_record_service)
@@ -39,6 +39,7 @@ medical_record_response_model = medical_records_namespace.model('MedicalRecordCr
     'status': fields.String(description='Trạng thái hồ sơ')
 })
 
+
 class MedicalRecordListAPI(Resource):
     method_decorators = [auth_required]
 
@@ -48,6 +49,7 @@ class MedicalRecordListAPI(Resource):
         return format_api_response(
             *get_list_medical_record_service(current_user, args)
         )
+
 
 class MedicalRecordRetrieveUpdateAPI(Resource):
     method_decorators = [auth_required]

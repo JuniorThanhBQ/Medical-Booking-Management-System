@@ -107,7 +107,7 @@ class RegisterAPI(Resource):
         if invalid_input:
             return invalid_input, 400
 
-        if not verify_email_existence(current_app.config.get('EMAIL_VALIDATOR'),email):
+        if not verify_email_existence(current_app.config.get('EMAIL_VALIDATOR'), email):
             return {"message": "Email không tồn tại trong thực tế"}, 400
 
         user_payload = {

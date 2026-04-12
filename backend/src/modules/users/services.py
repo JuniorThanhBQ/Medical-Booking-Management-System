@@ -7,8 +7,26 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from src.libs.cloudinary import cloudinary_upload_process
 from src.modules.users.models import GenderRole, PatientProfile, User
 from src.modules.users.repositories import (add_profile, add_user, commit,
-                                            get_user_by_email, rollback)
+                                            get_user_by_email)
 from src.utils.handle_db_errors import handle_db_errors
+
+
+def parse_date(date_str):
+    if not date_str:
+        return None, None
+    try:
+        return datetime.datetime.strptime(date_str, "%Y-%m-%d"), None
+    except ValueError:
+        return None, "Sai định dạng ngày sinh"
+
+
+def parse_gender(gender_str, default: GenderRole = GenderRole.NOT_SET):
+    if not gender_str:
+        return default
+    try:
+        return GenderRole[gender_str.upper()]
+    except KeyError:
+        return default
 
 
 def create_token(user=None):
@@ -28,46 +46,47 @@ def create_token(user=None):
 
 
 def get_user_data(user=None):
-    if user:
-        user_data = {
-            "id": user.id,
-            "name": user.username,
-            "firstName": user.first_name,
-            "lastName": user.last_name,
-            "email": user.email,
-            "role": user.role.name,
-            "createdAt": user.created_date.isoformat(),
-            "profile": None,
-        }
+    if not user:
+        return None
 
-        if user.profile:
-            profile = user.profile
-            profile_data = {
-                "id": profile.id,
-                "address": profile.address,
-                "dateOfBirth": profile.birthday.isoformat() if profile.birthday else None,
-                "phone": profile.phone,
-                "gender": profile.gender.name,
-                "avatar": profile.avatar,
-            }
+    user_data = {
+        "id": user.id,
+        "name": user.username,
+        "firstName": user.first_name,
+        "lastName": user.last_name,
+        "email": user.email,
+        "role": user.role.name,
+        "createdAt": user.created_date.isoformat(),
+        "profile": None,
+    }
 
-            if profile.profile_type == "doctor":
-                profile_data.update({
-                    "title": profile.title,
-                    "bio": profile.bio,
-                    "specialty": (
-                        {"id": profile.specialty.id, "name": profile.specialty.name
-                         } if profile.specialty else None
-                    ),
-                })
-            elif profile.profile_type == "patient":
-                profile_data.update({"medicalHistory": profile.medical_history})
-
-            user_data["profile"] = profile_data
-
+    if not user.profile:
         return user_data
 
-    return None
+    profile = user.profile
+    profile_data = {
+        "id": profile.id,
+        "address": profile.address,
+        "dateOfBirth": profile.birthday.isoformat() if profile.birthday else None,
+        "phone": profile.phone,
+        "gender": profile.gender.name if profile.gender else None,
+        "avatar": profile.avatar,
+    }
+
+    if profile.profile_type == "doctor":
+        profile_data.update({
+            "title": profile.title,
+            "bio": profile.bio,
+            "specialty": (
+                {"id": profile.specialty.id, "name": profile.specialty.name}
+                if profile.specialty else None
+            ),
+        })
+    elif profile.profile_type == "patient":
+        profile_data.update({"medicalHistory": profile.medical_history})
+
+    user_data["profile"] = profile_data
+    return user_data
 
 
 @handle_db_errors
@@ -103,19 +122,17 @@ def register_user_service(user_payload=None):
         return None, "ERROR_BAD_REQUEST"
 
     email = user_payload.get("email")
-    avatar = user_payload.get("avatar")
-    birthday = user_payload.get("birthday")
-    gender = user_payload.get("gender")
-    phone = user_payload.get("phone")
-    address = user_payload.get("address")
-    medical_history = user_payload.get("medical_history")
-
     if get_user_by_email(email):
         return {"message": "Email đã tồn tại"}, "ERROR_BAD_REQUEST"
 
-    avatar_url = None
-    if avatar:
-        avatar_url = cloudinary_upload_process(avatar)
+    set_birthday, date_err = parse_date(user_payload.get("birthday"))
+    if date_err:
+        return {"message": date_err}, "ERROR_BAD_REQUEST"
+
+    set_gender = parse_gender(user_payload.get("gender"))
+
+    avatar = user_payload.get("avatar")
+    avatar_url = cloudinary_upload_process(avatar) if avatar else None
 
     new_user = User(
         username=user_payload.get("username"),
@@ -126,52 +143,44 @@ def register_user_service(user_payload=None):
     )
     add_user(new_user)
 
-    set_gender = GenderRole.NOT_SET
-    if gender:
-        try:
-            set_gender = GenderRole[gender.upper()]
-        except KeyError:
-            pass
-
-    set_birthday = None
-    if birthday:
-        try:
-            set_birthday = datetime.datetime.strptime(birthday, "%Y-%m-%d")
-        except ValueError:
-            rollback()
-            return {"message": "Sai định dạng ngày sinh"}, "ERROR_BAD_REQUEST"
-
     new_profile = PatientProfile(
         user_id=new_user.id,
-        phone=phone,
+        phone=user_payload.get("phone"),
         avatar=avatar_url,
         gender=set_gender,
         birthday=set_birthday,
-        address=address,
-        medical_history=medical_history,
+        address=user_payload.get("address"),
+        medical_history=user_payload.get("medical_history"),
     )
     add_profile(new_profile)
     commit()
 
     registered_user = get_user_data(new_user)
     if registered_user:
-        data = {
-            "message": "Đăng ký thành công",
-            "user": registered_user,
-        }
-
-        return data, "SUCCESS"
+        return {"message": "Đăng ký thành công", "user": registered_user}, "SUCCESS"
 
     return {"message": "Lỗi không xác định khi đăng kí"}, "SERVER_INTERNAL_ERROR"
 
 
 def is_email_available(email: str):
-    user = get_user_by_email(email)
+    return not bool(get_user_by_email(email))
 
-    if user:
-        return False
 
-    return True
+def apply_updates(obj, data, mapping):
+    for payload_key, attr in mapping.items():
+        if payload_key in data:
+            setattr(obj, attr, data[payload_key])
+
+
+def update_extended_profile(profile, data):
+    if "medicalHistory" in data and profile.profile_type == "patient":
+        profile.medical_history = data["medicalHistory"]
+
+    if data.get("avatar"):
+        profile.avatar = cloudinary_upload_process(data["avatar"])
+
+    if "gender" in data:
+        profile.gender = parse_gender(data.get("gender"), default=profile.gender)
 
 
 @handle_db_errors
@@ -179,52 +188,24 @@ def update_patient_profile_service(current_user=None, data=None):
     if not current_user:
         return {"message": "Người dùng không tồn tại"}, "FORBIDDEN"
 
-    user_role = current_user.role.name
-
-    if "PATIENT" not in user_role.upper():
+    if "PATIENT" not in current_user.role.name.upper():
         return {"message": "Không có hồ sơ người dùng này"}, "FORBIDDEN"
 
-    if "firstName" in data:
-        current_user.first_name = data["firstName"]
-
-    if "lastName" in data:
-        current_user.last_name = data["lastName"]
-
+    apply_updates(current_user, data, {"firstName": "first_name", "lastName": "last_name"})
     profile = current_user.profile
-    if "address" in data:
-        profile.address = data["address"]
-
-    if "phone" in data:
-        profile.phone = data["phone"]
-
-    if data.get("avatar"):
-        avatar_url = cloudinary_upload_process(data["avatar"])
-        profile.avatar = avatar_url
-
-    if "medicalHistory" in data and profile.profile_type == "patient":
-        profile.medical_history = data["medicalHistory"]
-
-    if data.get("gender"):
-        try:
-            profile.gender = GenderRole[data.get("gender").upper()]
-        except KeyError:
-            pass
+    apply_updates(profile, data, {"address": "address", "phone": "phone"})
+    update_extended_profile(profile, data)
 
     if data.get("dayOfBirth"):
-        try:
-            profile.birthday = datetime.datetime.strptime(data.get("dayOfBirth"), "%Y-%m-%d")
-        except ValueError:
-            return {"message": "Định dạng ngày sinh không phù hợp"}, "ERROR_BAD_REQUEST"
+        parsed_date, err = parse_date(data.get("dayOfBirth"))
+        if err:
+            return {"message": err}, "ERROR_BAD_REQUEST"
+        profile.birthday = parsed_date
 
     commit()
 
     updated_user = get_user_data(current_user)
     if updated_user:
-        data = {
-            "message": "Cập nhật hồ sơ thành công",
-            "data": updated_user,
-        }
-
-        return data, "SUCCESS"
+        return {"message": "Cập nhật hồ sơ thành công", "data": updated_user}, "SUCCESS"
 
     return {"message": "Lỗi không xác định khi cập nhật hồ sơ"}, "SERVER_INTERNAL_ERROR"

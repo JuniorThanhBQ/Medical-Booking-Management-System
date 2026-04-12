@@ -54,6 +54,7 @@ class MedicalService(Base):
     def __str__(self):
         return self.name
 
+
 class VisitType(Base):
     __tablename__ = "visit_type"
 
@@ -71,6 +72,7 @@ class VisitType(Base):
 
     def __str__(self):
         return self.name
+
 
 class WorkSchedule(Base):
     __tablename__ = "work_schedule"

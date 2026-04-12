@@ -11,11 +11,11 @@ root_directory = os.path.abspath(os.path.join(current_directory, "../../"))
 sys.path.insert(0, root_directory)
 
 from src import create_app, db
-from src.modules.appointments.models import (Appointment, MedicalRecord,
-                                             MedicalRecordType, StatusRole)
+from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.doctors.models import (DayOfWeek, DoctorProfile,
                                         MedicalService, Specialty, VisitType,
                                         WorkDate, WorkSchedule)
+from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
 from src.modules.notification.models import (DeliveryStatus, Notification,
                                              NotificationType)
 from src.modules.users.models import GenderRole, PatientProfile, User, UserRole

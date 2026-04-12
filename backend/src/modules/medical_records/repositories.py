@@ -5,6 +5,7 @@ from src.modules.medical_records.models import MedicalRecord
 def get_medical_record_by_id(record_id):
     return db.session.get(MedicalRecord, int(record_id))
 
+
 def get_medical_records_by_role(role_name, profile_id, page=1, limit=10):
     query = MedicalRecord.query
 
@@ -16,6 +17,7 @@ def get_medical_records_by_role(role_name, profile_id, page=1, limit=10):
     query = query.order_by(MedicalRecord.created_date.desc())
 
     return query.paginate(page=page, per_page=limit, error_out=False)
+
 
 def add_instance(instance):
     db.session.add(instance)

@@ -284,7 +284,6 @@ def validate_appointment_booking(doctor_id, str_appointment_date, medical_servic
     if not_found_error:
         return None, None, None, (not_found_error, status)
 
-
     medical_service = get_medical_service_by_id(medical_service_id)
     if not medical_service:
         return None, None, None, ({"message": "Dịch vụ y tế không tồn tại"}, "NOT_FOUND")

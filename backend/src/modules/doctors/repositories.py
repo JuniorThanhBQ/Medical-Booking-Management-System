@@ -1,3 +1,5 @@
+from datetime import time
+
 from sqlalchemy import asc, func, or_
 
 from src.extensions import db
@@ -42,8 +44,12 @@ def get_medical_service_by_id(service_id):
 
 
 def get_paginated_doctors(page, per_page, keywords=None, specialty_id=None, work_days=None):
-    query = User.query.join(User.profile).join(DoctorProfile).join(WorkSchedule).join(WorkDate).filter(
-        User.is_active,
+    query = User.query.join(Profile, User.id == Profile.user_id) \
+        .join(DoctorProfile, Profile.id == DoctorProfile.id) \
+        .join(WorkSchedule, DoctorProfile.id == WorkSchedule.doctor_id) \
+        .join(WorkDate, WorkSchedule.id == WorkDate.work_schedule_id) \
+        .filter(
+        User.is_active == True,
         User.role == UserRole.DOCTOR,
         Profile.profile_type == "doctor"
     )
@@ -60,10 +66,12 @@ def get_paginated_doctors(page, per_page, keywords=None, specialty_id=None, work
             )
 
     if specialty_id:
-        query = query.join(DoctorProfile).filter(DoctorProfile.specialty_id == specialty_id)
+        query = query.filter(DoctorProfile.specialty_id == specialty_id)
 
     if work_days:
         query = query.filter(WorkDate.day_of_week.in_(work_days))
+
+    query = query.distinct()
 
     return query.paginate(page=page, per_page=per_page, error_out=False)
 
@@ -77,7 +85,7 @@ def get_upcoming_appointments(doctor_profile_id, start_date, statuses):
         Appointment.doctor_profile_id == doctor_profile_id,
         Appointment.appointment_date >= start_date,
         Appointment.status.in_(statuses)
-        ).order_by(asc(Appointment.__table__.c.appointment_date))
+    ).order_by(asc(Appointment.__table__.c.appointment_date)).all()
 
 
 def is_conflict_appointment(doctor_profile_id, start_date, end_date, statuses):
@@ -92,7 +100,8 @@ def is_conflict_appointment(doctor_profile_id, start_date, end_date, statuses):
 def get_or_create_work_schedule(doctor_id):
     work_schedule = WorkSchedule.query.filter_by(doctor_id=doctor_id).first()
     if not work_schedule:
-        work_schedule = WorkSchedule(doctor_id=doctor_id)
+        work_schedule = WorkSchedule(doctor_id=doctor_id, title="", start_time=time(8, 0, 0),
+                                     end_time=time(8, 0, 0))
         db.session.add(work_schedule)
         db.session.flush()
     return work_schedule

@@ -7,6 +7,36 @@ from src.modules.medical_records.repositories import (
 from src.utils.handle_db_errors import handle_db_errors
 
 
+def format_medical_record(record):
+    appointment = record.appointment
+    doctor_user = record.doctor.user
+    patient_user = record.patient.user
+    specialty = record.doctor.specialty
+
+    return {
+        "id": str(record.id),
+        "service": appointment.medical_service.name if appointment and appointment.medical_service else None,
+        "appointmentId": str(appointment.id) if appointment else None,
+        "patientName": f"{patient_user.last_name} {patient_user.first_name}",
+        "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
+        "specialty": specialty.name if specialty else None,
+        "status": appointment.status.name if appointment and appointment.status else None,
+        "diagnosis": record.diagnosis,
+        "createdAt": record.created_date.isoformat() + "Z" if record.created_date else None,
+    }
+
+
+def _check_record_access_permission(current_user, record):
+    role_name = current_user.role.name
+    profile_id = current_user.profile.id if current_user.profile else None
+
+    if role_name == "PATIENT" and record.patient_profile_id != profile_id:
+        return False
+    if role_name == "DOCTOR" and record.doctor_profile_id != profile_id:
+        return False
+    return True
+
+
 @handle_db_errors
 def create_medical_record_service(current_user, appointment_id, data):
     if current_user.role.name != "DOCTOR":
@@ -68,17 +98,16 @@ def update_medical_record_service(current_user, record_id, data):
     if record.doctor_profile_id != current_user.profile.id:
         return {"message": "Không có quyền chỉnh sửa"}, "FORBIDDEN"
 
-    if "diagnosis" in data:
-        record.diagnosis = data["diagnosis"]
+    field_mapping = {
+        "diagnosis": "diagnosis",
+        "prescriptionText": "prescription_text",
+        "treatmentOrders": "treatment_orders",
+        "notes": "note"
+    }
 
-    if "prescriptionText" in data:
-        record.prescription_text = data["prescriptionText"]
-
-    if "treatmentOrders" in data:
-        record.treatment_orders = data["treatmentOrders"]
-
-    if "notes" in data:
-        record.note = data["notes"]
+    for payload_key, model_attr in field_mapping.items():
+        if payload_key in data:
+            setattr(record, model_attr, data[payload_key])
 
     payload_status = data.get("status")
     if payload_status in ["DONE", "FOLLOW_UP"]:
@@ -106,35 +135,17 @@ def get_detail_medical_record_service(current_user, record_id):
     if not record:
         return {"message": "Phiếu khám không tồn tại"}, "NOT_FOUND"
 
-    role_name = current_user.role.name
-    profile_id = current_user.profile.id if current_user.profile else None
-
-    if role_name == "PATIENT" and record.patient_profile_id != profile_id:
+    if not _check_record_access_permission(current_user, record):
         return {"message": "Không có quyền truy cập"}, "FORBIDDEN"
 
-    if role_name == "DOCTOR" and record.doctor_profile_id != profile_id:
-        return {"message": "Không có quyền truy cập"}, "FORBIDDEN"
-
-    appointment = record.appointment
-    doctor_user = record.doctor.user
-    patient_user = record.patient.user
-    specialty = record.doctor.specialty
-
-    result = {
-        "id": str(record.id),
-        "service": appointment.medical_service.name if appointment and appointment.medical_service else None,
-        "appointmentId": str(appointment.id) if appointment else None,
-        "patientName": f"{patient_user.last_name} {patient_user.first_name}",
-        "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
-        "specialty": specialty.name if specialty else None,
-        "status": appointment.status.name if appointment and appointment.status else None,
-        "diagnosis": record.diagnosis,
+    result = format_medical_record(record)
+    result.update({
         "notes": record.note,
         "prescriptionText": record.prescription_text,
         "treatmentOrders": record.treatment_orders,
-        "createdAt": record.created_date.isoformat() + "Z" if record.created_date else None,
         "updatedAt": record.updated_date.isoformat() + "Z" if record.updated_date else None,
-    }
+    })
+
     return result, "SUCCESS"
 
 
@@ -160,24 +171,7 @@ def get_list_medical_record_service(current_user, args):
         limit=limit
     )
 
-    items = []
-    for record in paginated_records.items:
-        appointment = record.appointment
-        doctor_user = record.doctor.user
-        patient_user = record.patient.user
-        specialty = record.doctor.specialty
-
-        items.append({
-            "id": str(record.id),
-            "service": appointment.medical_service.name if appointment and appointment.medical_service else None,
-            "appointmentId": str(appointment.id) if appointment else None,
-            "patientName": f"{patient_user.last_name} {patient_user.first_name}",
-            "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
-            "specialty": specialty.name if specialty else None,
-            "status": appointment.status.name if appointment and appointment.status else None,
-            "diagnosis": record.diagnosis,
-            "createdAt": record.created_date.isoformat() + "Z" if record.created_date else None,
-        })
+    items = [format_medical_record(record) for record in paginated_records.items]
 
     result = {
         "items": items,
@@ -188,5 +182,4 @@ def get_list_medical_record_service(current_user, args):
             "perPage": paginated_records.per_page
         }
     }
-
     return result, "SUCCESS"
