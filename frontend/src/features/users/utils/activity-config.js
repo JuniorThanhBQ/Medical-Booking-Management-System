@@ -4,8 +4,9 @@ import {
   getAppointmentDetail,
   getMedicalRecordDetail,
 } from '../services/appointment-api-service';
+import { fetchDoctorAppointments } from '@/features/doctor/api/appointments-api';
 
-const PATIENT_FILTERS = [
+const ACTIVITY_FILTERS = [
   { key: 'all', label: 'Tất cả' },
   { key: 'appointments', label: 'Lịch hẹn' },
   { key: 'medical_records', label: 'Hồ sơ bệnh án' },
@@ -100,11 +101,12 @@ const getPatientActivityConfig = async (token) => {
   const listResponse = await getAppointments(token);
   const appointments = Array.isArray(listResponse?.items) ? listResponse.items : [];
   if (!appointments.length) {
-    return { filters: PATIENT_FILTERS, items: [], upcomingItems: [] };
+    return { filters: ACTIVITY_FILTERS, items: [], upcomingItems: [] };
   }
 
+  const uniqueAppointments = [...new Map(appointments.map((a) => [a.id, a])).values()];
   const detailResponses = await Promise.all(
-    appointments.map(async (appointment) => {
+    uniqueAppointments.map(async (appointment) => {
       try {
         const detail = await getAppointmentDetail(token, appointment.id);
         return {
@@ -163,20 +165,96 @@ const getPatientActivityConfig = async (token) => {
   }
 
   return {
-    filters: PATIENT_FILTERS,
+    filters: ACTIVITY_FILTERS,
     items: pastItems,
     upcomingItems,
   };
 };
 
-export async function getActivityConfig(role, token) {
-  if (role !== ROLE.Patient || !token) {
-    return EMPTY_ACTIVITY_CONFIG;
+const buildDoctorAppointmentActivity = (appointment) => ({
+  ...buildAppointmentActivity(appointment),
+  title: appointment.patientName || appointment.patient_name || 'Lịch hẹn',
+});
+
+const buildDoctorMedicalRecordActivity = (appointmentDetail, medicalRecordDetail) => ({
+  ...buildMedicalRecordActivity(appointmentDetail, medicalRecordDetail),
+  title: appointmentDetail.patientName || appointmentDetail.patient_name || medicalRecordDetail?.diagnosis || 'Hồ sơ bệnh án',
+});
+
+const getDoctorActivityConfig = async (token) => {
+  const appointments = await fetchDoctorAppointments(token);
+  if (!appointments.length) {
+    return { filters: ACTIVITY_FILTERS, items: [], upcomingItems: [] };
   }
 
-  try {
-    return await getPatientActivityConfig(token);
-  } catch {
-    return { filters: PATIENT_FILTERS, items: [], upcomingItems: [] };
+  const uniqueAppointments = [...new Map(appointments.map((a) => [a.id, a])).values()];
+  const detailResponses = await Promise.all(
+    uniqueAppointments.map(async (appointment) => {
+      try {
+        const detail = await getAppointmentDetail(token, appointment.id);
+        return {
+          ...appointment,
+          specialty: detail?.specialty || '',
+          status: detail?.status || appointment.status,
+          appointmentDate: detail?.appointmentDate || appointment.appointmentDate,
+          medicalRecordId: detail?.medicalRecordId || null,
+        };
+      } catch {
+        return { ...appointment, specialty: '', medicalRecordId: null };
+      }
+    })
+  );
+
+  const medicalRecordCandidates = detailResponses.filter((item) => item.medicalRecordId);
+  const medicalRecordMap = new Map();
+  if (medicalRecordCandidates.length) {
+    const records = await Promise.all(
+      medicalRecordCandidates.map(async (item) => {
+        try {
+          const record = await getMedicalRecordDetail(token, item.medicalRecordId);
+          return [item.medicalRecordId, record];
+        } catch {
+          return [item.medicalRecordId, null];
+        }
+      })
+    );
+    for (const [id, record] of records) medicalRecordMap.set(id, record);
   }
+
+  const startOfTomorrow = new Date();
+  startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+  startOfTomorrow.setHours(0, 0, 0, 0);
+
+  const pastItems = [];
+  const upcomingItems = [];
+
+  for (const detail of detailResponses) {
+    const date = new Date(detail.appointmentDate);
+    const isUpcoming = UPCOMING_STATUSES.has(detail.status) && date >= startOfTomorrow;
+    if (isUpcoming) {
+      upcomingItems.push(buildDoctorAppointmentActivity(detail));
+    } else if (detail.medicalRecordId) {
+      pastItems.push(buildDoctorMedicalRecordActivity(detail, medicalRecordMap.get(detail.medicalRecordId)));
+    } else {
+      pastItems.push(buildDoctorAppointmentActivity(detail));
+    }
+  }
+
+  return { filters: ACTIVITY_FILTERS, items: pastItems, upcomingItems };
+};
+
+export async function getActivityConfig(role, token) {
+  if (!token) return EMPTY_ACTIVITY_CONFIG;
+
+  if (role === ROLE.Patient) {
+    try { return await getPatientActivityConfig(token); }
+    catch { return { filters: ACTIVITY_FILTERS, items: [], upcomingItems: [] }; }
+  }
+
+  if (role === ROLE.Doctor) {
+    try { return await getDoctorActivityConfig(token); }
+    catch { return { filters: ACTIVITY_FILTERS, items: [], upcomingItems: [] }; }
+  }
+
+  return EMPTY_ACTIVITY_CONFIG;
 }

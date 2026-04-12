@@ -10,8 +10,6 @@ const initialState = {
   workDate: DEFAULT_WORK_DATE,
   startTime: DEFAULT_START,
   endTime: DEFAULT_END,
-  leaveRequests: [],
-  newRequest: { type: "time_off" },
   timeOptions: generateTimeOptions(),
   appointments: [],
   isLoading: false,
@@ -97,28 +95,4 @@ export const useScheduleStore = create((set, get) => ({
     })),
 
   setTime: (field, value) => set({ [field]: value }),
-
-  updateNewRequest: (patch) =>
-    set((state) => ({
-      newRequest: { ...state.newRequest, ...patch },
-    })),
-
-  addLeaveRequest: () => {
-    const { newRequest, leaveRequests } = get();
-    if (!newRequest.fromDate || !newRequest.toDate || !newRequest.type) return;
-
-    const id = `req-${Date.now()}`;
-    const request = {
-      id,
-      type: newRequest.type,
-      fromDate: newRequest.fromDate,
-      toDate: newRequest.toDate,
-      reason: newRequest.reason,
-      status: "pending",
-    };
-    set({
-      leaveRequests: [request, ...leaveRequests],
-      newRequest: { type: newRequest.type, fromDate: undefined, toDate: undefined, reason: "" },
-    });
-  },
 }));

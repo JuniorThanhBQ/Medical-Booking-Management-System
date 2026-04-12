@@ -23,7 +23,7 @@ export const DEFAULT_AUTH_MENU_ITEMS = {
   ],
   DOCTOR: [
     { label: "Hồ sơ", href: "/profile" },
-    { label: "Hoạt động", href: "/activity" },
+    { label: "Hoạt động", href: "/doctor/activity" },
     { label: "Lịch làm việc", href: "/schedule" },
   ],
   ADMIN: [
@@ -68,17 +68,6 @@ export const STATUS_LABELS = {
   CANCEL: "Đã hủy",
 };
 
-export const REASON_OPTIONS = [
-  { value: "sick", label: "Ốm / bệnh" },
-  { value: "personal", label: "Cá nhân" },
-  { value: "conference", label: "Hội nghị / đào tạo" },
-];
-
-export const TYPE_OPTIONS = [
-  { value: "time_off", label: "Nghỉ phép" },
-  { value: "shift_change", label: "Đổi ca / thay đổi lịch" },
-];
-
 export function getStatusLabel(status) {
   return STATUS_LABELS[status] || status;
 }
@@ -109,6 +98,15 @@ export const PROFILE_SIDEBAR_ITEMS = [
     Icon: ActivityIcon,
   },
 ];
+
+export function getProfileSidebarItems(role) {
+  if (role === ROLE.Doctor) {
+    return PROFILE_SIDEBAR_ITEMS.map((item) =>
+      item.key === "activity" ? { ...item, path: "/doctor/activity" } : item
+    );
+  }
+  return PROFILE_SIDEBAR_ITEMS;
+}
 
 
 export const SUPPORTED_COUNTRIES = [

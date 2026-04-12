@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { PROFILE_SIDEBAR_ITEMS } from '@/configs/const';
 
-const ProfileSidebar = ({ userName, activeKey = "profile", onSelect }) => {
+const ProfileSidebar = ({ userName, activeKey = "profile", onSelect, items }) => {
   const navigate = useNavigate();
+  const sidebarItems = items || PROFILE_SIDEBAR_ITEMS;
 
   return (
     <aside className="profile-sidebar">
       <h2 className="profile-sidebar__user-name">{userName}</h2>
       <nav className="profile-sidebar__nav">
-        {PROFILE_SIDEBAR_ITEMS.map((item) => (
+        {sidebarItems.map((item) => (
           <button
             key={item.label}
             type="button"

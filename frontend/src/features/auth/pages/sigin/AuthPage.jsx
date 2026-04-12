@@ -40,7 +40,12 @@ export default function AuthPage() {
   };
 
   if (role) {
-    return <EmailAuthorizationPage onAuthenticated={handleAuthenticated} />;
+    return (
+      <EmailAuthorizationPage
+        onAuthenticated={handleAuthenticated}
+        onBackToRoleSelect={() => setRole(null)}
+      />
+    );
   }
 
   return (

@@ -5,6 +5,7 @@ import ActivityView from '../components/activity/ActivityView';
 import Navbar from '../components/Navbar';
 import { TABS } from './ProfilePage';
 import { getActivityConfig } from '../utils/activity-config';
+import { getProfileSidebarItems } from '@/configs/const';
 import { getUserToken } from '@/utils/auth-helpers';
 import '@/assets/css/users/profile.css';
 
@@ -63,7 +64,7 @@ const ActivityPage = () => {
       <Navbar />
 
       <div className="profile-layout">
-        <ProfileSidebar userName={displayName} activeKey={TABS.ACTIVITY} />
+        <ProfileSidebar userName={displayName} activeKey={TABS.ACTIVITY} items={getProfileSidebarItems(user?.role)} />
 
         <main className="profile-main">
           <h1 className="profile-main__title">Hoạt động</h1>

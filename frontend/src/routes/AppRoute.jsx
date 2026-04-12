@@ -34,6 +34,7 @@ export default function AppRoute() {
 
       <Route element={<RoleRoute allowedRoles={[ROLE.Doctor]} />}>
         <Route path="/doctor/today" element={<TodayPatientsPage />} />
+        <Route path="/doctor/activity" element={<ActivityPage />} />
         <Route path="/doctor/exam/:appointmentId" element={<ExaminationPage />} />
         <Route path="/schedule" element={<SchedulePage />} />
       </Route>

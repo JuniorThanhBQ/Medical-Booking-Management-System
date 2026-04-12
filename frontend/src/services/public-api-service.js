@@ -7,6 +7,7 @@ export const getSpecialties = async (params = {}) => {
 
 export const getDoctors = async (params = {}) => {
   const res = await Apis.get(endpoints.public_doctors, { params });
+  console.log("GET DOCTOR", res)
   return res.data.data.items ?? [];
 };
 

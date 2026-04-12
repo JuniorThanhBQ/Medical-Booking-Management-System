@@ -21,7 +21,7 @@ function getAuthPageMeta(authStep, mode, role) {
   return { title: "Hoàn tất hồ sơ của bạn", subtitle: "Thêm một vài thông tin để tạo tài khoản mới." };
 }
 
-export default function EmailAuthorizationPage({ onAuthenticated }) {
+export default function EmailAuthorizationPage({ onAuthenticated, onBackToRoleSelect }) {
   const navigate = useNavigate();
   const { role, email, authStep, mode, profile, password, loading, error, touchedEmail, setEmail, setAuthStep,
     setMode, setProfile, setPassword, setError, setLoading, setTouchedEmail, resetAuthFlow } = useAuthStore();
@@ -120,7 +120,7 @@ export default function EmailAuthorizationPage({ onAuthenticated }) {
   };
 
   const handleBack = () => {
-    if (authStep === "email") return navigate("/auth");
+    if (authStep === "email") return onBackToRoleSelect ? onBackToRoleSelect() : navigate("/auth");
     if (authStep === "profile") return handleChangeEmail();
     if (authStep === "password" && mode === "register") {
       setAuthStep("profile");
