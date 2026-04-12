@@ -2,15 +2,14 @@ import gzip
 import logging
 import time
 
-from flask import g, jsonify, request
+from flask import g, request
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 logger = logging.getLogger('flask_logger')
 
 if not logger.handlers:
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def middlewares(app):
@@ -23,17 +22,23 @@ def middlewares(app):
 
     @app.after_request
     def gzip_response(response):
-        if (response.direct_passthrough or len(response.get_data()) < 200
-                or 'Content-Encoding' in response.headers):
+        if response.direct_passthrough or 'Content-Encoding' in response.headers:
+            return response
+
+        if response.mimetype not in ['application/json', 'text/html', 'text/plain', 'text/css']:
             return response
 
         if 'gzip' not in request.headers.get('Accept-Encoding', '').lower():
             return response
 
-        gzip_buffer = gzip.compress(response.get_data())
+        data = response.get_data()
+        if len(data) < 200:
+            return response
+
+        gzip_buffer = gzip.compress(data)
         response.set_data(gzip_buffer)
         response.headers['Content-Encoding'] = 'gzip'
-        response.headers['Content-Length'] = len(response.get_data())
+        response.headers['Content-Length'] = len(gzip_buffer)
         response.headers['Vary'] = 'Accept-Encoding'
 
         return response
@@ -44,40 +49,39 @@ def middlewares(app):
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; "
-            "img-src 'self' data: https://res.cloudinary.com; " 
+            "img-src 'self' data: https://res.cloudinary.com; "
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         )
-        response.headers['X-XSS-Protection'] = '1; mode=block'
 
         return response
 
     @app.after_request
     def log_request(response):
         if hasattr(g, 'start_time'):
-            elapsed_time = round((time.time() - g.start_time) * 1000, 2)
+            finished_time = round((time.time() - g.start_time) * 1000, 2)
             logger.info(
                 "[%s] %s - %d - %dms",
                 request.method,
                 request.path,
                 response.status_code,
-                elapsed_time
+                finished_time
             )
         return response
 
     @app.errorhandler(Exception)
     def handle_exception(e):
         if isinstance(e, HTTPException):
-            return jsonify({
+            return {
                 "status": "error",
                 "code": e.code,
-                "message": getattr(e, 'description', 'Unknown error')
-            }), e.code
+                "message": getattr(e, 'description', 'Lỗi không xác định')
+            }, e.code
 
         logger.error("Server Error: %s", str(e), exc_info=True)
 
-        return jsonify({
+        return {
             "status": "error",
             "code": 500,
             "message": "Internal Server Error."
-        }), 500
+        }, 500

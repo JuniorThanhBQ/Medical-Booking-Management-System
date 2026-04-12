@@ -1,5 +1,5 @@
 from src.modules.appointments.models import Appointment
-from src.modules.auth_profiles.admin import AdminModelView
+from src.modules.users.admin import AdminModelView
 
 
 class AppointmentModelView(AdminModelView):

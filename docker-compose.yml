@@ -1,101 +1,141 @@
 services:
   frontend:
-    restart: unless-stopped
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=${BACKEND_API_URL}
     depends_on:
       backend:
         condition: service_healthy
-    ports: 
+    ports:
       - "${FRONTEND_PORT}:8080"
-    environment:
-      - VITE_API_URL=http://localhost:8000
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:${FRONTEND_PORT}/" ]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/health"]
       interval: 10s
       timeout: 5s
       retries: 5
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      start_period: 30s
     networks:
       - frontend-network
 
-
   backend:
     restart: unless-stopped
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     depends_on:
       db:
         condition: service_healthy
+      db-migration:
+        condition: service_completed_successfully
       redis:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
     ports:
-      - "8000:8000"
-    environment:
-      - FLASK_MODE=development
-      - DATABASE_URL=${DATABASE_URL}
+      - "${BACKEND_PORT}:8000"
     env_file:
       - .env
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 90s
-    volumes:
-      - ./backend/src:/app/src
-      - ./database/migrations:/app/migrations
-      - ./backend/.env:/app/.env:ro
+      start_period: 30s
     networks:
       - frontend-network
       - backend-network
 
+  db-migration:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - backend-network
 
   db:
     restart: unless-stopped
     image: mysql:8.0-debian
     healthcheck:
-      test: [ "CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE $DB_NAME; SELECT 1;" ]
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE $DB_NAME; SELECT 1;"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 120s
+      start_period: 90s
     environment:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
-    ports:
-      - "3307:3306"
     networks:
       - backend-network
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql-data:/var/lib/mysql
-
 
   redis:
     restart: unless-stopped
     image: redis:7-alpine
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 2s
       retries: 3
-      start_period: 5s
+      start_period: 10s
     networks:
       - backend-network
     volumes:
       - redis-data:/data
 
+  celery-beat:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: celery -A src.celery_worker.celery_app beat --loglevel=info -s /tmp/celerybeat-schedule
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 5s
+      timeout: 5s
+      retries: 1
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    networks:
+      - backend-network
+
+  email-worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: celery -A src.celery_worker.celery_app worker --loglevel=info
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 5s
+      timeout: 5s
+      retries: 1
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    networks:
+      - backend-network
 
   rabbitmq:
     restart: unless-stopped
-    image: rabbitmq:4.0-management-alpine
+    image: rabbitmq:4.0-management
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -103,21 +143,16 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     networks:
       - backend-network
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
-
 
 networks:
   frontend-network:
     driver: bridge
   backend-network:
     driver: bridge
-
 
 volumes:
   mysql-data:

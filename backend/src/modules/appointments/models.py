@@ -31,6 +31,14 @@ class Appointment(Base):
         backref=backref("appointment", uselist=False),
         lazy=True
     )
+    medical_service_id = Column(
+        Integer, ForeignKey("medical_services.id", ondelete="RESTRICT"), nullable=False
+    )
+    medical_service = relationship(
+        "MedicalService",
+        backref=backref("appointments"),
+        lazy=True
+    )
 
     def __str__(self):
         return self.name

@@ -1,69 +1,682 @@
 {
   "specialties": [
-    {"id": 1, "name": "Nội tổng quát", "description": "Khám nội tạng và bệnh mãn tính", "level": "Cơ sở", "cta_label": "CK1"},
-    {"id": 2, "name": "Tim mạch", "description": "Điều trị các bệnh lý về tim và mạch máu", "level": "Chuyên sâu", "cta_label": "CK2"},
-    {"id": 3, "name": "Nhi khoa", "description": "Chăm sóc sức khỏe trẻ em", "level": "Cơ sở", "cta_label": "CK1"},
-    {"id": 4, "name": "Da liễu", "description": "Điều trị các bệnh về da và thẩm mỹ", "level": "Cơ sở", "cta_label": "CK1"},
-    {"id": 5, "name": "Sản phụ khoa", "description": "Chăm sóc sức khỏe phụ nữ và thai sản", "level": "Chuyên sâu", "cta_label": "CK3"}
+    {
+      "id": 1,
+      "name": "Nội tổng quát",
+      "description": "Khám nội tạng và bệnh mãn tính",
+      "level": "Cơ sở"
+    },
+    {
+      "id": 2,
+      "name": "Tim mạch",
+      "description": "Điều trị các bệnh lý về tim và mạch máu",
+      "level": "Chuyên sâu"
+    },
+    {
+      "id": 3,
+      "name": "Nhi khoa",
+      "description": "Chăm sóc sức khỏe trẻ em từ sơ sinh đến 15 tuổi",
+      "level": "Cơ sở"
+    },
+    {
+      "id": 4,
+      "name": "Da liễu",
+      "description": "Điều trị các bệnh về da, tóc, móng và thẩm mỹ nội khoa",
+      "level": "Cơ sở"
+    },
+    {
+      "id": 5,
+      "name": "Sản phụ khoa",
+      "description": "Chăm sóc sức khỏe phụ nữ, thai sản và kế hoạch hóa gia đình",
+      "level": "Chuyên sâu"
+    },
+    {
+      "id": 6,
+      "name": "Tai Mũi Họng",
+      "description": "Khám và điều trị các bệnh lý đường hô hấp trên",
+      "level": "Cơ sở"
+    },
+    {
+      "id": 7,
+      "name": "Răng Hàm Mặt",
+      "description": "Nha khoa tổng quát và phẫu thuật hàm mặt",
+      "level": "Cơ sở"
+    },
+    {
+      "id": 8,
+      "name": "Tâm lý lâm sàng",
+      "description": "Tư vấn và điều trị các rối loạn tâm lý, trầm cảm",
+      "level": "Chuyên sâu"
+    },
+    {
+      "id": 9,
+      "name": "Chấn thương chỉnh hình",
+      "description": "Cơ xương khớp và phục hồi chức năng sau tai nạn",
+      "level": "Chuyên sâu"
+    },
+    {
+      "id": 10,
+      "name": "Nhãn khoa",
+      "description": "Khám mắt và điều trị các tật khúc xạ",
+      "level": "Cơ sở"
+    }
+  ],
+  "medical_services": [
+    {
+      "id": 1,
+      "name": "Khám sức khỏe tổng quát",
+      "description": "Kiểm tra sức khỏe toàn diện cơ bản",
+      "specialty_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Siêu âm tim và điện tâm đồ",
+      "description": "Chẩn đoán hình ảnh và nhịp tim",
+      "specialty_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Khám nhi tiêu chuẩn",
+      "description": "Kiểm tra tổng quát cho trẻ",
+      "specialty_id": 3
+    },
+    {
+      "id": 4,
+      "name": "Khám và điều trị da liễu",
+      "description": "Chẩn đoán bệnh lý về da",
+      "specialty_id": 4
+    },
+    {
+      "id": 5,
+      "name": "Khám thai định kỳ",
+      "description": "Siêu âm và sàng lọc trước sinh",
+      "specialty_id": 5
+    }
+  ],
+  "visit_types": [
+    {
+      "id": 1,
+      "name": "Khám tiêu chuẩn",
+      "duration_minutes": 30,
+      "buffer_before": 5,
+      "buffer_after": 5,
+      "medical_service_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Siêu âm chuyên sâu",
+      "duration_minutes": 45,
+      "buffer_before": 10,
+      "buffer_after": 10,
+      "medical_service_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Khám nhi cơ bản",
+      "duration_minutes": 20,
+      "buffer_before": 5,
+      "buffer_after": 5,
+      "medical_service_id": 3
+    },
+    {
+      "id": 4,
+      "name": "Khám da liễu nhanh",
+      "duration_minutes": 15,
+      "buffer_before": 0,
+      "buffer_after": 5,
+      "medical_service_id": 4
+    },
+    {
+      "id": 5,
+      "name": "Siêu âm thai",
+      "duration_minutes": 40,
+      "buffer_before": 5,
+      "buffer_after": 10,
+      "medical_service_id": 5
+    }
   ],
   "users": [
-    {"id": 1, "username": "admin_system", "password": "AdminPassword123@", "first_name": "Thành", "last_name": "Nguyễn Quản", "email": "admin@medicare.vn", "role": "ADMIN"},
-    {"id": 2, "username": "recept_hoa", "password": "UserPassword123@", "first_name": "Hoa", "last_name": "Lê Thị", "email": "hoa.le@medicare.vn", "role": "RECEPTIONIST"},
-    {"id": 3, "username": "dr_tuan", "password": "DocPassword123@", "first_name": "Tuấn", "last_name": "Phạm Anh", "email": "tuan.pham@medicare.vn", "role": "DOCTOR"},
-    {"id": 4, "username": "dr_lan", "password": "DocPassword123@", "first_name": "Lan", "last_name": "Hoàng Ngọc", "email": "lan.hoang@medicare.vn", "role": "DOCTOR"},
-    {"id": 5, "username": "dr_hung", "password": "DocPassword123@", "first_name": "Hùng", "last_name": "Trịnh Mạnh", "email": "hung.trinh@medicare.vn", "role": "DOCTOR"},
-    {"id": 6, "username": "patient_an", "password": "PatPassword123@", "first_name": "An", "last_name": "Nguyễn Bình", "email": "an.nguyen@gmail.com", "role": "PATIENT"},
-    {"id": 7, "username": "patient_chi", "password": "PatPassword123@", "first_name": "Chi", "last_name": "Lê Mai", "email": "chi.le@gmail.com", "role": "PATIENT"},
-    {"id": 8, "username": "patient_dung", "password": "PatPassword123@", "first_name": "Dũng", "last_name": "Hoàng Văn", "email": "dung.hoang@gmail.com", "role": "PATIENT"},
-    {"id": 9, "username": "dr_minh", "password": "DocPassword123@", "first_name": "Minh", "last_name": "Lê Văn", "email": "minh.le@medicare.vn", "role": "DOCTOR"},
-    {"id": 10, "username": "patient_vy", "password": "PatPassword123@", "first_name": "Vy", "last_name": "Đặng Tú", "email": "vy.dang@gmail.com", "role": "PATIENT"}
+    {
+      "id": 1,
+      "username": "admin_thanh",
+      "password": "Admin123@",
+      "first_name": "Thành",
+      "last_name": "Văn Trung",
+      "email": "admin@ou.edu.vn",
+      "role": "ADMIN"
+    },
+    {
+      "id": 2,
+      "username": "recept_hoa",
+      "password": "UserPassword123@",
+      "first_name": "Hoa",
+      "last_name": "Lê Thị",
+      "email": "hoa.le@medicare.vn",
+      "role": "RECEPTIONIST"
+    },
+    {
+      "id": 3,
+      "username": "dr_tuan",
+      "password": "DocPassword123@",
+      "first_name": "Tuấn",
+      "last_name": "Phạm Anh",
+      "email": "tuan.pham@medicare.vn",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 4,
+      "username": "dr_lan",
+      "password": "DocPassword123@",
+      "first_name": "Lan",
+      "last_name": "Hoàng Ngọc",
+      "email": "lan.hoang@medicare.vn",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 5,
+      "username": "dr_hung",
+      "password": "DocPassword123@",
+      "first_name": "Hùng",
+      "last_name": "Trịnh Mạnh",
+      "email": "hung.trinh@medicare.vn",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 6,
+      "username": "patient_an",
+      "password": "PatPassword123@",
+      "first_name": "An",
+      "last_name": "Nguyễn Bình",
+      "email": "an.nguyen@gmail.com",
+      "role": "PATIENT"
+    },
+    {
+      "id": 7,
+      "username": "patient_chi",
+      "password": "PatPassword123@",
+      "first_name": "Chi",
+      "last_name": "Lê Mai",
+      "email": "chi.le@gmail.com",
+      "role": "PATIENT"
+    },
+    {
+      "id": 8,
+      "username": "patient_dung",
+      "password": "PatPassword123@",
+      "first_name": "Dũng",
+      "last_name": "Hoàng Văn",
+      "email": "dung.hoang@gmail.com",
+      "role": "PATIENT"
+    },
+    {
+      "id": 9,
+      "username": "dr_minh",
+      "password": "DocPassword123@",
+      "first_name": "Minh",
+      "last_name": "Lê Văn",
+      "email": "minh.le@medicare.vn",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 10,
+      "username": "patient_vy",
+      "password": "PatPassword123@",
+      "first_name": "Vy",
+      "last_name": "Đặng Tú",
+      "email": "vy.dang@gmail.com",
+      "role": "PATIENT"
+    },
+    {
+      "id": 11,
+      "username": "dr_thu",
+      "password": "DocPassword123@",
+      "first_name": "Thu",
+      "last_name": "Vũ Minh",
+      "email": "thu.vu@medicare.vn",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 12,
+      "username": "dr_quang",
+      "password": "DocPassword123@",
+      "first_name": "Quang",
+      "last_name": "Đỗ Minh",
+      "email": "quang.do@medicare.vn",
+      "role": "DOCTOR"
+    },
+    {
+      "id": 13,
+      "username": "patient_khoa",
+      "password": "PatPassword123@",
+      "first_name": "Khoa",
+      "last_name": "Trần Đăng",
+      "email": "khoa.tran@gmail.com",
+      "role": "PATIENT"
+    },
+    {
+      "id": 14,
+      "username": "patient_nguyet",
+      "password": "PatPassword123@",
+      "first_name": "Nguyệt",
+      "last_name": "Phan Ánh",
+      "email": "nguyet.phan@gmail.com",
+      "role": "PATIENT"
+    },
+    {
+      "id": 15,
+      "username": "recept_nam",
+      "password": "UserPassword123@",
+      "first_name": "Nam",
+      "last_name": "Võ Hoàng",
+      "email": "nam.vo@medicare.vn",
+      "role": "RECEPTIONIST"
+    },
+    {
+      "id": 16,
+      "username": "patient_thanh",
+      "password": "PatPassword123@",
+      "first_name": "Thành",
+      "last_name": "Văn Trung",
+      "email": "livingtwozero123@gmail.com",
+      "role": "PATIENT"
+    }
   ],
   "doctor_profiles": [
-    {"id": 1, "user_id": 3, "phone": "0912345678", "gender": "MALE", "title": "TS.BS", "bio": "15 năm kinh nghiệm nội khoa", "specialty_id": 1, "address": "Quận 1, HCM", "birthday": "1980-05-15"},
-    {"id": 2, "user_id": 4, "phone": "0922345678", "gender": "FEMALE", "title": "ThS.BS", "bio": "Chuyên gia tim mạch học", "specialty_id": 2, "address": "Quận 3, HCM", "birthday": "1985-10-20"},
-    {"id": 3, "user_id": 5, "phone": "0933345678", "gender": "MALE", "title": "BS.CKI", "bio": "Chuyên khoa nhi nhi đồng", "specialty_id": 3, "address": "Bình Thạnh, HCM", "birthday": "1988-01-01"},
-    {"id": 4, "user_id": 9, "phone": "0944445566", "gender": "MALE", "title": "BS", "bio": "Bác sĩ chuyên khoa da liễu", "specialty_id": 4, "address": "Quận 5, HCM", "birthday": "1990-04-12"}
+    {
+      "id": 1,
+      "user_id": 3,
+      "phone": "0912345678",
+      "gender": "MALE",
+      "title": "TS.BS",
+      "bio": "15 năm kinh nghiệm nội khoa, chuyên trị tiểu đường.",
+      "specialty_id": 1,
+      "address": "Quận 1, HCM",
+      "birthday": "1980-05-15"
+    },
+    {
+      "id": 2,
+      "user_id": 4,
+      "phone": "0922345678",
+      "gender": "FEMALE",
+      "title": "ThS.BS",
+      "bio": "Chuyên gia tim mạch học, tu nghiệp tại Pháp.",
+      "specialty_id": 2,
+      "address": "Quận 3, HCM",
+      "birthday": "1985-10-20"
+    },
+    {
+      "id": 3,
+      "user_id": 5,
+      "phone": "0933345678",
+      "gender": "MALE",
+      "title": "BS.CKI",
+      "bio": "Bác sĩ Nhi tận tâm, giàu kinh nghiệm tâm lý trẻ em.",
+      "specialty_id": 3,
+      "address": "Bình Thạnh, HCM",
+      "birthday": "1988-01-01"
+    },
+    {
+      "id": 4,
+      "user_id": 9,
+      "phone": "0944445566",
+      "gender": "MALE",
+      "title": "BS",
+      "bio": "Chuyên gia về các bệnh lý da liễu tự miễn.",
+      "specialty_id": 4,
+      "address": "Quận 5, HCM",
+      "birthday": "1990-04-12"
+    },
+    {
+      "id": 5,
+      "user_id": 11,
+      "phone": "0955556677",
+      "gender": "FEMALE",
+      "title": "BS.CKII",
+      "bio": "Trưởng khoa Sản với hơn 20 năm đỡ đẻ.",
+      "specialty_id": 5,
+      "address": "Tân Bình, HCM",
+      "birthday": "1975-08-08"
+    },
+    {
+      "id": 6,
+      "user_id": 12,
+      "phone": "0966667788",
+      "gender": "MALE",
+      "title": "ThS.BS",
+      "bio": "Chuyên gia can thiệp tim mạch, đặt stent.",
+      "specialty_id": 2,
+      "address": "Phú Nhuận, HCM",
+      "birthday": "1982-12-12"
+    }
   ],
   "patient_profiles": [
-    {"id": 1, "user_id": 6, "phone": "0345678901", "gender": "MALE", "medical_history": "Tiền sử hen suyễn", "address": "Thủ Đức, HCM", "birthday": "1995-12-01"},
-    {"id": 2, "user_id": 7, "phone": "0345678902", "gender": "FEMALE", "medical_history": "Dị ứng Aspirin", "address": "Quận 7, HCM", "birthday": "1998-03-15"},
-    {"id": 3, "user_id": 8, "phone": "0345678903", "gender": "MALE", "medical_history": "Không", "address": "Quận 10, HCM", "birthday": "2000-07-22"},
-    {"id": 4, "user_id": 10, "phone": "0345678904", "gender": "FEMALE", "medical_history": "Viêm da cơ địa", "address": "Gò Vấp, HCM", "birthday": "1997-11-05"}
+    {
+      "id": 1,
+      "user_id": 6,
+      "phone": "0345678901",
+      "gender": "MALE",
+      "medical_history": "Hen suyễn mãn tính, dị ứng phấn hoa.",
+      "address": "Thủ Đức, HCM",
+      "birthday": "1995-12-01"
+    },
+    {
+      "id": 2,
+      "user_id": 7,
+      "phone": "0345678902",
+      "gender": "FEMALE",
+      "medical_history": "Dị ứng Aspirin, từng mổ ruột thừa năm 2020.",
+      "address": "Quận 7, HCM",
+      "birthday": "1998-03-15"
+    },
+    {
+      "id": 3,
+      "user_id": 8,
+      "phone": "0345678903",
+      "gender": "MALE",
+      "medical_history": "Khỏe mạnh, không tiền sử bệnh.",
+      "address": "Quận 10, HCM",
+      "birthday": "2000-07-22"
+    },
+    {
+      "id": 4,
+      "user_id": 10,
+      "phone": "0345678904",
+      "gender": "FEMALE",
+      "medical_history": "Viêm da cơ địa bẩm sinh.",
+      "address": "Gò Vấp, HCM",
+      "birthday": "1997-11-05"
+    },
+    {
+      "id": 5,
+      "user_id": 13,
+      "phone": "0345678905",
+      "gender": "MALE",
+      "medical_history": "Viêm xoang sàng.",
+      "address": "Hóc Môn, HCM",
+      "birthday": "1992-06-18"
+    },
+    {
+      "id": 6,
+      "user_id": 14,
+      "phone": "0345678906",
+      "gender": "FEMALE",
+      "medical_history": "Đang mang thai tuần thứ 12.",
+      "address": "Quận 2, HCM",
+      "birthday": "1994-09-25"
+    },
+    {
+      "id": 7,
+      "user_id": 16,
+      "phone": "0987654321",
+      "gender": "MALE",
+      "medical_history": "Cần theo dõi và kiểm tra sức khỏe tổng quát định kỳ.",
+      "address": "Quận Tân Bình, HCM",
+      "birthday": "2000-05-10"
+    }
   ],
   "work_schedules": [
-    {"id": 1, "title": "Ca sáng BS Tuấn", "description": "Trực tại phòng 101", "start_time": "08:00:00", "end_time": "12:00:00", "doctor_id": 1},
-    {"id": 2, "title": "Ca chiều BS Lan", "description": "Trực tại phòng chuyên sâu", "start_time": "13:30:00", "end_time": "17:00:00", "doctor_id": 2},
-    {"id": 3, "title": "Ca chiều BS Minh", "description": "Trực tại phòng khám da liễu", "start_time": "13:00:00", "end_time": "17:30:00", "doctor_id": 4}
+    {
+      "id": 1,
+      "title": "Sáng Nội Tổng Quát",
+      "description": "Khám tại sảnh A",
+      "start_time": "07:30:00",
+      "end_time": "11:30:00",
+      "doctor_id": 1
+    },
+    {
+      "id": 2,
+      "title": "Chiều Tim Mạch",
+      "description": "Phòng siêu âm tim 202",
+      "start_time": "13:30:00",
+      "end_time": "17:00:00",
+      "doctor_id": 2
+    },
+    {
+      "id": 3,
+      "title": "Chiều Da Liễu",
+      "description": "Phòng điều trị Laser",
+      "start_time": "13:00:00",
+      "end_time": "17:30:00",
+      "doctor_id": 4
+    },
+    {
+      "id": 4,
+      "title": "Sáng Sản Phụ Khoa",
+      "description": "Khu VIP sảnh C",
+      "start_time": "08:00:00",
+      "end_time": "12:00:00",
+      "doctor_id": 5
+    },
+    {
+      "id": 5,
+      "title": "Chiều Tim Mạch 2",
+      "description": "Trực cấp cứu tim mạch",
+      "start_time": "13:30:00",
+      "end_time": "17:00:00",
+      "doctor_id": 6
+    }
   ],
   "work_dates": [
-    {"work_schedule_id": 1, "days": ["MONDAY", "WEDNESDAY", "FRIDAY"]},
-    {"work_schedule_id": 2, "days": ["TUESDAY", "THURSDAY"]},
-    {"work_schedule_id": 3, "days": ["MONDAY", "TUESDAY", "WEDNESDAY"]}
+    {
+      "work_schedule_id": 1,
+      "days": [
+        "MONDAY",
+        "WEDNESDAY",
+        "FRIDAY"
+      ]
+    },
+    {
+      "work_schedule_id": 2,
+      "days": [
+        "TUESDAY",
+        "THURSDAY"
+      ]
+    },
+    {
+      "work_schedule_id": 3,
+      "days": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY"
+      ]
+    },
+    {
+      "work_schedule_id": 4,
+      "days": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY"
+      ]
+    },
+    {
+      "work_schedule_id": 5,
+      "days": [
+        "MONDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
+    }
   ],
   "medical_records": [
     {
-      "id": 1, "note": "Cần theo dõi thêm huyết áp tại nhà", "type": "DONE", "diagnosis": "Tăng huyết áp vô căn",
-      "prescription_text": "Amlodipine 5mg x 30 viên", "treatment_orders": "Ăn nhạt, tập thể dục nhẹ",
-      "doctor_id": 1, "patient_id": 1
+      "id": 1,
+      "note": "Ổn định huyết áp, tái khám sau 1 tháng.",
+      "type": "DONE",
+      "diagnosis": "Tăng huyết áp độ 1",
+      "prescription_text": "Amlodipine 5mg x 30 viên, uống sáng 1 viên.",
+      "treatment_orders": "Giảm muối, hạn chế rượu bia.",
+      "doctor_id": 1,
+      "patient_id": 1
     },
     {
-      "id": 2, "note": "Dùng thuốc bôi ngoài da", "type": "DONE", "diagnosis": "Viêm da tiếp xúc",
-      "prescription_text": "Thuốc bôi Fucidin", "treatment_orders": "Tránh tiếp xúc hóa chất",
-      "doctor_id": 4, "patient_id": 4
+      "id": 2,
+      "note": "Tiếp tục bôi thuốc, tránh nắng.",
+      "type": "DONE",
+      "diagnosis": "Viêm da tiếp xúc dị ứng",
+      "prescription_text": "Corticoid bôi ngoài da, thuốc kháng Histamine.",
+      "treatment_orders": "Dùng sữa tắm dịu nhẹ, không gãi.",
+      "doctor_id": 4,
+      "patient_id": 4
+    },
+    {
+      "id": 3,
+      "note": "Thai nhi phát triển bình thường.",
+      "type": "DONE",
+      "diagnosis": "Thai 12 tuần tuổi",
+      "prescription_text": "Sắt, Canxi và Vitamin tổng hợp.",
+      "treatment_orders": "Nghỉ ngơi, đi bộ nhẹ nhàng.",
+      "doctor_id": 5,
+      "patient_id": 6
     }
   ],
   "appointments": [
-    {"id": 1, "name": "Khám định kỳ", "note": "Huyết áp không ổn định", "status": "APPROVED", "appointment_date": "2026-03-20T08:30:00", "doctor_id": 1, "patient_id": 1, "medical_record_id": 1},
-    {"id": 2, "name": "Tư vấn tim mạch", "note": "Đau tức ngực trái", "status": "APPROVED", "appointment_date": "2026-03-24T14:00:00", "doctor_id": 2, "patient_id": 2, "medical_record_id": null},
-    {"id": 3, "name": "Khám nhi", "note": "Sốt cao về đêm", "status": "APPROVED", "appointment_date": "2026-03-23T09:00:00", "doctor_id": 3, "patient_id": 3, "medical_record_id": null},
-    {"id": 4, "name": "Khám da liễu", "note": "Ngứa và nổi mẩn đỏ", "status": "APPROVED", "appointment_date": "2026-03-25T15:00:00", "doctor_id": 4, "patient_id": 4, "medical_record_id": 2},
-    {"id": 5, "name": "Tái khám tim mạch", "note": "Đánh giá lại nhịp tim", "status": "APPROVED", "appointment_date": "2026-03-28T14:30:00", "doctor_id": 2, "patient_id": 2, "medical_record_id": null}
+    {
+      "id": 1,
+      "name": "Khám định kỳ",
+      "note": "Huyết áp thất thường",
+      "status": "COMPLETED",
+      "appointment_date": "2026-03-20T08:30:00",
+      "doctor_id": 1,
+      "patient_id": 1,
+      "medical_service_id": 1,
+      "medical_record_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Tư vấn tim mạch",
+      "note": "Thỉnh thoảng hụt hơi",
+      "status": "APPROVED",
+      "appointment_date": "2026-04-10T14:00:00",
+      "doctor_id": 2,
+      "patient_id": 2,
+      "medical_service_id": 2,
+      "medical_record_id": null
+    },
+    {
+      "id": 3,
+      "name": "Khám nhi",
+      "note": "Bé bị phát ban",
+      "status": "PENDING",
+      "appointment_date": "2026-04-12T09:30:00",
+      "doctor_id": 3,
+      "patient_id": 3,
+      "medical_service_id": 3,
+      "medical_record_id": null
+    },
+    {
+      "id": 4,
+      "name": "Khám da liễu",
+      "note": "Nổi mẩn ngứa sau khi dùng mỹ phẩm",
+      "status": "COMPLETED",
+      "appointment_date": "2026-03-25T15:00:00",
+      "doctor_id": 4,
+      "patient_id": 4,
+      "medical_service_id": 4,
+      "medical_record_id": 2
+    },
+    {
+      "id": 5,
+      "name": "Khám thai",
+      "note": "Khám sàng lọc quý 1",
+      "status": "COMPLETED",
+      "appointment_date": "2026-03-26T08:00:00",
+      "doctor_id": 5,
+      "patient_id": 6,
+      "medical_service_id": 5,
+      "medical_record_id": 3
+    },
+    {
+      "id": 6,
+      "name": "Tái khám tim",
+      "note": "Kiểm tra sau đặt stent",
+      "status": "CANCEL",
+      "appointment_date": "2026-04-05T15:00:00",
+      "doctor_id": 6,
+      "patient_id": 2,
+      "medical_service_id": 2,
+      "medical_record_id": null
+    },
+    {
+      "id": 7,
+      "name": "Khám tổng quát",
+      "note": "Test luồng gửi mail nhắc nhở hệ thống",
+      "status": "APPROVED",
+      "appointment_date": "2026-04-10T13:30:00",
+      "doctor_id": 1,
+      "patient_id": 7,
+      "medical_service_id": 1,
+      "medical_record_id": null
+    }
   ],
   "notifications": [
-    {"user_id": 6, "appointment_id": 1, "title": "Lịch hẹn mới", "message": "Lịch hẹn của bạn đã được duyệt", "is_read": false},
-    {"user_id": 3, "appointment_id": 1, "title": "Bệnh nhân mới", "message": "Bạn có 1 ca khám mới lúc 8:30", "is_read": true},
-    {"user_id": 10, "appointment_id": 4, "title": "Xác nhận khám", "message": "Lịch hẹn khám da liễu đã được xác nhận", "is_read": false},
-    {"user_id": 9, "appointment_id": 4, "title": "Lịch hẹn chiều", "message": "Bạn có lịch khám lúc 15:00", "is_read": true},
-    {"user_id": 7, "appointment_id": 5, "title": "Nhắc nhở tái khám", "message": "Vui lòng đến đúng giờ tái khám", "is_read": false}
+    {
+      "user_id": 6,
+      "appointment_id": 1,
+      "title": "Hoàn tất khám",
+      "message": "Bệnh án của bạn đã có trên hệ thống.",
+      "is_read": true,
+      "type": "SYSTEM",
+      "send_email": false,
+      "email_status": "NONE",
+      "created_at": "2024-04-09T08:30:00Z"
+    },
+    {
+      "user_id": 7,
+      "appointment_id": 2,
+      "title": "Lịch hẹn sắp tới",
+      "message": "Bạn có lịch khám tim mạch vào ngày 10/04.",
+      "is_read": false,
+      "type": "APPOINTMENT",
+      "send_email": true,
+      "email_status": "SENT",
+      "created_at": "2024-04-08T15:00:00Z"
+    },
+    {
+      "user_id": 3,
+      "appointment_id": null,
+      "title": "Báo cáo ngày",
+      "message": "Bạn đã hoàn thành 10 ca khám hôm nay.",
+      "is_read": true,
+      "type": "SYSTEM",
+      "send_email": false,
+      "email_status": "NONE",
+      "created_at": "2024-04-09T17:00:00Z"
+    },
+    {
+      "user_id": 14,
+      "appointment_id": 5,
+      "title": "Chúc mừng",
+      "message": "Kết quả sàng lọc thai nhi hoàn toàn bình thường.",
+      "is_read": false,
+      "type": "SYSTEM",
+      "send_email": true,
+      "email_status": "PENDING",
+      "created_at": "2024-04-09T10:15:00Z"
+    },
+    {
+      "user_id": 7,
+      "appointment_id": 6,
+      "title": "Hủy lịch",
+      "message": "Lịch hẹn ngày 05/04 đã bị hủy theo yêu cầu.",
+      "is_read": true,
+      "type": "APPOINTMENT",
+      "send_email": true,
+      "email_status": "SENT",
+      "created_at": "2024-04-04T09:00:00Z"
+    },
+    {
+      "user_id": 16,
+      "appointment_id": 7,
+      "title": "Lịch hẹn đã được tạo mới",
+      "message": "Lịch hẹn của bạn đã được tạo mới với Mã: 7.",
+      "is_read": false,
+      "type": "SYSTEM",
+      "send_email": true,
+      "email_status": "PENDING",
+      "created_at": "2026-04-09T13:25:00Z"
+    }
   ]
 }

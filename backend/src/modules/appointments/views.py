@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
 
-from src.middlewares.auth import token_required
+from src.middlewares.auth import auth_required
 from src.modules.appointments.services import (
     create_patient_appointment_service,
     create_receptionist_appointment_service, delete_appointment_service,
@@ -9,10 +9,11 @@ from src.modules.appointments.services import (
     get_patient_profile_service, patch_appointment_service)
 from src.utils.utils import check_xss_violation, format_api_response
 
-appointments_namespace = Namespace("appointments", description="Quản lý lịch hẹn")
+appointments_namespace = Namespace("appointments", description="Các API lịch hẹn")
 
 appointment_request_model = appointments_namespace.model('AppointmentRequest', {
     'doctorId': fields.Integer(required=True, description='ID của bác sĩ'),
+    'medicalServiceId': fields.Integer(required=True, description='ID của dịch vụ y tế'),
     'appointmentDate': fields.String(required=True, description='Thời gian hẹn (ISO 8601)'),
     'note': fields.String(description='Ghi chú hoặc triệu chứng ban đầu')
 })
@@ -25,6 +26,7 @@ patch_appointment_request_model = appointments_namespace.model('PatchAppointment
 
 receptionist_appointment_model = appointments_namespace.model('ReceptionistAppointmentRequest', {
     'doctorId': fields.Integer(required=True, description='ID của bác sĩ'),
+    'medicalServiceId': fields.Integer(required=True, description='ID của dịch vụ y tế'),
     'appointmentDate': fields.String(required=True, description='ISO 8601 format'),
     'note': fields.String(description='Ghi chú khám bệnh'),
     'firstName': fields.String(required=True),
@@ -37,7 +39,7 @@ receptionist_appointment_model = appointments_namespace.model('ReceptionistAppoi
 
 
 class AppointmentListCreateAPI(Resource):
-    method_decorators = [token_required]
+    method_decorators = [auth_required]
 
     @appointments_namespace.doc(security='api_key')
     def get(self, current_user):
@@ -63,7 +65,7 @@ class AppointmentListCreateAPI(Resource):
 
 
 class AppointmentRetrieveUpdateDeleteAPI(Resource):
-    method_decorators = [token_required]
+    method_decorators = [auth_required]
 
     @appointments_namespace.doc(security='api_key')
     def get(self, current_user, appointment_id):
@@ -93,7 +95,7 @@ class AppointmentRetrieveUpdateDeleteAPI(Resource):
 
 
 class PatientRetrieveAPI(Resource):
-    method_decorators = [token_required]
+    method_decorators = [auth_required]
 
     @appointments_namespace.doc(security='api_key')
     def get(self, current_user, appointment_id):
@@ -103,7 +105,7 @@ class PatientRetrieveAPI(Resource):
 
 
 class ReceptionistAppointmentCreateAPI(Resource):
-    method_decorators = [token_required]
+    method_decorators = [auth_required]
 
     @appointments_namespace.doc(security='api_key')
     @appointments_namespace.expect(receptionist_appointment_model)

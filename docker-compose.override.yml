@@ -1,0 +1,41 @@
+services:
+  frontend:
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  backend:
+    restart: unless-stopped
+    environment:
+      - FLASK_MODE=development
+    command: gunicorn --bind 0.0.0.0:8000 --reload --access-logfile - --error-logfile - src.index:app
+    volumes:
+      - ./backend/src:/app/src
+
+  db-migration:
+    command: bash -c "flask --app src.index:app db upgrade && python src/fixtures/fixtures.py"
+
+  db:
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT}:3306"
+
+  redis:
+    restart: unless-stopped
+
+  celery-beat:
+    restart: unless-stopped
+    volumes:
+      - ./backend/src:/app/src
+
+  email-worker:
+   restart: unless-stopped
+   volumes:
+      - ./backend/src:/app/src
+
+  rabbitmq:
+    restart: unless-stopped
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_ADMIN_PORT}:15672"
