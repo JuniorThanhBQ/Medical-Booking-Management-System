@@ -30,7 +30,6 @@ a {
   color: inherit;
 }
 
-/* Unified loading spinner */
 .app-loader {
   display: flex;
   flex-direction: column;

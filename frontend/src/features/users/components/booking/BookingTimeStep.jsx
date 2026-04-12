@@ -1,4 +1,4 @@
-import { toISODate, formatTimeDisplay } from "../../../../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "@utils/booking-utils";
 import { BookingPanelHeader } from "./BookingPanelHeader";
 
 export function BookingTimeStep({

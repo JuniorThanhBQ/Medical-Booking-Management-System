@@ -62,7 +62,6 @@
   justify-content: flex-end;
 }
 
-/* ── Search Card ───────────────────────────────────────── */
 .search-card {
   width: 100%;
   max-width: 480px;
@@ -78,7 +77,6 @@
   gap: 20px;
 }
 
-/* Header block */
 .search-card__header {
   display: flex;
   flex-direction: column;
@@ -102,7 +100,6 @@
   margin: 0;
 }
 
-/* Input + button row */
 .search-card__field-wrap {
   display: flex;
   flex-direction: column;
@@ -204,7 +201,6 @@
   height: 16px;
 }
 
-/* Loading spinner */
 .search-card__spinner {
   width: 15px;
   height: 15px;
@@ -297,7 +293,7 @@
 .dashboard-specialty-card__media {
   height: 190px;
   border-radius: 14px;
-  background: radial-gradient(circle at 20% 0, #38bdf8, #1d4ed8);
+  background: url("ou.png") center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;

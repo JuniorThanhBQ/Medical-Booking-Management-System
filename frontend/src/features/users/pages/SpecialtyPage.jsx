@@ -1,9 +1,9 @@
 import "@/assets/css/users/specialty.css";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getSpecialtyDetail } from "@/services/public-api-service";
+import { getSpecialtyDetail } from "@features/shared/services/public-api-service";
 import { isAuthenticated } from "@/utils/auth-helpers";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@features/shared/components/LoadingSpinner"
 
 export default function SpecialtyPage() {
   const { specialtyId } = useParams();

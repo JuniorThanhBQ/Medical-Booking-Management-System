@@ -4,8 +4,9 @@ import ProfileSidebar from '../components/ProfileSidebar';
 import ActivityView from '../components/activity/ActivityView';
 import Navbar from '../components/Navbar';
 import { TABS } from './ProfilePage';
-import { getActivityConfig } from '../../../utils/activity-config.js';
+import { getActivityConfig } from '@utils/activity-config.js';
 import { getUserToken } from '@/utils/auth-helpers';
+import { getProfileSidebarItems } from '@configs/const';
 import '@/assets/css/users/profile.css';
 
 const ActivityPage = () => {

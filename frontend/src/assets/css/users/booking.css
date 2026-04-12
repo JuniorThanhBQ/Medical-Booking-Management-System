@@ -218,6 +218,12 @@
   gap: 10px;
 }
 
+.booking__services {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .booking__doctor {
   border-radius: 14px;
   border: 1px solid var(--lp-border);
@@ -230,6 +236,32 @@
 .booking__doctor--selected {
   border-color: var(--lp-body);
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+.booking__service {
+  border-radius: 14px;
+  border: 1px solid var(--lp-border);
+  background: #ffffff;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.booking__service--selected {
+  border-color: var(--lp-body);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+.booking__service-name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--lp-heading);
+}
+
+.booking__service-price {
+  font-size: 0.8rem;
+  color: var(--lp-muted);
+  margin-top: 2px;
 }
 
 .booking__doctor-head {

@@ -3,7 +3,6 @@ import re
 from flask import current_app, request
 from flask_restx import Resource, fields
 
-from src.extensions import limiter
 from src.libs.email_validator import verify_email_existence
 from src.middlewares.auth import auth_required
 from src.modules.users import auth_namespace
@@ -52,8 +51,6 @@ email_validator_payload = auth_namespace.model('EmailValidatorInput', {
 
 
 class LoginAPI(Resource):
-    decorators = [limiter.limit("10 per minute")]
-
     @auth_namespace.expect(login_payload)
     def post(self):
         data = get_request_data(request)
@@ -75,8 +72,6 @@ class LoginAPI(Resource):
 
 
 class RegisterAPI(Resource):
-    decorators = [limiter.limit("10 per minute")]
-
     @auth_namespace.expect(register_payload)
     def post(self):
         data = get_request_data(request)
@@ -129,8 +124,6 @@ class RegisterAPI(Resource):
 
 
 class EmailValidatorAPI(Resource):
-    decorators = [limiter.limit("30 per minute")]
-
     @auth_namespace.expect(email_validator_payload)
     def post(self):
         data = get_request_data(request)

@@ -2,8 +2,9 @@ import { ROLE, APPOINTMENT_STATUS } from '@/configs/const';
 import {
   getAppointments,
   getAppointmentDetail,
-  getMedicalRecordDetail,
-} from '../features/users/services/appointment-api-service.js';
+  getMedicalRecordDetail,  
+} from '@features/users/services/appointment-api-service.js';
+import { fetchDoctorAppointments } from '@features/doctor/services/appointments-api.js';
 
 const ACTIVITY_FILTERS = [
   { key: 'all', label: 'Tất cả' },

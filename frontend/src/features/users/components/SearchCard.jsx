@@ -13,7 +13,6 @@ const SearchCard = ({ onSearch, searching }) => {
 
   return (
     <form className="search-card" onSubmit={handleSubmit}>
-      {/* Header */}
       <div className="search-card__header">
         <h3 className="search-card__title">Đặt lịch khám ngay</h3>
         <p className="search-card__desc">
@@ -21,7 +20,6 @@ const SearchCard = ({ onSearch, searching }) => {
         </p>
       </div>
 
-      {/* Search input */}
       <div className="search-card__field-wrap">
         <div className="search-card__input-group">
           <svg className="search-card__icon" viewBox="0 0 24 24" aria-hidden="true">

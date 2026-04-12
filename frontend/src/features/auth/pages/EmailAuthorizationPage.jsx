@@ -9,7 +9,7 @@ import {
   isValidEmail, isValidName, isValidPhone,
   isValidDateOfBirth, isValidGender,
   getPasswordErrors, containsXss,
-} from "../../../utils/validation.jsx";
+} from "@utils/validation.js";
 import { checkEmailExists, loginUser, registerUser, getCurrentUser } from "../services/authService.jsx";
 
 function getAuthPageMeta(authStep, mode, role) {

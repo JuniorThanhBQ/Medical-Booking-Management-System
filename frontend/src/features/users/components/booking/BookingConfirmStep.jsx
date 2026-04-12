@@ -1,7 +1,8 @@
-import { toISODate, formatTimeDisplay } from "../../../../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "@utils/booking-utils";
 
 export function BookingConfirmStep({
   specialtyName,
+  serviceName,
   selectedDate,
   selectedTime,
   selectedDoctorName,
@@ -22,6 +23,10 @@ export function BookingConfirmStep({
         <div className="booking__confirm-row">
           <span className="booking__confirm-label">Chuyên khoa</span>
           <span className="booking__confirm-value">{specialtyName}</span>
+        </div>
+        <div className="booking__confirm-row">
+          <span className="booking__confirm-label">Dịch vụ</span>
+          <span className="booking__confirm-value">{serviceName || "—"}</span>
         </div>
         <div className="booking__confirm-row">
           <span className="booking__confirm-label">Ngày</span>

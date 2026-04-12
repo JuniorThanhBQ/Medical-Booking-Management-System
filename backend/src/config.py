@@ -22,7 +22,6 @@ class Config:
     CACHE_REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
     CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", "240"))
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
-    RATELIMIT_STORAGE_URI = os.getenv("REDIS_URL", "memory://")
 
     RABBITMQ_USERNAME = os.getenv("RABBITMQ_USERNAME", "guest")
     RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")

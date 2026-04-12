@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import "@/assets/css/users/schedule.css";
-import Navbar from "../../users/components/Navbar";
+import Navbar from "@features/users/components/Navbar";
 import { useScheduleStore } from "../hooks/use-schedule-store";
 import SchedulePageHeader from "../components/SchedulePageHeader";
 import WeeklyScheduleCard from "../components/WeeklyScheduleCard";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@features/shared/components/LoadingSpinner"
 
 export default function SchedulePage() {
   const {

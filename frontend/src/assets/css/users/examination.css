@@ -36,7 +36,6 @@
   color: #2563eb;
 }
 
-/* Two-column layout */
 .exam-page__layout {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -44,7 +43,6 @@
   align-items: start;
 }
 
-/* Sidebar */
 .exam__sidebar {
   background: #f8fafc;
   border: 1px solid #e5e7eb;
@@ -65,7 +63,6 @@
   margin: 0 0 8px;
 }
 
-/* Patient notes */
 .exam__patient-notes {
   margin-top: 12px;
   padding: 10px 12px;
@@ -92,7 +89,6 @@
   word-break: break-word;
 }
 
-/* History accordion */
 .exam__history {
   margin-top: 20px;
 }
@@ -171,7 +167,6 @@
   margin: 0 0 4px;
 }
 
-/* Form */
 .exam__form {
   background: #fff;
   border: 1px solid #e5e7eb;
@@ -214,7 +209,6 @@
   cursor: not-allowed;
 }
 
-/* Treatment orders collapsible */
 .exam__treatment {
   margin-bottom: 16px;
 }
@@ -239,7 +233,6 @@
   background: #f1f5f9;
 }
 
-/* Actions */
 .exam__actions {
   display: flex;
   gap: 10px;
@@ -286,7 +279,6 @@
   border: 1px solid #16a34a33;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .exam-page__layout {
     grid-template-columns: 1fr;

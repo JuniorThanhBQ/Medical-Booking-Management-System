@@ -1,7 +1,8 @@
-import { toISODate, formatTimeDisplay } from "../../../../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "@utils/booking-utils";
 
 export function BookingSummary({
   specialtyName,
+  serviceName,
   selectedDate,
   selectedTime,
   selectedDoctorName,
@@ -13,6 +14,10 @@ export function BookingSummary({
         <div className="booking__summary-row">
           <span className="booking__summary-label">Chuyên khoa</span>
           <span className="booking__summary-value">{specialtyName}</span>
+        </div>
+        <div className="booking__summary-row">
+          <span className="booking__summary-label">Dịch vụ</span>
+          <span className="booking__summary-value">{serviceName || "—"}</span>
         </div>
         <div className="booking__summary-row">
           <span className="booking__summary-label">Ngày</span>
@@ -33,7 +38,7 @@ export function BookingSummary({
         <div className="booking__summary-foot">
           <div className="booking__summary-foot-title">Quy trình</div>
           <div className="booking__summary-foot-desc">
-            Chọn ngày → thời gian → bác sĩ → xác nhận.
+            Chọn dịch vụ → bác sĩ → ngày → thời gian → xác nhận.
           </div>
         </div>
       </div>

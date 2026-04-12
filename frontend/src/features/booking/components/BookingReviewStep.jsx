@@ -14,7 +14,6 @@ export function BookingReviewStep({
 }) {
   return (
     <div className="booking__confirm-layout">
-      {/* ===== LEFT: CONFIRM ===== */}
       <div className="booking__step-panel">
         <h2 className="booking__panel-title">Xác nhận thông tin</h2>
         <p className="booking__panel-subtitle">
@@ -82,7 +81,6 @@ export function BookingReviewStep({
         </div>
       </div>
 
-      {/* ===== RIGHT: SUMMARY ===== */}
       <aside className="booking__summary">
         <div className="booking__summary-card">
           <div className="booking__summary-title">Đặt lịch</div>

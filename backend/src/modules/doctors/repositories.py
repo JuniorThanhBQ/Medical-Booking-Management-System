@@ -27,7 +27,7 @@ def get_specialty_by_id(specialty_id):
     return Specialty.query.filter(Specialty.id == specialty_id).first()
 
 
-def get_paginated_medical_services(page, per_page, keywords=None, specialty_id=None):
+def get_paginated_medical_services(page, per_page=5, keywords=None, specialty_id=None):
     query = MedicalService.query
     if keywords:
         search = f"%{keywords}%"

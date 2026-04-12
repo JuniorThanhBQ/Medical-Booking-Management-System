@@ -55,7 +55,7 @@ class PublicSpecialtyListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên chuyên khoa cần lọc'})
     def get(self):
         page = request.args.get("page", 1, type=int)
-        per_page = request.args.get("limit", 10, type=int)
+        per_page = request.args.get("limit", 5, type=int)
         keywords = request.args.get("keywords", type=str)
 
         data, message = get_specialties_service(
@@ -77,7 +77,7 @@ class PublicMedicalServiceListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên dịch vụ cần tìm', 'specialtyId': 'ID Chuyên khoa'})
     def get(self):
         page = request.args.get("page", 1, type=int)
-        per_page = request.args.get("limit", 10, type=int)
+        per_page = request.args.get("limit", 5, type=int)
         keywords = request.args.get("keywords", type=str)
         specialty_id = request.args.get("specialtyId", type=int)
 
@@ -102,7 +102,7 @@ class PublicDoctorListAPI(Resource):
         , 'workDates': 'Các ngày làm việc'})
     def get(self):
         page = request.args.get("page", 1, type=int)
-        per_page = request.args.get("limit", 10, type=int)
+        per_page = request.args.get("limit", 5, type=int)
         keywords = request.args.get("keywords", type=str)
         specialty_id = request.args.get("specialtyId", type=int)
         work_dates = request.args.getlist("workDates", type=int)

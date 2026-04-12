@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import "@/assets/css/users/dashboard.css";
 import Navbar from "../components/Navbar";
-import { getSpecialties } from "@/services/public-api-service";
+import { getSpecialties } from "@features/shared/services/public-api-service";
 import SpecialtyCard from "../components/SpecialtyCard";
 import DashboardHero from "../components/DashboardHero";
 import { useNavigate } from "react-router-dom";
 import { useDashboardSearch } from "../hooks/use-dashboard-search";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@features/shared/components/LoadingSpinner"
 
 const Dashboard = () => {
   const navigate = useNavigate();

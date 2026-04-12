@@ -8,7 +8,7 @@ from flask_cors import CORS
 
 import src.modules.notification.rabbitmq  # noqa: F401
 from src.admin import init_admin
-from src.extensions import cache, celery_app, db, limiter, login, mail, migrate
+from src.extensions import cache, celery_app, db, login, mail, migrate
 from src.middlewares.middlewares import middlewares
 from src.routes import api_v1
 
@@ -66,7 +66,6 @@ def create_app():
     migrate.init_app(app, db)
     login.init_app(app)
     init_admin(app, db)
-    limiter.init_app(app)
     cache.init_app(app)
     mail.init_app(app)
     init_celery(app, celery_app)

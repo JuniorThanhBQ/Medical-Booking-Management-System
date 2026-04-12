@@ -1,6 +1,7 @@
 export const STEPS = [
-  { id: "day", label: "Ngày" },
+  { id: "service", label: "Dịch vụ" },
   { id: "doctor", label: "Bác sĩ" },
+  { id: "day", label: "Ngày" },
   { id: "time", label: "Thời gian" },
   { id: "confirm", label: "Xác nhận" },
 ];

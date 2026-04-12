@@ -1,5 +1,5 @@
 from src.modules.doctors.models import (DoctorProfile, Specialty, WorkDate,
-                                        WorkSchedule)
+                                        WorkSchedule, MedicalService)
 from src.modules.users.admin import AdminModelView, account_profile_label
 
 
@@ -20,4 +20,6 @@ def doctor(admin, db):
     admin.add_view(DoctorProfileView(DoctorProfile, db.session,
                                      category=account_profile_label, name='Hồ sơ Bác sĩ'))
     admin.add_view(AdminModelView(Specialty, db.session,
-                                  name='Chuyên khoa'))
+                                  category='Chuyên khoa và dịch vụ', name='Chuyên khoa'))
+    admin.add_view(AdminModelView(MedicalService, db.session,
+                                  category='Chuyên khoa và dịch vụ', name='Dịch vụ y tế'))

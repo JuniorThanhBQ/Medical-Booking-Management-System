@@ -16,7 +16,7 @@ import {
   toMedicalRecordPayload,
   toPatient,
   toRecordHistory,
-} from "../../../utils/examination-utils.js";
+} from "@utils/examination-utils.js";
 
 function loadPersistedState() {
   const parsed = getExamStore();

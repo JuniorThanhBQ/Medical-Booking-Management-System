@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { APPOINTMENT_STATUS, getStatusLabel } from "@/configs/const";
-import { getAge } from "@/utils/utils.jsx";
+import { getAge } from "@/utils/Utils.js";
 
 export default function PatientCard({ appointment, patient, lastRecord }) {
   const navigate = useNavigate();

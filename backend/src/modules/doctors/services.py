@@ -138,7 +138,7 @@ def request_schedule_change_service(current_user, data):
 
 
 @handle_db_errors
-def get_specialties_service(page=1, per_page=10, keywords=None):
+def get_specialties_service(page=1, per_page=5, keywords=None):
     pagination = get_paginated_specialties(page, per_page, keywords)
     items = [format_speciality_output(specialty) for specialty in pagination.items]
 
@@ -157,7 +157,7 @@ def get_specialties_service(page=1, per_page=10, keywords=None):
 
 
 @handle_db_errors
-def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None, work_dates=None):
+def get_doctors_service(page=1, per_page=5, keywords=None, specialty_id=None, work_dates=None):
     pagination = get_paginated_doctors(page, per_page, keywords, specialty_id, work_days=work_dates)
     items = []
 
@@ -189,8 +189,8 @@ def get_doctors_service(page=1, per_page=10, keywords=None, specialty_id=None, w
 
 
 @handle_db_errors
-def get_medical_services_service(page=1, per_page=10, keywords=None, specialty_id=None):
-    pagination = get_paginated_medical_services(page, per_page, keywords, specialty_id)
+def get_medical_services_service(page=1, per_page=5, keywords=None, specialty_id=None):
+    pagination = get_paginated_medical_services(page, per_page=per_page, keywords=keywords, specialty_id=specialty_id)
     items = [{
         "id": service.id,
         "name": service.name,

@@ -2,6 +2,7 @@ export { BookingNotFoundView } from "./BookingNotFoundView";
 export { BookingSuccessView } from "./BookingSuccessView";
 export { BookingStepper } from "./BookingStepper";
 export { BookingStepNav } from "./BookingStepNav";
+export { BookingServiceStep } from "./BookingServiceStep";
 export { BookingDayStep } from "./BookingDayStep";
 export { BookingTimeStep } from "./BookingTimeStep";
 export { BookingDoctorStep } from "./BookingDoctorStep";

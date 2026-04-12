@@ -4,11 +4,12 @@ import { useEffect, useMemo } from "react";
 import { useBookingStore } from "../hooks/use-booking-store";
 import { STEPS, toISODate } from "@/utils/booking-utils.js";
 import { AVAILABLE_BOOKING_DAYS } from "@/configs/const";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@features/shared/components/LoadingSpinner"
 import {
   BookingNotFoundView,
   BookingSuccessView,
   BookingStepper,
+  BookingServiceStep,
   BookingDayStep,
   BookingTimeStep,
   BookingDoctorStep,
@@ -21,9 +22,9 @@ export default function BookAppointmentPage() {
   const navigate = useNavigate();
 
   const {
-    stepIndex, selectedDate, selectedTime, selectedDoctorId, patientNotes, confirmed,
-    specialty, doctors, timeSlots, loading, timeSlotsLoading, fetchError, submitting, submitError,
-    setSelectedDate, setSelectedTime, setSelectedDoctorId, setPatientNotes,
+    stepIndex, selectedMedicalServiceId, selectedDate, selectedTime, selectedDoctorId, patientNotes, confirmed,
+    specialty, medicalServices, doctors, timeSlots, loading, timeSlotsLoading, fetchError, submitting, submitError,
+    setSelectedMedicalServiceId, setSelectedDate, setSelectedTime, setSelectedDoctorId, setPatientNotes,
     goToStep, increaseStepIndex, resetBooking, confirmBooking,
     fetchSpecialtyAndDoctors, fetchTimeSlots,
   } = useBookingStore();
@@ -38,13 +39,13 @@ export default function BookAppointmentPage() {
   }, [specialtyId]);
 
   useEffect(() => {
-    if (!selectedDoctorId || !selectedDate) return;
+    if (!selectedDoctorId || !selectedDate || !selectedMedicalServiceId) return;
     let cancelled = false;
-    fetchTimeSlots(selectedDoctorId, toISODate(selectedDate)).then(() => {
+    fetchTimeSlots(selectedDoctorId, toISODate(selectedDate), selectedMedicalServiceId).then(() => {
       if (cancelled) return;
     });
     return () => { cancelled = true; };
-  }, [selectedDoctorId, selectedDate]);
+  }, [selectedDoctorId, selectedDate, selectedMedicalServiceId]);
 
   const availableDays = useMemo(() => {
     const base = new Date();
@@ -58,15 +59,23 @@ export default function BookAppointmentPage() {
     return days;
   }, []);
 
+  const selectedService = useMemo(
+    () => medicalServices.find((s) => s.id === selectedMedicalServiceId) ?? null,
+    [medicalServices, selectedMedicalServiceId],
+  );
+
   const selectedDoctor = useMemo(
     () => doctors.find((d) => d.id === selectedDoctorId) ?? null,
     [doctors, selectedDoctorId],
   );
 
   const handleConfirm = () => {
+    if (!selectedMedicalServiceId || !selectedDoctorId || !selectedDate || !selectedTime) {
+      return;
+    }
     confirmBooking({
       doctorId: selectedDoctorId,
-      date: selectedDate ? toISODate(selectedDate) : null,
+      medicalServiceId: selectedMedicalServiceId,
       time: selectedTime,
       notes: patientNotes.trim() || "",
     });
@@ -105,7 +114,7 @@ export default function BookAppointmentPage() {
               </Link>
               <h1 className="booking__title">Đặt lịch khám</h1>
               <p className="booking__subtitle">
-                Chọn ngày, bác sĩ, giờ và xác nhận đầy đủ thông tin.
+                Chọn dịch vụ, bác sĩ, ngày, giờ và xác nhận đầy đủ thông tin.
               </p>
             </div>
             <BookingStepper stepIndex={stepIndex} onGoToStep={goToStep} />
@@ -113,7 +122,14 @@ export default function BookAppointmentPage() {
 
           <div className="booking__grid">
             <div className="booking__panel">
-              {/* eslint-disable-next-line security/detect-object-injection */}
+              {STEPS[stepIndex]?.id === "service" && (
+                <BookingServiceStep
+                  medicalServices={medicalServices}
+                  selectedMedicalServiceId={selectedMedicalServiceId}
+                  onSelectService={setSelectedMedicalServiceId}
+                  onNext={increaseStepIndex}
+                />
+              )}
               {STEPS[stepIndex]?.id === "day" && (
                 <BookingDayStep
                   availableDays={availableDays}
@@ -122,7 +138,6 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
-              {/* eslint-disable-next-line security/detect-object-injection */}
               {STEPS[stepIndex]?.id === "doctor" && (
                 <BookingDoctorStep
                   doctorsForSpecialty={doctors}
@@ -133,7 +148,6 @@ export default function BookAppointmentPage() {
                   onNext={increaseStepIndex}
                 />
               )}
-              {/* eslint-disable-next-line security/detect-object-injection */}
               {STEPS[stepIndex]?.id === "time" && (
                 <BookingTimeStep
                   timeSlots={timeSlots}
@@ -144,10 +158,10 @@ export default function BookAppointmentPage() {
                   loading={timeSlotsLoading}
                 />
               )}
-              {/* eslint-disable-next-line security/detect-object-injection */}
               {STEPS[stepIndex]?.id === "confirm" && (
                 <BookingConfirmStep
                   specialtyName={specialty.name}
+                  serviceName={selectedService ? selectedService.name : null}
                   selectedDate={selectedDate}
                   selectedTime={selectedTime}
                   selectedDoctorName={selectedDoctor ? `${selectedDoctor.firstName} ${selectedDoctor.lastName}` : null}
@@ -155,7 +169,7 @@ export default function BookAppointmentPage() {
                   onPatientNotesChange={setPatientNotes}
                   onConfirm={handleConfirm}
                   onGoToStep={goToStep}
-                  canConfirm={Boolean(selectedDate && selectedTime && selectedDoctorId)}
+                  canConfirm={Boolean(selectedMedicalServiceId && selectedDate && selectedTime && selectedDoctorId)}
                   submitting={submitting}
                   submitError={submitError}
                 />
@@ -163,6 +177,7 @@ export default function BookAppointmentPage() {
             </div>
 
             <BookingSummary
+              serviceName={selectedService ? selectedService.name : null}
               specialtyName={specialty.name}
               selectedDate={selectedDate}
               selectedTime={selectedTime}

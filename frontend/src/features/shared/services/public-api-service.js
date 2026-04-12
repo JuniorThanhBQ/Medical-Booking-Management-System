@@ -23,9 +23,19 @@ export const getDoctorDetail = async (doctorId) => {
   return res.data;
 };
 
-export const getTimeSlots = async (doctorId, date) => {
+export const getMedicalServices = async (params = {}) => {
+  const res = await Apis.get(endpoints.public_medical_services, { params });
+  return res.data.data.items ?? [];
+};
+
+export const getMedicalServiceDetail = async (serviceId) => {
+  const res = await Apis.get(endpoints.public_medical_service_detail(serviceId));
+  return res.data;
+};
+
+export const getTimeSlots = async (doctorId, date, serviceId) => {
   const res = await Apis.get(endpoints.public_doctor_time_slots(doctorId), {
-    params: { date },
+    params: { date, serviceId },
   });
   return res.data ?? [];
 };

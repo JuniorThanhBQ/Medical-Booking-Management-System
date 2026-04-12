@@ -28,7 +28,6 @@
   color: #6b7280;
 }
 
-/* Filter tabs */
 .today-patients__filters {
   display: flex;
   gap: 8px;
@@ -57,7 +56,6 @@
   border-color: var(--lp-primary, #2563eb);
 }
 
-/* Patient card list */
 .today-patients__list {
   display: flex;
   flex-direction: column;
@@ -71,7 +69,6 @@
   font-size: 14px;
 }
 
-/* Patient card */
 .today-patients__card {
   background: #fff;
   border: 1px solid #e5e7eb;
@@ -121,7 +118,6 @@
   white-space: nowrap;
 }
 
-/* History snippet */
 .today-patients__card-history {
   font-size: 12px;
   color: #6b7280;
@@ -131,7 +127,6 @@
   white-space: nowrap;
 }
 
-/* Status badge */
 .today-patients__card-footer {
   display: flex;
   justify-content: flex-end;
@@ -176,7 +171,6 @@
   border-color: #b91c1c33;
 }
 
-/* IN_PROGRESS card — visually prominent & larger */
 .today-patients__card--in-progress {
   border-radius: 16px;
   padding: 22px 24px;

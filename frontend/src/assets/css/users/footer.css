@@ -3,7 +3,7 @@
 .site-footer {
   background: #fff;
   border-top: 1px solid var(--lp-border);
-  padding-top: 72px;
+  padding-top: 52px;
   position: relative;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .site-footer__inner.lp-container {
-  padding-bottom: 64px;
+  padding-bottom: 52px;
 }
 
 .site-footer__brand {
@@ -27,6 +27,8 @@
 .site-footer__logo {
   display: inline-flex;
   align-items: center;
+  padding: 0;
+  margin: 0;
   gap: 10px;
   text-decoration: none;
   font-family: var(--lp-font-heading);
@@ -39,6 +41,7 @@
   font-size: 0.875rem;
   color: var(--lp-muted);
   margin: 0;
+  text-align: justify;
 }
 
 .site-footer__tagline a {

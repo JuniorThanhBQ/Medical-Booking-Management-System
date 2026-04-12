@@ -17,7 +17,7 @@ from src.utils.handle_db_errors import handle_db_errors
 
 
 @handle_db_errors
-def get_appointments_list_service(current_user, page=1, per_page=10):
+def get_appointments_list_service(current_user, page=1, per_page=5):
     role_name = current_user.role.name
     query = get_appointments_base_query()
 

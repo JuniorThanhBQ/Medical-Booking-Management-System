@@ -1,4 +1,4 @@
-import { STEPS } from "../../../../utils/booking-utils";
+import { STEPS } from "@utils/booking-utils";
 
 export function BookingStepper({ stepIndex, onGoToStep }) {
   return (

@@ -9,7 +9,7 @@ from src.modules.notification.models import DeliveryStatus, Notification
 from src.modules.users.models import PatientProfile, User
 
 
-def get_paginated_by_user_id(user_id, page=1, per_page=10):
+def get_paginated_by_user_id(user_id, page=1, per_page=5):
     return (Notification.query.filter_by(user_id=user_id).order_by(desc("created_date")).
             paginate(page=page, per_page=per_page, error_out=False))
 
