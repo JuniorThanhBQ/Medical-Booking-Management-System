@@ -1,7 +1,7 @@
 import { AuthApis, endpoints } from "@/configs/Apis";
 import {
   normalizeMedicalRecord,
-} from "../utils/examination-utils";
+} from "@/utils/examination-utils.js";
 
 export async function getAppointmentDetail(token, appointmentId) {
   const response = await AuthApis(token).get(endpoints.appointment_detail(appointmentId));

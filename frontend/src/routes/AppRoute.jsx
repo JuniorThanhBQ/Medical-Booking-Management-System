@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "../features/users/pages/LandingPage.jsx";
-import AuthPage from "../features/auth/pages/sigin/AuthPage.jsx";
+import AuthPage from "../features/auth/pages/AuthPage.jsx";
 import Dashboard from "../features/users/pages/Dashboard.jsx";
 import TodayPatientsPage from "../features/doctor/pages/TodayPatientsPage.jsx";
 import SchedulePage from "../features/doctor/pages/SchedulePage.jsx";

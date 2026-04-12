@@ -1,4 +1,4 @@
-import { getAge } from "@/utils/utils";
+import { getAge } from "@/utils/utils.jsx";
 
 export const EMPTY_FORM = {
   diagnosis: "",

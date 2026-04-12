@@ -3,7 +3,7 @@ import { BellIcon } from "@/assets/icons";
 import "@/assets/css/users/navbar.css";
 import { DEFAULT_MENU_ITEMS } from "@/configs/const";
 import { handleLogout } from "../../auth/services/authService.jsx";
-import { getRoleNavLinks, getRoleMenuItems } from "@/utils/utils";
+import { getRoleNavLinks, getRoleMenuItems } from "@/utils/utils.jsx";
 import { isAuthenticated } from "@/utils/auth-helpers";
 
 export default function Navbar() {

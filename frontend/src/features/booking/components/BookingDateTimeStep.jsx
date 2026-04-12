@@ -2,7 +2,7 @@ import {
   formatDayLabel,
   toISODate,
   formatTimeDisplay,
-} from "../utils/booking-utils";
+} from "@/utils/booking-utils.js";
 import { BookingPanelHeader } from "./BookingPanelHeader";
 
 export function BookingDateTimeStep({

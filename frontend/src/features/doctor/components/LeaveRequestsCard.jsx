@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchAppointmentsInDay } from "../api/appointments-api";
+import { fetchAppointmentsInDay } from "../services/appointments-api.js";
 import { getStatusLabel } from "@/configs/const";
 import { TYPE_OPTIONS, REASON_OPTIONS } from "@/configs/const";
 import AppointmentsPreviewModal from "./AppointmentModal";

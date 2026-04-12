@@ -9,14 +9,14 @@ import {
   getAppointmentPatientProfile,
   getMedicalRecordDetail,
   updateMedicalRecord,
-} from "../api/examination-api";
+} from "../services/examination-api.js";
 import {
   EMPTY_FORM,
   toExamFormData,
   toMedicalRecordPayload,
   toPatient,
   toRecordHistory,
-} from "../utils/examination-utils";
+} from "../../../utils/examination-utils.js";
 
 function loadPersistedState() {
   const parsed = getExamStore();

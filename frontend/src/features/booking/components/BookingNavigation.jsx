@@ -1,4 +1,4 @@
-import { STEPS } from "../utils/booking-utils";
+import { STEPS } from "@/utils/booking-utils.js";
 
 export function BookingNavigation({
   stepIndex,

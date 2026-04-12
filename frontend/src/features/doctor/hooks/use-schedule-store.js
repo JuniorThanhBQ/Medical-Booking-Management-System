@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { generateTimeOptions } from "../utils";
-import { fetchMySchedule, submitScheduleRequest } from "../api/schedule-api-service";
+import { generateTimeOptions } from "../../../utils/Utils.js";
+import { fetchMySchedule, submitScheduleRequest } from "../services/schedule-api-service.js";
 
 const DEFAULT_WORK_DATE = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
 const DEFAULT_START = "09:00";

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { STEPS } from "../utils/booking-utils";
+import { STEPS } from "@/utils/booking-utils.js";
 import { getSpecialtyDetail, getDoctors, getTimeSlots } from "@/services/public-api-service";
 import { getUserToken } from "@/utils/auth-helpers";
 import { createAppointment } from "@/features/users/services/appointment-api-service";

@@ -3,7 +3,7 @@ import {
   getAppointments,
   getAppointmentDetail,
   getMedicalRecordDetail,
-} from '../../users/services/appointment-api-service.js';
+} from '../features/users/services/appointment-api-service.js';
 
 const PATIENT_FILTERS = [
   { key: 'all', label: 'Tất cả' },

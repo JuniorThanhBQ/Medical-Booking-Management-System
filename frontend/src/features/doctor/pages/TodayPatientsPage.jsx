@@ -4,7 +4,7 @@ import Navbar from "../../medical_records/components/Navbar.jsx";
 import { APPOINTMENT_STATUS } from "@/configs/const";
 import { useExamStore } from "../hooks/use-exam-store";
 import PatientCard from "../components/PatientCard";
-import { fetchDoctorTodayPatients } from "../api/appointments-api";
+import { fetchDoctorTodayPatients } from "../services/appointments-api.js";
 import { getUserToken } from "@/utils/auth-helpers";
 
 const FILTER_TABS = [

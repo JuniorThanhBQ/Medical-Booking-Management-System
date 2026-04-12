@@ -1,4 +1,4 @@
-import { getStatusClassName } from "../../../users/utils/profile-utils.js";
+import { getStatusClassName } from "@/utils/profile-utils.js";
 import { getStatusLabel } from "@/configs/const";
 import { MedicalFileIcon, DoctorIcon } from "@/assets/icons";
 

@@ -1,4 +1,4 @@
-import { toISODate, formatTimeDisplay } from "../utils/booking-utils";
+import { toISODate, formatTimeDisplay } from "@/utils/booking-utils.js";
 
 export function BookingReviewStep({
   specialtyName,

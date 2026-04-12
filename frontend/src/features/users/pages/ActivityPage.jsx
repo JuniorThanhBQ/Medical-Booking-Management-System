@@ -4,7 +4,7 @@ import ProfileSidebar from '../components/ProfileSidebar';
 import ActivityView from '../components/activity/ActivityView';
 import Navbar from '../../medical_records/components/Navbar.jsx';
 import { TABS } from './ProfilePage';
-import { getActivityConfig } from '../../booking/utils/activity-config';
+import { getActivityConfig } from '../../../utils/activity-config.js';
 import { getUserToken } from '@/utils/auth-helpers';
 import '@/assets/css/users/profile.css';
 
