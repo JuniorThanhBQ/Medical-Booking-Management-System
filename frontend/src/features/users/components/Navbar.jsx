@@ -1,23 +1,44 @@
-import { useNavbarMenu } from "../hooks/use-navbar-menu";
-import { BellIcon } from "@/assets/icons";
-import "@/assets/css/users/navbar.css";
+import "@css/shared/navbar.css";
+
+import { useEffect, useState } from "react";
+
 import { DEFAULT_MENU_ITEMS } from "@/configs/const";
-import { handleLogout } from "@features/auth/services/authService.jsx";
-import { getRoleNavLinks, getRoleMenuItems } from "@/utils/Utils.js";
-import { isAuthenticated } from "@/utils/auth-helpers";
+import useAuth from "@/contexts/auth/AuthContext";
+import NotificationBell from "@/features/notifications/components/NotificationBell";
+import { getRoleMenuItems, getRoleNavLinks } from "@/utils/Utils.js";
+
+import { useNavbarMenu } from "../hooks/useNavbarMenu";
 
 export default function Navbar() {
   const { scrolled, menuOpen, menuRef, toggleMenu, closeMenu } =
     useNavbarMenu();
 
-  const isLoggedIn = isAuthenticated();
+  const { accessToken, user, logout } = useAuth();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
-  const allNavLinks = getRoleNavLinks();
+  useEffect(() => {
+    if (shouldRedirect) {
+      window.location.href = "/";
+    }
+  }, [shouldRedirect]);
+
+  const isLoggedIn = Boolean(accessToken);
+  const allNavLinks = getRoleNavLinks(user?.role);
   const homeLink = allNavLinks[0];
-  const menuItems = isLoggedIn ? getRoleMenuItems() : [];
+  const menuItems = isLoggedIn ? getRoleMenuItems(user?.role) : [];
   const divider = menuItems.length > 0 ? [{ type: "divider" }] : [];
   const actionItems = isLoggedIn
-    ? [{ label: "Đăng xuất", isLogout: true, danger: true, onClick: handleLogout }]
+    ? [
+        {
+          label: "Đăng xuất",
+          isLogout: true,
+          danger: true,
+          onClick: async () => {
+            await logout();
+            setShouldRedirect(true);
+          },
+        },
+      ]
     : DEFAULT_MENU_ITEMS;
   const resolvedMenuItems = [...menuItems, ...divider, ...actionItems];
 
@@ -26,19 +47,13 @@ export default function Navbar() {
       <header className="navbar-pill">
         {homeLink && (
           <nav className="navbar__nav">
-            <a href={homeLink.href} className="navbar__link">{homeLink.label}</a>
+            <a href={homeLink.href} className="navbar__link">
+              {homeLink.label}
+            </a>
           </nav>
         )}
         <div className="navbar__actions">
-          {isLoggedIn && (
-            <button
-              type="button"
-              className="navbar__icon-button"
-              aria-label="Thông báo"
-            >
-              <BellIcon className="navbar__icon" aria-hidden="true" />
-            </button>
-          )}
+          {isLoggedIn && <NotificationBell />}
 
           <div className="navbar__menu-wrapper" ref={menuRef}>
             <button
@@ -66,8 +81,9 @@ export default function Navbar() {
                       <button
                         key={item.label}
                         type="button"
-                        className={`navbar__menu-item${item.danger ? " navbar__menu-item--danger" : ""
-                          }`}
+                        className={`navbar__menu-item${
+                          item.danger ? " navbar__menu-item--danger" : ""
+                        }`}
                         onClick={() => {
                           closeMenu();
                           item.onClick();
@@ -82,8 +98,9 @@ export default function Navbar() {
                     <a
                       key={item.label}
                       href={item.href}
-                      className={`navbar__menu-item${item.danger ? " navbar__menu-item--danger" : ""
-                        }`}
+                      className={`navbar__menu-item${
+                        item.danger ? " navbar__menu-item--danger" : ""
+                      }`}
                       onClick={closeMenu}
                     >
                       {item.label}

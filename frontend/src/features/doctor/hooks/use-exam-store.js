@@ -1,15 +1,3 @@
-import { create } from "zustand";
-import { EXAM_STATUS } from "@/configs/const";
-import { mockMedicalRecords } from "@/data/mocks/patients";
-import { getExamStore, setExamStore } from "@/repository/local-storage-repository";
-import { getUserToken } from "@/utils/auth-helpers";
-import {
-  createMedicalRecordForAppointment,
-  getAppointmentDetail,
-  getAppointmentPatientProfile,
-  getMedicalRecordDetail,
-  updateMedicalRecord,
-} from "../services/examination-api.js";
 import {
   EMPTY_FORM,
   toExamFormData,
@@ -17,6 +5,21 @@ import {
   toPatient,
   toRecordHistory,
 } from "@utils/examination-utils.js";
+import { create } from "zustand";
+
+import { EXAM_STATUS } from "@/configs/const";
+import {
+  getExamStore,
+  setExamStore,
+} from "@/repository/local-storage-repository";
+
+import {
+  createMedicalRecordForAppointment,
+  getAppointmentDetail,
+  getAppointmentPatientProfile,
+  getMedicalRecordDetail,
+  updateMedicalRecord,
+} from "../services/examination-api.js";
 
 function loadPersistedState() {
   const parsed = getExamStore();
@@ -26,8 +29,8 @@ function loadPersistedState() {
 function persistState(state) {
   const draftRecords = Object.fromEntries(
     Object.entries(state.records).filter(
-      ([_, r]) => r.status === EXAM_STATUS.DRAFT
-    )
+      ([, r]) => r.status === EXAM_STATUS.DRAFT,
+    ),
   );
   setExamStore({ records: draftRecords });
 }
@@ -76,12 +79,13 @@ export const useExamStore = create((set, get) => ({
     patchExamination(set, { ...initialState.examination });
   },
 
-  refreshMedicalRecordData: async (appointmentId, currentAppointment = null) => {
-    const token = getUserToken();
-    if (!token) throw new Error("missing-token");
-
+  refreshMedicalRecordData: async (
+    api,
+    appointmentId,
+    currentAppointment = null,
+  ) => {
     const appointmentDetail =
-      currentAppointment || (await getAppointmentDetail(token, appointmentId));
+      currentAppointment || (await getAppointmentDetail(api, appointmentId));
     patchExamination(set, { appointment: appointmentDetail });
 
     if (!appointmentDetail?.medicalRecordId) {
@@ -93,7 +97,10 @@ export const useExamStore = create((set, get) => ({
       return null;
     }
 
-    const record = await getMedicalRecordDetail(token, appointmentDetail.medicalRecordId);
+    const record = await getMedicalRecordDetail(
+      api,
+      appointmentDetail.medicalRecordId,
+    );
     patchExamination(set, {
       formData: toExamFormData(record),
       history: toRecordHistory(record),
@@ -103,12 +110,11 @@ export const useExamStore = create((set, get) => ({
     return { appointmentDetail, record };
   },
 
-  loadExamination: async (appointmentId) => {
-    const token = getUserToken();
-    if (!token) {
+  loadExamination: async (api, appointmentId) => {
+    if (!appointmentId) {
       patchExamination(set, {
         loading: false,
-        error: "Không tìm thấy phiên đăng nhập. Vui lòng đăng nhập lại.",
+        error: "Có vấn đề trong lấy lịch hẹn",
         appointment: null,
       });
       return;
@@ -118,8 +124,8 @@ export const useExamStore = create((set, get) => ({
 
     try {
       const [appointmentDetail, profile] = await Promise.all([
-        getAppointmentDetail(token, appointmentId),
-        getAppointmentPatientProfile(token, appointmentId),
+        getAppointmentDetail(api, appointmentId),
+        getAppointmentPatientProfile(api, appointmentId),
       ]);
 
       patchExamination(set, {
@@ -128,7 +134,11 @@ export const useExamStore = create((set, get) => ({
       });
 
       if (appointmentDetail?.medicalRecordId) {
-        await get().refreshMedicalRecordData(appointmentId, appointmentDetail);
+        await get().refreshMedicalRecordData(
+          api,
+          appointmentId,
+          appointmentDetail,
+        );
       } else {
         const local = get().getRecord(appointmentId);
         patchExamination(set, {
@@ -147,12 +157,26 @@ export const useExamStore = create((set, get) => ({
     }
   },
 
-  saveDraftToServer: async (appointmentId, doctorName) => {
-    await saveOrCompleteExam({ appointmentId, doctorName, mode: "draft", set, get });
+  saveDraftToServer: async (api, appointmentId, doctorName) => {
+    await saveOrCompleteExam({
+      api,
+      appointmentId,
+      doctorName,
+      mode: "draft",
+      set,
+      get,
+    });
   },
 
-  completeExamToServer: async (appointmentId, doctorName) => {
-    await saveOrCompleteExam({ appointmentId, doctorName, mode: "complete", set, get });
+  completeExamToServer: async (api, appointmentId, doctorName) => {
+    await saveOrCompleteExam({
+      api,
+      appointmentId,
+      doctorName,
+      mode: "complete",
+      set,
+      get,
+    });
   },
 
   saveRecord: (appointmentId, data) => {
@@ -183,13 +207,10 @@ export const useExamStore = create((set, get) => ({
 
   getPatientHistory: (patientId) => {
     const savedRecords = Object.values(get().records).filter(
-      (r) => r.patientId === patientId && r.status === EXAM_STATUS.COMPLETED
+      (r) => r.patientId === patientId && r.status === EXAM_STATUS.COMPLETED,
     );
-    const mockRecords = mockMedicalRecords.filter(
-      (r) => r.patientId === patientId
-    );
-    return [...mockRecords, ...savedRecords].sort(
-      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    return [...savedRecords].sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     );
   },
 
@@ -227,10 +248,16 @@ export const useExamStore = create((set, get) => ({
   },
 }));
 
-async function saveOrCompleteExam({ appointmentId, doctorName, mode, set, get }) {
-  const token = getUserToken();
-  if (!token) {
-    patchExamination(set, { actionError: "Không tìm thấy phiên đăng nhập. Vui lòng đăng nhập lại." });
+async function saveOrCompleteExam({
+  api,
+  appointmentId,
+  doctorName,
+  mode,
+  set,
+  get,
+}) {
+  if (!api) {
+    patchExamination(set, { actionError: "Không tìm thấy kết nối API." });
     return;
   }
 
@@ -240,18 +267,31 @@ async function saveOrCompleteExam({ appointmentId, doctorName, mode, set, get })
   const isComplete = mode === "complete";
   const payload = toMedicalRecordPayload(
     examination.formData,
-    isComplete ? "DONE" : "FOLLOW_UP"
+    isComplete ? "DONE" : "FOLLOW_UP",
   );
   patchExamination(set, { actionError: "" });
 
   try {
     if (examination.appointment?.medicalRecordId) {
-      await updateMedicalRecord(token, examination.appointment.medicalRecordId, payload);
+      await updateMedicalRecord(
+        api,
+        examination.appointment.medicalRecordId,
+        payload,
+      );
     } else {
-      await createMedicalRecordForAppointment(token, Number(appointmentId), payload);
+      await createMedicalRecordForAppointment(
+        api,
+        Number(appointmentId),
+        payload,
+      );
     }
 
-    const refreshed = await get().refreshMedicalRecordData(appointmentId, examination.appointment);
+    const refreshed = await get().refreshMedicalRecordData(
+      api,
+      appointmentId,
+      examination.appointment,
+    );
+
     const refreshedRecord = refreshed?.record || null;
     const recordPayload = {
       ...payload,
@@ -267,7 +307,8 @@ async function saveOrCompleteExam({ appointmentId, doctorName, mode, set, get })
     }
 
     get().saveRecord(appointmentId, recordPayload);
-  } catch {
+  } catch (error) {
+    console.error("LỖI LƯU PHIẾU KHÁM:", error);
     patchExamination(set, {
       actionError: isComplete
         ? "Không thể hoàn tất phiếu khám. Vui lòng thử lại."

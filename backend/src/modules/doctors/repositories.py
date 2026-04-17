@@ -4,9 +4,10 @@ from sqlalchemy import asc, func, or_
 
 from src.extensions import db
 from src.modules.appointments.models import Appointment
-from src.modules.doctors.models import (DoctorProfile, MedicalService,
-                                        Specialty, WorkDate, WorkSchedule)
-from src.modules.users.models import Profile, User, UserRole
+from src.modules.doctors.models import (DayOfWeek, DoctorProfile,
+                                        MedicalService, Specialty, WorkDate,
+                                        WorkSchedule)
+from src.modules.users.models import User, UserRole
 
 
 def get_paginated_specialties(page, per_page, keywords=None):
@@ -42,42 +43,66 @@ def get_paginated_medical_services(page, per_page=5, keywords=None, specialty_id
 def get_medical_service_by_id(service_id):
     return MedicalService.query.filter(MedicalService.id == service_id).first()
 
+def get_doctor_ids_by_work_day(work_days):
+    if not work_days:
+        return []
+
+    try:
+        target_day = DayOfWeek[work_days.upper()]
+    except KeyError:
+        return []
+
+    schedules = WorkSchedule.query.join(WorkDate, WorkSchedule.id == WorkDate.work_schedule_id
+    ).filter(WorkDate.day_of_week == target_day).all()
+    doctor_ids = []
+    for sched in schedules:
+        doc_id = sched.doctor_id
+        if doc_id is not None:
+            doctor_ids.append(doc_id)
+
+    return list(set(doctor_ids))
 
 def get_paginated_doctors(page, per_page, keywords=None, specialty_id=None, work_days=None):
-    query = User.query.join(Profile, User.id == Profile.user_id) \
-        .join(DoctorProfile, Profile.id == DoctorProfile.id) \
-        .join(WorkSchedule, DoctorProfile.id == WorkSchedule.doctor_id) \
-        .join(WorkDate, WorkSchedule.id == WorkDate.work_schedule_id) \
-        .filter(
+    query = User.query.join(DoctorProfile, User.id == DoctorProfile.user_id)
+
+    query = query.filter(
         User.is_active == True,
         User.role == UserRole.DOCTOR,
-        Profile.profile_type == "doctor"
+        DoctorProfile.profile_type == "doctor"
     )
+
+    if work_days:
+        valid_doctor_ids = get_doctor_ids_by_work_day(work_days)
+        if not valid_doctor_ids:
+            query = query.filter(DoctorProfile.id == -1)
+        else:
+            query = query.filter(DoctorProfile.id.in_(valid_doctor_ids))
+
+
     if keywords:
-        if keywords:
-            search = f"%{keywords}%"
-            full_name = func.concat(User.last_name, ' ', User.first_name)
-            query = query.filter(
-                or_(
-                    User.__table__.c.first_name.ilike(search),
-                    User.__table__.c.last_name.ilike(search),
-                    full_name.ilike(search),
-                )
+        search = f"%{keywords}%"
+        full_name = func.concat(User.last_name, ' ', User.first_name)
+        query = query.filter(
+            or_(
+                User.first_name.ilike(search),
+                User.last_name.ilike(search),
+                full_name.ilike(search)
             )
+        )
 
     if specialty_id:
         query = query.filter(DoctorProfile.specialty_id == specialty_id)
 
-    if work_days:
-        query = query.filter(WorkDate.day_of_week.in_(work_days))
-
-    query = query.distinct()
+    query = query.group_by(User.id)
 
     return query.paginate(page=page, per_page=per_page, error_out=False)
 
 
 def get_doctor_by_id(doctor_id):
-    return User.query.join(DoctorProfile).join(WorkSchedule).filter(DoctorProfile.id == doctor_id).first()
+    return User.query.outerjoin(DoctorProfile) \
+        .outerjoin(WorkSchedule) \
+        .filter(DoctorProfile.id == doctor_id) \
+        .first()
 
 
 def get_upcoming_appointments(doctor_profile_id, start_date, statuses):

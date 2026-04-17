@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from src.libs.cloudinary import cloudinary_upload_process
 from src.modules.users.models import GenderRole, PatientProfile, User
 from src.modules.users.repositories import (add_profile, add_user, commit,
-                                            get_user_by_email)
+                                            get_user_by_email, get_user_by_id)
 from src.utils.handle_db_errors import handle_db_errors
 
 
@@ -29,20 +29,29 @@ def parse_gender(gender_str, default: GenderRole = GenderRole.NOT_SET):
         return default
 
 
+def generate_token(user, expires_delta):
+    if not user:
+        return None
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    user_payload = {
+        "user_id": user.id,
+        "role": user.role.name,
+        "iat": now,
+        "exp": now + expires_delta,
+    }
+
+    secret_key = current_app.config.get("SECRET_KEY")
+    token = jwt.encode(user_payload, secret_key, algorithm="HS256")
+    return token
+
+
 def create_token(user=None):
-    if user:
-        user_payload = {
-            "user_id": user.id,
-            "role": user.role.name,
-            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=12),
-            "iat": datetime.datetime.now(datetime.timezone.utc),
-        }
+    return generate_token(user, datetime.timedelta(hours=12))
 
-        secret_key = current_app.config.get("SECRET_KEY")
-        token = jwt.encode(user_payload, secret_key, algorithm="HS256")
-        return token
 
-    return None
+def create_refresh_token(user=None):
+    return generate_token(user, datetime.timedelta(days=7))
 
 
 def get_user_data(user=None):
@@ -103,12 +112,14 @@ def login_user_service(login_email=None, password=None, role=None):
         return {"message": "Tài khoản không có thẩm quyền truy cập"}, "FORBIDDEN"
 
     token = create_token(user=user)
+    refresh_token = create_refresh_token(user=user)
     user_data = get_user_data(user=user)
 
-    if token and user_data:
+    if token and refresh_token and user_data:
         data = {
             "message": "Đăng nhập thành công",
             "access_token": token,
+            "refresh_token": refresh_token,
             "user": user_data,
         }
         return data, "SUCCESS"
@@ -163,7 +174,12 @@ def register_user_service(user_payload=None):
 
 
 def is_email_available(email: str):
-    return not bool(get_user_by_email(email))
+    user = get_user_by_email(email)
+
+    return {
+        "isExisted": bool(user),
+        "role": user.role.name if user else None
+    }
 
 
 def apply_updates(obj, data, mapping):
@@ -209,3 +225,50 @@ def update_patient_profile_service(current_user=None, data=None):
         return {"message": "Cập nhật hồ sơ thành công", "data": updated_user}, "SUCCESS"
 
     return {"message": "Lỗi không xác định khi cập nhật hồ sơ"}, "SERVER_INTERNAL_ERROR"
+
+
+@handle_db_errors
+def refresh_token_service(refresh_token_str=None):
+    if not refresh_token_str:
+        return {"message": "Refresh token không tồn tại"}, "ERROR_UNAUTHORIZED"
+
+    try:
+        secret_key = current_app.config.get("SECRET_KEY")
+        data = jwt.decode(refresh_token_str, secret_key, algorithms=["HS256"])
+
+        user_id = data.get("user_id")
+        if not user_id:
+            return {"message": "Payload của refresh token không hợp lệ"}, "ERROR_UNAUTHORIZED"
+
+        user = get_user_by_id(user_id)
+
+        if not user:
+            return {"message": "Người dùng không tồn tại"}, "ERROR_UNAUTHORIZED"
+
+        if not user.is_active:
+            return {"message": "Tài khoản bị khoá"}, "FORBIDDEN"
+
+        new_access_token = create_token(user=user)
+        new_refresh_token = create_refresh_token(user=user)
+
+        if new_access_token and new_refresh_token:
+            data_response = {
+                "message": "Tạo token mới thành công",
+                "access_token": new_access_token,
+                "refresh_token": new_refresh_token,
+            }
+            return data_response, "SUCCESS"
+
+        return {"message": "Lỗi không xác định khi tạo token mới"}, "SERVER_INTERNAL_ERROR"
+
+    except jwt.ExpiredSignatureError:
+        return {"message": "Refresh token đã hết hạn"}, "ERROR_UNAUTHORIZED"
+
+    except Exception as e:
+        current_app.logger.error(f"Lỗi làm mới token: {str(e)}", exc_info=True)
+        return {"message": "Lỗi không xác định"}, "SERVER_INTERNAL_ERROR"
+
+
+@handle_db_errors
+def logout_service():
+    return {"message": "Đăng xuất thành công"}, "SUCCESS"

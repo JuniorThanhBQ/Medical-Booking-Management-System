@@ -1,0 +1,189 @@
+@import "@/assets/css/auth/landing-page.css";
+
+.cta-banner {
+  padding: var(--lp-section-py) 0;
+  background: var(--lp-bg-light);
+}
+
+.cta-banner--flush-footer {
+  padding-bottom: 0;
+}
+
+.cta-banner .lp-container {
+  max-width: none;
+  padding: 0;
+}
+
+.services + .cta-banner {
+  padding-top: 48px;
+}
+
+.cta-banner__card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 56px;
+  padding: 56px 60px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(
+    to right,
+    #1a1e47 0%,
+    #252e82 28%,
+    #7971c0 62%,
+    #c8c0e8 100%
+  );
+}
+
+.cta-banner__eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  margin: 0 0 18px;
+}
+
+.cta-banner__title {
+  font-family: var(--lp-font-heading);
+  font-size: clamp(1.875rem, 3.2vw, 2.875rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+.cta-banner__desc {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 24px;
+  max-width: 420px;
+}
+
+.cta-banner__form {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  max-width: 400px;
+  margin-bottom: 18px;
+}
+
+.cta-banner__input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(10, 12, 40, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 7px;
+  padding: 0 14px;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 0;
+  transition: border-color 200ms;
+}
+
+.cta-banner__input-wrap:focus-within {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.cta-banner__input-wrap input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 0.9375rem;
+  padding: 13px 0;
+  min-width: 0;
+}
+
+.cta-banner__input-wrap input::placeholder {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.cta-banner__submit {
+  background: #fff;
+  color: #1a1e47;
+  border: none;
+  border-radius: 7px;
+  padding: 13px 22px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 200ms,
+    transform 150ms;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.cta-banner__submit:hover {
+  background: #eef2ff;
+  transform: translateY(-1px);
+}
+.cta-banner__submit:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.cta-banner__submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+}
+
+.cta-banner__disclaimer {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+
+.cta-banner__testimonial {
+  background: #fff;
+  border-radius: 18px;
+  padding: 36px 32px;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.15) inset,
+    0 20px 60px rgba(10, 12, 45, 0.25);
+}
+
+.cta-banner__quote {
+  font-size: 1rem;
+  line-height: 1.72;
+  color: var(--lp-body);
+  margin: 0 0 24px;
+  font-style: normal;
+}
+
+.cta-banner__quote-footer {
+  margin: 0;
+}
+
+.cta-banner__quote-role {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--lp-subtle);
+  text-transform: uppercase;
+  margin: 0 0 5px;
+}
+
+.cta-banner__quote-org {
+  font-size: 0.875rem;
+  color: var(--lp-muted);
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-banner__submit,
+  .cta-banner__input-wrap {
+    transition: none;
+  }
+}

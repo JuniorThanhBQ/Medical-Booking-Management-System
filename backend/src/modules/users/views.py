@@ -1,13 +1,14 @@
 import re
 
-from flask import current_app, request
+from flask import current_app, make_response, request
 from flask_restx import Resource, fields
 
 from src.libs.email_validator import verify_email_existence
 from src.middlewares.auth import auth_required
 from src.modules.users import auth_namespace
 from src.modules.users.services import (get_user_data, is_email_available,
-                                        login_user_service,
+                                        login_user_service, logout_service,
+                                        refresh_token_service,
                                         register_user_service,
                                         update_patient_profile_service)
 from src.utils.utils import (EMAIL_REGEX, check_xss_violation,
@@ -65,10 +66,22 @@ class LoginAPI(Resource):
         if invalid_input:
             return invalid_input, 400
 
-        return format_api_response(*login_user_service(login_email=login_email,
-                                                       password=password,
-                                                       role=role),
-                                   success_code=201)
+        data, status = login_user_service(login_email=login_email,
+                                          password=password,
+                                          role=role)
+        if status == "SUCCESS" and "refresh_token" in data:
+            response = make_response(data, 201)
+            response.set_cookie(
+                "refresh_token",
+                data["refresh_token"],
+                httponly=True,
+                secure=True,
+                samesite='Strict',
+                max_age=7*24*60*60
+            )
+            return response
+
+        return format_api_response(data, status, success_code=201)
 
 
 class RegisterAPI(Resource):
@@ -103,7 +116,7 @@ class RegisterAPI(Resource):
             return invalid_input, 400
 
         if not verify_email_existence(current_app.config.get('EMAIL_VALIDATOR'), email):
-            return {"message": "Email không tồn tại trong thực tế"}, 400
+            return {"is_valid": False, }, 400
 
         user_payload = {
             "username": username,
@@ -135,12 +148,11 @@ class EmailValidatorAPI(Resource):
         if not re.match(EMAIL_REGEX, email):
             return {"is_valid": False, }, 400
 
-        is_valid = is_email_available(email)
+        is_available_valid = is_email_available(email)
+        if not is_available_valid:
+            return is_available_valid, 400
 
-        if not is_valid:
-            return {"is_valid": is_valid, }, 400
-
-        return {"is_valid": is_valid, }, 201
+        return {"is_valid": is_available_valid, }, 201
 
 
 class RetrieveCurrentUserAPI(Resource):
@@ -169,3 +181,39 @@ class RetrieveCurrentUserAPI(Resource):
 
         return format_api_response(*update_patient_profile_service(
             current_user=current_user, data=data), success_code=200)
+
+
+class RefreshTokenAPI(Resource):
+    def post(self):
+        refresh_token = request.cookies.get("refresh_token")
+        if not refresh_token:
+            return {"message": "Refresh token không tồn tại trong cookie"}, 400
+
+        data, status = refresh_token_service(refresh_token_str=refresh_token)
+        if status == "SUCCESS" and "refresh_token" in data:
+            response = make_response(data, 201)
+            response.set_cookie(
+                "refresh_token",
+                data["refresh_token"],
+                httponly=True,
+                secure=True,
+                samesite='Strict',
+                max_age=7*24*60*60
+            )
+            return response
+
+        return format_api_response(data, status, success_code=201)
+
+
+class LogoutAPI(Resource):
+    method_decorators = [auth_required]
+
+    @auth_namespace.doc(security='api_key')
+    def post(self):
+        data, status = logout_service()
+        if status == "SUCCESS":
+            response = make_response(data, 200)
+            response.delete_cookie("refresh_token")
+            return response
+
+        return format_api_response(data, status, success_code=200)

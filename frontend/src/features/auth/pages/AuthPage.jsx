@@ -1,94 +1,73 @@
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../hooks/use-auth-store.js";
-import { setToken, setUser, getUser } from "@/repository/local-storage-repository";
-import EmailAuthorizationPage from "./EmailAuthorizationPage.jsx";
 import "@/assets/css/auth/auth-page.css";
+
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
+import { AuthFooter } from "../components/AuthFooter";
+import { AuthHeader } from "../components/AuthHeader";
+import { RoleCard } from "../components/RoleCard";
+import { useAuthRedirect } from "../hooks/useAuthRedirect";
+import { useRoleSelection } from "../hooks/useRoleSelection";
+import EmailAuthorizationPage from "./EmailAuthorizationPage.jsx";
 
 const OPTIONS = [
   {
     id: "patient",
-    title: "Dành cho bệnh nhân",
+    title: "Đăng nhập bệnh nhân",
     description: "Đặt lịch hẹn và tra cứu hồ sơ y tế",
   },
   {
     id: "doctor",
-    title: "Dành cho bác sĩ",
+    title: "Đăng nhập bác sĩ",
     description: "Đăng ký và tra cứu hồ sơ y tế",
+  },
+  {
+    id: "receptionist",
+    title: "Đăng nhập lễ tân",
+    description: "Quản lý lịch hẹn và hỗ trợ bệnh nhân",
   },
 ];
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const { role, setRole, resetRole } = useRoleSelection();
+  const { handleAuthenticated } = useAuthRedirect();
 
-  const { role, setRole } = useAuthStore();
-
-  const handleAuthenticated = (data) => {
-    setToken(data.token);
-    setUser(data.user.user);
-
-    const user = getUser();
-
-    const searchParams = new URLSearchParams(window.location.search);
-    const returnUrl = searchParams.get("returnUrl");
-
-    if (returnUrl && returnUrl.startsWith("/") && !returnUrl.startsWith("//")) {
-      navigate(returnUrl, { replace: true });
-    } else {
-      const isDoctor = user.role === "DOCTOR";
-      navigate(isDoctor ? "/doctor/today" : "/dashboard", { replace: true });
-    }
+  const handleRoleSelect = (selectedRole) => {
+    const selectedOption = OPTIONS.find((option) => option.id === selectedRole);
+    toast.success(`${selectedOption?.title || selectedRole} đã được chọn.`);
+    setRole(selectedRole);
   };
 
   if (role) {
     return (
       <EmailAuthorizationPage
+        role={role}
         onAuthenticated={handleAuthenticated}
-        onBackToRoleSelect={() => setRole(null)}
+        onBackToRoleSelect={resetRole}
       />
     );
   }
 
   return (
     <div className="signin-page">
-      <header className="signin-page__header">
-        <button
-          type="button"
-          className="signin-page__back"
-          onClick={() => navigate("/")}
-        >
-          <span className="signin-page__back-icon">&#8592;</span>
-        </button>
-      </header>
+      <AuthHeader onBack={() => navigate("/")} />
 
       <main className="signin-page__main">
-        <h1 className="signin-page__title">Đăng ký/đăng nhập</h1>
-
+        <h1 className="signin-page__title">Đăng ký hoặc đăng nhập</h1>
         <div className="signin-page__cards">
           {OPTIONS.map((option) => (
-            <button
+            <RoleCard
               key={option.id}
-              type="button"
-              className={`signin-card${role === option.id ? " signin-card--selected" : ""}`}
-              onClick={() => setRole(option.id)}
-            >
-              <div className="signin-card__text">
-                <div className="signin-card__title">{option.title}</div>
-                <div className="signin-card__description">
-                  {option.description}
-                </div>
-              </div>
-              <span className="signin-card__chevron">→</span>
-            </button>
+              option={option}
+              isSelected={role === option.id}
+              onSelect={handleRoleSelect}
+            />
           ))}
         </div>
       </main>
 
-      <footer className="signin-page__footer">
-        <button type="button" className="signin-footer__link">
-          <span className="signin-footer__icon">?</span>
-          Trợ giúp và hỗ trợ
-        </button>
-      </footer>
+      <AuthFooter />
     </div>
   );
 }

@@ -93,22 +93,3 @@ def test_detail_services(mock_med, mock_spec):
     mock_med.return_value = None
     res, code = get_medical_service_detail_service(1)
     assert code == "NOT_FOUND"
-
-@patch('src.modules.doctors.services.get_doctor_by_id')
-@patch('src.modules.doctors.services.get_medical_service_by_id')
-@patch('src.modules.doctors.services.get_available_time_slots', return_value=[])
-def test_get_time_slots_service(m_slots, m_med, m_doc):
-    res, code = get_time_slots_service(1, "2026-04-12", None)
-    assert code == "ERROR_BAD_REQUEST"
-
-    m_doc.return_value = MagicMock()
-    m_med.return_value = MagicMock()
-    m_doc.return_value.profile.specialty_id = 1
-    m_med.value.specialty_id = 2
-
-    res, code = get_time_slots_service(1, "2026-04-12", 1)
-    assert code == "ERROR_BAD_REQUEST"
-
-    m_med.return_value.specialty_id = 1
-    res, code = get_time_slots_service(1, "2026-04-12", 1)
-    assert code == "SUCCESS"

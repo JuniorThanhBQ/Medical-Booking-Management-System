@@ -1,5 +1,6 @@
 const EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#_\-?])[A-Za-z\d@#_\-?]{9,}$/;
+const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#_\-?])[A-Za-z\d@#_\-?]{9,}$/;
 const XSS_REGEX = /<[^>]*>/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -9,18 +10,15 @@ export function containsXss(value) {
 
 export function isValidEmail(value) {
   const v = value.trim();
-  if (!v) 
-    return false;
+  if (!v) return false;
 
-  if (containsXss(v)) 
-    return false;
+  if (containsXss(v)) return false;
 
   return EMAIL_REGEX.test(v);
 }
 
 export function isValidPassword(value) {
-  if (!value) 
-    return false;
+  if (!value) return false;
 
   return PASSWORD_REGEX.test(value);
 }
@@ -37,27 +35,23 @@ export function getPasswordErrors(value) {
 
 export function isValidName(value) {
   const v = value.trim();
-  if (containsXss(v)) 
-    return false;
+  if (containsXss(v)) return false;
 
   return v.length >= 2;
 }
 
 export function isValidPhone(value) {
   const v = value.trim();
-  if (containsXss(v)) 
-    return false;
-  
+  if (containsXss(v)) return false;
+
   return v.length >= 10;
 }
 
 export function isValidDateOfBirth(value) {
-  if (!DATE_REGEX.test(value)) 
-    return false;
+  if (!DATE_REGEX.test(value)) return false;
 
   const parsed = new Date(value);
-  if (isNaN(parsed.getTime())) 
-    return false;
+  if (isNaN(parsed.getTime())) return false;
 
   const now = new Date();
 

@@ -13,8 +13,10 @@ export const EMPTY_PATIENT = {
 export function toViTime(isoString) {
   if (!isoString) return "";
   const date = new Date(isoString);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+  if (isNaN(date.getTime())) return "";
+
+  const timePart = isoString.split("T")[1];
+  return timePart ? timePart.substring(0, 5) : "";
 }
 
 export function getDefaultEndTime(startTime) {
@@ -34,9 +36,14 @@ export function normalizeDoctorAppointment(appointment, patientProfile) {
 
   return {
     id: appointment?.id ?? "",
-    patientId: appointment?.patientId || appointment?.id || "",
+    patientId: appointment?.patientId || "",
     patientName: appointment?.patientName || "Không rõ bệnh nhân",
-    status: APPOINTMENT_STATUS_TO_UI[appointment?.status] || appointment?.status || "",
+    status: appointment?.status || "",
+    statusDisplay:
+      APPOINTMENT_STATUS_TO_UI[appointment?.status] ||
+      appointment?.status ||
+      "",
+
     appointmentDate,
     startTime,
     endTime,
@@ -47,13 +54,17 @@ export function normalizeDoctorAppointment(appointment, patientProfile) {
 
 export function isTodayAppointment(isoString) {
   if (!isoString) return false;
+
   const date = new Date(isoString);
   if (Number.isNaN(date.getTime())) return false;
 
-  const now = new Date();
-  return (
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate()
-  );
+  const appointmentDateString = date.toLocaleDateString("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
+
+  const todayString = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
+
+  return appointmentDateString === todayString;
 }

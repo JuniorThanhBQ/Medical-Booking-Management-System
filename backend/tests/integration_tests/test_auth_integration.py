@@ -41,6 +41,8 @@ def test_user_login_success(client, test_app):
         assert response.status_code == 201
         response_data = json.loads(response.data)
         assert "access_token" in response_data
+        assert "refresh_token" in response_data
+        assert "refresh_token" in response.headers.get("Set-Cookie", "")
         assert response_data['user']['email'] == "john@example.com"
 
 

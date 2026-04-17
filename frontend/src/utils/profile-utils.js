@@ -26,7 +26,11 @@ export function formatProfileUpdate(formData) {
     name: `${formData.firstName} ${formData.lastName}`.trim(),
     phone: formData.phone,
     email: formData.email,
-    dateOfBirth: formatBirthday(formData.birthYear, formData.birthMonth, formData.birthDay),
+    dateOfBirth: formatBirthday(
+      formData.birthYear,
+      formData.birthMonth,
+      formData.birthDay,
+    ),
     gender: formData.gender,
   };
 }
@@ -37,23 +41,23 @@ export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
-const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export function readAvatarFile(event, callback) {
   const file = event.target.files[0];
-  event.target.value = '';
+  event.target.value = "";
   if (!file) return;
   if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-    alert('Chỉ chấp nhận ảnh JPEG, PNG, hoặc WebP');
+    alert("Chỉ chấp nhận ảnh JPEG, PNG, hoặc WebP");
     return;
   }
   if (file.size > MAX_AVATAR_SIZE) {
-    alert('Ảnh không được vượt quá 2MB');
+    alert("Ảnh không được vượt quá 2MB");
     return;
   }
   const reader = new FileReader();
   reader.onload = () => callback(reader.result);
-  reader.onerror = () => console.error('Không thể đọc tệp ảnh');
+  reader.onerror = () => console.error("Không thể đọc tệp ảnh");
   reader.readAsDataURL(file);
 }
 

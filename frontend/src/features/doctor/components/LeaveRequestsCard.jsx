@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchAppointmentsInDay } from "../services/appointments-api.js";
-import { getStatusLabel } from "@/configs/const";
-import { TYPE_OPTIONS, REASON_OPTIONS } from "@/configs/const";
+
+import { REASON_OPTIONS, TYPE_OPTIONS } from "@/configs/const";
+
 import AppointmentsPreviewModal from "./AppointmentModal";
-
-
 
 export default function LeaveRequestsCard({
   newRequest,
@@ -12,11 +10,13 @@ export default function LeaveRequestsCard({
   leaveRequests,
   onSubmit,
 }) {
-  const selectedDateForPreview = useMemo(() => newRequest.fromDate ?? "", [newRequest.fromDate]);
+  const selectedDateForPreview = useMemo(
+    () => newRequest.fromDate ?? "",
+    [newRequest.fromDate],
+  );
 
   const [isAppointmentsModalOpen, setIsAppointmentsModalOpen] = useState(false);
   const [appointmentsDate, setAppointmentsDate] = useState("");
-
 
   useEffect(() => {
     if (!isAppointmentsModalOpen) return;
@@ -39,9 +39,12 @@ export default function LeaveRequestsCard({
   return (
     <div className="schedule-page__card">
       <div className="schedule-page__card-header">
-        <h2 className="schedule-page__card-title">Yêu cầu nghỉ phép / đổi lịch</h2>
+        <h2 className="schedule-page__card-title">
+          Yêu cầu nghỉ phép / đổi lịch
+        </h2>
         <p className="schedule-page__card-description">
-          Tạo yêu cầu để quản trị viên phê duyệt trước khi lịch làm việc thay đổi.
+          Tạo yêu cầu để quản trị viên phê duyệt trước khi lịch làm việc thay
+          đổi.
         </p>
       </div>
 
@@ -68,26 +71,27 @@ export default function LeaveRequestsCard({
         </div>
 
         {newRequest.type === "time_off" && (
-        <div className="schedule-page__form-row">
-          <label className="schedule-page__form-label">
-            Lý do nghỉ
-            <select
-              className="schedule-page__select"
-              value={newRequest.reason ?? "vacation"}
-              onChange={(event) =>
-                updateNewRequest({
-                  reason: event.target.value,
-                })
-              }
-            >
-              {REASON_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>)}
+          <div className="schedule-page__form-row">
+            <label className="schedule-page__form-label">
+              Lý do nghỉ
+              <select
+                className="schedule-page__select"
+                value={newRequest.reason ?? "vacation"}
+                onChange={(event) =>
+                  updateNewRequest({
+                    reason: event.target.value,
+                  })
+                }
+              >
+                {REASON_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
 
         <div className="schedule-page__form-row schedule-page__form-row-inline">
           <label className="schedule-page__form-label">
@@ -148,8 +152,6 @@ export default function LeaveRequestsCard({
           </label>
         </div>
 
-        
-
         <button type="submit" className="schedule-page__primary-button">
           Xác nhận
         </button>
@@ -164,7 +166,8 @@ export default function LeaveRequestsCard({
                   <p className="schedule-page__list-title">
                     {request.type === "time_off" && "Nghỉ phép"}
                     {request.type === "partial_day" && "Nghỉ một phần ngày"}
-                    {request.type === "shift_change" && "Đổi ca / thay đổi lịch"}
+                    {request.type === "shift_change" &&
+                      "Đổi ca / thay đổi lịch"}
                   </p>
                   <p className="schedule-page__list-meta">
                     {request.fromDate} - {request.toDate}
@@ -196,8 +199,6 @@ export default function LeaveRequestsCard({
         isOpen={isAppointmentsModalOpen}
         onClose={() => setIsAppointmentsModalOpen(false)}
       />
-
     </div>
   );
 }
-

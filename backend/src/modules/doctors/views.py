@@ -11,7 +11,8 @@ from src.modules.doctors.services import (get_doctor_detail_service,
                                           get_specialties_service,
                                           get_specialty_detail_service,
                                           get_time_slots_service,
-                                          request_schedule_change_service)
+                                          request_schedule_change_service,
+                                          send_doctor_registration_service)
 from src.utils.utils import check_xss_violation, format_api_response
 
 work_schedule_detail_model = doctors_namespace.model('WorkScheduleDetail', {
@@ -26,6 +27,17 @@ schedule_change_request_model = doctors_namespace.model('ScheduleChangeRequest',
     'newWorkSchedule': fields.Nested(work_schedule_detail_model, required=True)
 })
 
+doctor_register_request_model = doctors_namespace.model('DoctorRegisterRequest', {
+    'fullName': fields.String(required=True, description='Họ và tên đầy đủ'),
+    'dateOfBirth': fields.String(required=True, description='Ngày sinh (YYYY-MM-DD)'),
+    'gender': fields.String(required=True, description='Giới tính'),
+    'address': fields.String(required=True, description='Địa chỉ liên hệ'),
+    'email': fields.String(required=True, description='Địa chỉ email'),
+    'phone': fields.String(required=True, description='Số điện thoại'),
+    'specialtyId': fields.Integer(required=True, description='Mã chuyên khoa'),
+    'reason': fields.String(required=True, description='Lý do đăng ký'),
+    'CV': fields.String(required=True, description='File CV (định dạng multipart/form-data)')      
+})
 
 class RetrieveMyScheduleAPI(Resource):
     method_decorators = [auth_required]
@@ -55,7 +67,7 @@ class PublicSpecialtyListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên chuyên khoa cần lọc'})
     def get(self):
         page = request.args.get("page", 1, type=int)
-        per_page = request.args.get("limit", 5, type=int)
+        per_page = request.args.get("limit", 4, type=int)
         keywords = request.args.get("keywords", type=str)
 
         data, message = get_specialties_service(
@@ -102,10 +114,10 @@ class PublicDoctorListAPI(Resource):
         , 'workDates': 'Các ngày làm việc'})
     def get(self):
         page = request.args.get("page", 1, type=int)
-        per_page = request.args.get("limit", 5, type=int)
+        per_page = request.args.get("limit", 4, type=int)
         keywords = request.args.get("keywords", type=str)
         specialty_id = request.args.get("specialtyId", type=int)
-        work_dates = request.args.getlist("workDates", type=int)
+        work_dates = request.args.get("workDates", type=str)
 
         data, message = get_doctors_service(
             page=page, per_page=per_page, keywords=keywords, specialty_id=specialty_id, work_dates=work_dates
@@ -129,3 +141,13 @@ class PublicDoctorSlotListAPI(Resource):
         date_str = request.args.get("date")
         service_id = request.args.get("serviceId", type=int)
         return format_api_response(*get_time_slots_service(doctor_id, date_str, service_id))
+
+class PublicDoctorRegisterAPI(Resource):
+    def post(self):
+        data = request.form.to_dict()
+        cv_file = request.files.get("cv") or request.files.get("CV")
+
+        if check_xss_violation([data.get("reason", "")]):
+            return {"message": "Dữ liệu đầu vào chứa ký tự không hợp lệ"}, 400
+
+        return format_api_response(*send_doctor_registration_service(data, cv_file), success_code=201)

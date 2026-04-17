@@ -28,3 +28,35 @@ export function formatTimeDisplay(isoString) {
   }
   return isoString;
 }
+
+const WEEKDAY_NAME_TO_INDEX = {
+  SUNDAY: 0,
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+};
+
+export function getDoctorAvailableDays(workDateNames = [], maxDays = 30) {
+  const allowedWeekdays = workDateNames
+    .map((name) => name?.toUpperCase())
+    .filter(Boolean)
+    .map((name) => WEEKDAY_NAME_TO_INDEX[name])
+    .filter((index) => typeof index === "number");
+
+  const days = [];
+  const base = new Date();
+  base.setHours(0, 0, 0, 0);
+
+  for (let i = 1; i <= maxDays; i += 1) {
+    const d = new Date(base);
+    d.setDate(base.getDate() + i);
+    if (allowedWeekdays.length === 0 || allowedWeekdays.includes(d.getDay())) {
+      days.push(d);
+    }
+  }
+
+  return days;
+}

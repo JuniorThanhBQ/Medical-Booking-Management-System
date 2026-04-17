@@ -1,9 +1,6 @@
 services:
   frontend:
     restart: unless-stopped
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
 
   backend:
     restart: unless-stopped
@@ -12,6 +9,7 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 --reload --access-logfile - --error-logfile - src.index:app
     volumes:
       - ./backend/src:/app/src
+      - ./shared_tmp:/app/shared_tmp
 
   db-migration:
     command: bash -c "flask --app src.index:app db upgrade && python src/fixtures/fixtures.py"
@@ -28,11 +26,13 @@ services:
     restart: unless-stopped
     volumes:
       - ./backend/src:/app/src
+      - ./shared_tmp:/app/shared_tmp
 
   email-worker:
    restart: unless-stopped
    volumes:
       - ./backend/src:/app/src
+      - ./shared_tmp:/app/shared_tmp
 
   rabbitmq:
     restart: unless-stopped

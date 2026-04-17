@@ -1,15 +1,19 @@
-import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import "@/assets/css/users/examination.css";
+import "@css/doctor/examination.css";
+
 import Navbar from "@features/users/components/Navbar";
-import { useExamStore } from "../hooks/use-exam-store";
-import PatientHistoryPanel from "../components/PatientHistoryPanel";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import useAuth from "@/contexts/auth/AuthContext";
+
 import ExamForm from "../components/ExamForm";
-import { getStoredUser } from "@/utils/auth-helpers";
+import PatientHistoryPanel from "../components/PatientHistoryPanel";
+import { useExamStore } from "../hooks/use-exam-store";
 
 export default function ExaminationPage() {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
+  const { user, api } = useAuth();
   const examination = useExamStore((s) => s.examination);
   const setExamFormData = useExamStore((s) => s.setExamFormData);
   const loadExamination = useExamStore((s) => s.loadExamination);
@@ -17,26 +21,32 @@ export default function ExaminationPage() {
   const saveDraftToServer = useExamStore((s) => s.saveDraftToServer);
   const completeExamToServer = useExamStore((s) => s.completeExamToServer);
 
-  const user = getStoredUser();
   const doctorName = user?.name || "Bác sĩ";
 
   useEffect(() => {
-    loadExamination(appointmentId);
+    if (!api || !appointmentId || appointmentId === "undefined") return;
+
+    loadExamination(api, appointmentId);
 
     return () => {
       resetExaminationState();
     };
-  }, [appointmentId, loadExamination, resetExaminationState]);
+  }, [appointmentId, api, loadExamination, resetExaminationState]);
 
   function handleSaveDraft() {
-    saveDraftToServer(appointmentId, doctorName);
+    if (api) {
+      saveDraftToServer(api, appointmentId, doctorName);
+    }
   }
 
   function handleComplete() {
-    completeExamToServer(appointmentId, doctorName);
+    if (api) {
+      completeExamToServer(api, appointmentId, doctorName);
+    }
   }
 
-  const hasNotFound = !examination.loading && !examination.error && !examination.appointment;
+  const hasNotFound =
+    !examination.loading && !examination.error && !examination.appointment;
 
   return (
     <>
@@ -53,7 +63,9 @@ export default function ExaminationPage() {
 
         <h1 className="exam-page__title">Phiếu khám bệnh</h1>
 
-        {examination.loading && <p className="exam-page__error">Đang tải dữ liệu khám bệnh...</p>}
+        {examination.loading && (
+          <p className="exam-page__error">Đang tải dữ liệu khám bệnh...</p>
+        )}
         {!examination.loading && examination.error && (
           <p className="exam-page__error">{examination.error}</p>
         )}
@@ -63,28 +75,30 @@ export default function ExaminationPage() {
           </p>
         )}
 
-        {!examination.loading && !examination.error && examination.appointment && (
-          <div className="exam-page__layout">
-            <PatientHistoryPanel
-              patient={examination.patient}
-              notes={examination.appointment.notes}
-              history={examination.history}
-            />
-
-            <div>
-              {examination.actionError && (
-                <p className="exam-page__error">{examination.actionError}</p>
-              )}
-              <ExamForm
-                formData={examination.formData}
-                onChange={setExamFormData}
-                onSaveDraft={handleSaveDraft}
-                onComplete={handleComplete}
-                isCompleted={examination.isCompleted}
+        {!examination.loading &&
+          !examination.error &&
+          examination.appointment && (
+            <div className="exam-page__layout">
+              <PatientHistoryPanel
+                patient={examination.patient}
+                notes={examination.appointment.notes}
+                history={examination.history}
               />
+
+              <div>
+                {examination.actionError && (
+                  <p className="exam-page__error">{examination.actionError}</p>
+                )}
+                <ExamForm
+                  formData={examination.formData}
+                  onChange={setExamFormData}
+                  onSaveDraft={handleSaveDraft}
+                  onComplete={handleComplete}
+                  isCompleted={examination.isCompleted}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </main>
     </>
   );

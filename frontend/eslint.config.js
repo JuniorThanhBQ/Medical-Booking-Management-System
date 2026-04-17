@@ -4,6 +4,8 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import security from "eslint-plugin-security";
 import reactPlugin from "eslint-plugin-react";
+import prettierConfig from "eslint-config-prettier";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 export default [
   {
@@ -12,10 +14,11 @@ export default [
   {
     files: ["src/**/*.{js,jsx}"],
     plugins: {
-      "react": reactPlugin,
+      react: reactPlugin,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      "security": security,
+      security: security,
+      "simple-import-sort": simpleImportSort,
     },
     languageOptions: {
       ecmaVersion: "latest",
@@ -36,17 +39,20 @@ export default [
       },
     },
     rules: {
+      complexity: ["error", 25],
       ...js.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
-      ...reactPlugin.configs["jsx-runtime"].rules, 
+      ...reactPlugin.configs["jsx-runtime"].rules,
       ...reactHooks.configs.recommended.rules,
       ...security.configs.recommended.rules,
+      ...prettierConfig.rules,
       "no-unused-vars": "warn",
-      "react-refresh/only-export-components": "off", 
+      "react-refresh/only-export-components": "warn",
       "security/detect-object-injection": "off",
       "react/prop-types": "off",
-      "react-hooks/exhaustive-deps": "off",
-      "no-empty": "off",
+      "no-empty": "warn",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
     },
   },
 ];

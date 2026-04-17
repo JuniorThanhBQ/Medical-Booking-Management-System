@@ -54,7 +54,8 @@ export function toRecordHistory(record) {
   return [
     {
       id: record.id,
-      createdAt: record.createdAt || record.updatedAt || new Date().toISOString(),
+      createdAt:
+        record.createdAt || record.updatedAt || new Date().toISOString(),
       diagnosis: record.diagnosis || "Chưa có chẩn đoán",
       notes: record.notes || "",
       prescriptionText: record.prescriptionText || "",
@@ -72,7 +73,6 @@ export function toMedicalRecordPayload(formData, status) {
     status,
   };
 }
-
 
 export function normalizeMedicalRecord(payload) {
   return {

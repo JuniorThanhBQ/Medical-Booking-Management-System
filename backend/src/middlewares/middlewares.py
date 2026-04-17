@@ -19,7 +19,6 @@ def middlewares(app):
     def start_timer():
         g.start_time = time.time()
 
-
     @app.after_request
     def add_security_headers(response):
         response.headers['Content-Security-Policy'] = (

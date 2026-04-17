@@ -2,9 +2,10 @@ from datetime import datetime
 
 from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.appointments.repositories import (
-    add_instance, commit_session, create_new_patient_profile, delete_instance,
-    get_appointment_by_id, get_appointments_base_query,
-    get_patient_profile_by_details)
+    add_instance, clean_expired_booking_locks, commit_session,
+    create_booking_lock, create_new_patient_profile, delete_booking_lock,
+    delete_instance, get_active_booking_lock, get_appointment_by_id,
+    get_appointments_base_query, get_patient_profile_by_details)
 from src.modules.doctors.repositories import get_medical_service_by_id
 from src.modules.doctors.services import (get_available_time_slots,
                                           get_doctor_by_id)
@@ -102,9 +103,17 @@ def get_appointment_detail_service(current_user, appointment_id):
 
     doctor_user = appointment.doctor.user
     patient_user = appointment.patient.user
-    specialty = appointment.doctor.specialty
+    raw_specialty = appointment.doctor.specialty
+    specialty_data = None
+    if raw_specialty:
+        specialty_data = {
+            "id": raw_specialty.id,
+            "name": raw_specialty.name 
+        }
 
-    appointment_data = format_appointment(appointment, patient_user, doctor_user, specialty)
+    appointment_data = format_appointment(appointment=appointment,
+    patient_user=patient_user, doctor=doctor_user,
+    specialty=specialty_data)
     result = {
         **appointment_data,
         "medicalRecordId": str(appointment.medical_record_id) if appointment.medical_record_id else None,
@@ -114,15 +123,16 @@ def get_appointment_detail_service(current_user, appointment_id):
 
 @handle_db_errors
 def get_patient_profile_service(current_user, appointment_id):
-    if current_user.role.name != "DOCTOR":
-        return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
+    if current_user.role.name not in ["DOCTOR", "RECEPTIONIST"]:
+        return {"message": "Chỉ bác sĩ hoặc lễ tân mới có quyền này"}, "FORBIDDEN"
 
     appointment = get_appointment_by_id(appointment_id)
     if not appointment:
         return {"message": "Lịch hẹn không tồn tại"}, "NOT_FOUND"
 
-    if appointment.doctor_profile_id != current_user.profile.id:
-        return {"message": "Không có quyền trên lịch hẹn này"}, "FORBIDDEN"
+    if not current_user.role.name == "RECEPTIONIST":
+        if appointment.doctor_profile_id != current_user.profile.id:
+            return {"message": "Không có quyền trên lịch hẹn này"}, "FORBIDDEN"
 
     patient = appointment.patient
     user = patient.user
@@ -165,8 +175,9 @@ def create_patient_appointment_service(current_user, data):
         return error
 
     full_name = f"{current_user.last_name} {current_user.first_name}"
+    formatted_date = appointment_date.strftime('%H:%M %d/%m')
     new_appointment = Appointment(
-        name=f"KB - {appointment_date}",
+        name=f"LH - {full_name} - {formatted_date}",
         note=data.get("note", ""),
         status=StatusRole.APPROVED,
         appointment_date=appointment_date,
@@ -351,8 +362,9 @@ def create_receptionist_appointment_service(current_user, data):
         return patient_error
 
     full_name = f"{data.get('lastName')} {data.get('firstName')}"
+    formatted_date = appointment_date.strftime('%H:%M %d/%m')
     new_appointment = Appointment(
-        name=f"Khám bệnh - {full_name}",
+        name=f"LHLT - {full_name} - {formatted_date}",
         note=data.get("note", ""),
         status=StatusRole.APPROVED,
         appointment_date=appointment_date,
@@ -364,4 +376,47 @@ def create_receptionist_appointment_service(current_user, data):
     add_instance(new_appointment)
     commit_session()
 
-    return format_appointment(new_appointment, doctor, full_name), "SUCCESS"
+    return format_appointment(appointment=new_appointment, doctor=doctor, patient_name=full_name), "SUCCESS"
+
+@handle_db_errors
+def lock_booking_transaction_service(data):
+    doctor_name = data.get("doctorName")
+    appointment_date_str = data.get("appointmentDate")
+    service_name = data.get("serviceName")
+
+    if not doctor_name or not appointment_date_str:
+        return {"message": "Thiếu thông tin bác sĩ hoặc thời gian"}, "ERROR_BAD_REQUEST"
+
+    appointment_date, parsed_error = parse_appointment_datetime(appointment_date_str)
+    if parsed_error:
+        return parsed_error
+
+    clean_expired_booking_locks()
+    commit_session()
+
+    existing_lock = get_active_booking_lock(doctor_name, appointment_date)
+    if existing_lock:
+        return {"message": "Khung giờ này đang được người khác giữ chỗ"}, "CONFLICT"
+
+    create_booking_lock(doctor_name, appointment_date, service_name)
+    commit_session()
+
+    return "", "SUCCESS"
+
+
+@handle_db_errors
+def unlock_booking_transaction_service(data):
+    doctor_name = data.get("doctorName")
+    appointment_date_str = data.get("appointmentDate")
+
+    if not doctor_name or not appointment_date_str:
+        return {"message": "Thiếu thông tin bác sĩ hoặc thời gian"}, "ERROR_BAD_REQUEST"
+
+    appointment_date, parsed_error = parse_appointment_datetime(appointment_date_str)
+    if parsed_error:
+        return parsed_error
+
+    delete_booking_lock(doctor_name, appointment_date)
+    commit_session()
+
+    return "", "SUCCESS"

@@ -4,61 +4,71 @@
       "id": 1,
       "name": "Nội tổng quát",
       "description": "Khám nội tạng và bệnh mãn tính",
-      "level": "Cơ sở"
+      "level": "Cơ sở",
+      "images": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 2,
       "name": "Tim mạch",
       "description": "Điều trị các bệnh lý về tim và mạch máu",
-      "level": "Chuyên sâu"
+      "level": "Chuyên sâu",
+      "images": "https://images.unsplash.com/photo-1628348070889-cb656235b4eb?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 3,
       "name": "Nhi khoa",
       "description": "Chăm sóc sức khỏe trẻ em từ sơ sinh đến 15 tuổi",
-      "level": "Cơ sở"
+      "level": "Cơ sở",
+      "images": "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 4,
       "name": "Da liễu",
       "description": "Điều trị các bệnh về da, tóc, móng và thẩm mỹ nội khoa",
-      "level": "Cơ sở"
+      "level": "Cơ sở",
+      "images": "https://images.unsplash.com/photo-1608222351212-18fe0ec7b13b?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 5,
       "name": "Sản phụ khoa",
       "description": "Chăm sóc sức khỏe phụ nữ, thai sản và kế hoạch hóa gia đình",
-      "level": "Chuyên sâu"
+      "level": "Chuyên sâu",
+      "images": "https://images.unsplash.com/photo-1531983412531-1f49a365ffed?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 6,
       "name": "Tai Mũi Họng",
       "description": "Khám và điều trị các bệnh lý đường hô hấp trên",
-      "level": "Cơ sở"
+      "level": "Cơ sở",
+      "images": "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 7,
       "name": "Răng Hàm Mặt",
       "description": "Nha khoa tổng quát và phẫu thuật hàm mặt",
-      "level": "Cơ sở"
+      "level": "Cơ sở",
+      "images": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 8,
       "name": "Tâm lý lâm sàng",
       "description": "Tư vấn và điều trị các rối loạn tâm lý, trầm cảm",
-      "level": "Chuyên sâu"
+      "level": "Chuyên sâu",
+      "images": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 9,
       "name": "Chấn thương chỉnh hình",
       "description": "Cơ xương khớp và phục hồi chức năng sau tai nạn",
-      "level": "Chuyên sâu"
+      "level": "Chuyên sâu",
+      "images": "https://images.unsplash.com/photo-1583324113626-70df0f4deaab?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": 10,
       "name": "Nhãn khoa",
       "description": "Khám mắt và điều trị các tật khúc xạ",
-      "level": "Cơ sở"
+      "level": "Cơ sở",
+      "images": "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=800&q=80"
     }
   ],
   "medical_services": [

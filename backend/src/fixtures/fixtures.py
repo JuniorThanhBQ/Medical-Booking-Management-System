@@ -38,7 +38,8 @@ class FixtureLoader:
             specialty = Specialty(
                 name=specialty_data["name"],
                 description=specialty_data["description"],
-                level=specialty_data["level"]
+                level=specialty_data["level"],
+                images=specialty_data.get("images")
             )
             db.session.add(specialty)
             db.session.flush()
@@ -208,7 +209,7 @@ class FixtureLoader:
 
             db.session.commit()
 
-        except Exception as e:
+        except Exception:
             db.session.rollback()
             traceback.print_exc()
             sys.exit(1)

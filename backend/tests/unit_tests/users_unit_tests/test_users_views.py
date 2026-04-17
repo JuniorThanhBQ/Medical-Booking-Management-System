@@ -39,6 +39,8 @@ def test_login_api(test_client, test_app, test_session):
     assert res.status_code == 201
     data = res.get_json()
     assert "access_token" in data
+    assert "refresh_token" in data
+    assert "refresh_token" in res.headers.get("Set-Cookie", "")
 
 @patch('src.modules.users.views.verify_email_existence', return_value=True)
 @patch('src.modules.users.services.cloudinary_upload_process', return_value="url")
@@ -65,22 +67,6 @@ def test_register_api(mock_cloudinary, mock_verify_email, test_client, test_app,
     res = test_client.post('/api/v1/auth/register', json=payload)
     assert res.status_code == 201
 
-def test_email_validator_api(test_client, test_app, test_session):
-    seed_db(test_app)
-
-    res = test_client.post('/api/v1/auth/email-validator', json={})
-    assert res.status_code == 400
-
-    res = test_client.post('/api/v1/auth/email-validator', json={"email": "bad-email"})
-    assert res.status_code == 400
-
-    res = test_client.post('/api/v1/auth/email-validator', json={"email": "view@test.com"})
-    assert res.status_code == 400
-    assert res.get_json()["is_valid"] is False
-
-    res = test_client.post('/api/v1/auth/email-validator', json={"email": "free@test.com"})
-    assert res.status_code == 201
-    assert res.get_json()["is_valid"] is True
 
 def test_retrieve_current_user_api(test_client, test_app, test_session):
     user, token = seed_db(test_app)

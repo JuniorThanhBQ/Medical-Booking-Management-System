@@ -1,4 +1,4 @@
-import { INITIAL_DAYS, DAY_LABELS } from "@/configs/const";
+import { DAY_LABELS, INITIAL_DAYS } from "@/configs/const";
 
 export default function WeeklyScheduleCard({
   workDate,
@@ -15,8 +15,8 @@ export default function WeeklyScheduleCard({
       <div className="schedule-page__card-header">
         <h2 className="schedule-page__card-title">Giờ làm việc theo tuần</h2>
         <p className="schedule-page__card-description">
-          Cài đặt khung giờ khám mặc định cho từng ngày trong tuần. Bệnh nhân chỉ có thể đặt lịch
-          trong các khung giờ này.
+          Cài đặt khung giờ khám mặc định cho từng ngày trong tuần. Bệnh nhân
+          chỉ có thể đặt lịch trong các khung giờ này.
         </p>
       </div>
 
@@ -67,7 +67,9 @@ export default function WeeklyScheduleCard({
             onChange={(e) => setTime("startTime", e.target.value)}
           >
             {timeOptions.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>
@@ -80,7 +82,9 @@ export default function WeeklyScheduleCard({
             onChange={(e) => setTime("endTime", e.target.value)}
           >
             {timeOptions.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>

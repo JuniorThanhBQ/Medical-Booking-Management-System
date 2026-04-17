@@ -1,6 +1,7 @@
-import { useRef } from "react";
-import { EditPenIcon } from "@/assets/icons";
 import { readAvatarFile } from "@utils/profile-utils.js";
+import { useRef } from "react";
+
+import { EditPenIcon } from "@/assets/icons";
 
 const ProfileCard = ({ profile, onAvatarChange }) => {
   const fileInputRef = useRef(null);
@@ -11,36 +12,59 @@ const ProfileCard = ({ profile, onAvatarChange }) => {
 
   const getInitials = (name) => {
     return name
-      .split(' ')
+      .split(" ")
       .map((n) => n[0])
-      .join('')
+      .join("")
       .toUpperCase();
   };
 
   const infoItems = [
-    { label: 'Họ', value: profile.name.split(' ')[0] },
-    { label: 'Tên', value: profile.name.split(' ').slice(1).join(' ') },
-    { label: 'Số điện thoại', value: profile.phone },
-    { label: 'Email', value: profile.email },
-    { label: 'Ngày sinh', value: profile.dateOfBirth || '-' },
-    { label: 'Giới tính', value: profile.gender || '-' },
+    { label: "Họ", value: profile.name.split(" ")[0] },
+    { label: "Tên", value: profile.name.split(" ").slice(1).join(" ") },
+    { label: "Số điện thoại", value: profile.phone },
+    { label: "Email", value: profile.email },
+    {
+      label: "Ngày sinh",
+      value: profile.dateOfBirth
+        ? new Date(profile.dateOfBirth)
+            .toLocaleDateString("en-GB")
+            .replace(/\//g, "-")
+        : "-",
+    },
+    {
+      label: "Giới tính",
+      value: { MALE: "Nam", FEMALE: "Nữ" }[profile.gender] || "Khác",
+    },
   ];
 
   return (
     <div className="profile-card">
-
       <div className="profile-card__avatar-container">
         <div className="profile-card__avatar">
           {profile.avatar ? (
-            <img src={profile.avatar} alt={profile.name} className="profile-card__avatar" />
+            <img
+              src={profile.avatar}
+              alt={profile.name}
+              className="profile-card__avatar"
+            />
           ) : (
             getInitials(profile.name)
           )}
         </div>
-        <button className="profile-card__avatar-edit" aria-label="Chỉnh sửa ảnh đại diện" onClick={() => fileInputRef.current?.click()}>
+        <button
+          className="profile-card__avatar-edit"
+          aria-label="Chỉnh sửa ảnh đại diện"
+          onClick={() => fileInputRef.current?.click()}
+        >
           <EditPenIcon size={16} className="w-4 h-4" />
         </button>
-        <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={handleFileChange}
+        />
       </div>
 
       <h3 className="profile-card__name">{profile.name}</h3>

@@ -1,5 +1,4 @@
-import { AuthApis, endpoints } from "@/configs/Apis";
-import { mockAvailableAppointmentsInLeave } from "@/data/mocks/doctor-schedule";
+import { apis, endpoints } from "@/configs/apis";
 import {
   EMPTY_PATIENT,
   isTodayAppointment,
@@ -9,58 +8,69 @@ import {
 export async function fetchAppointmentsInDay({ date }) {
   if (!date) return [];
 
-  // try {
-  //   const response = await Apis.get("/appointments/available-in-day/", {
-  //     params: { date },
-  //   });
+  try {
+    const response = await apis.get(endpoints["appointments"], {
+      params: { date },
+    });
 
-  //   const payload = response?.data;
-  //   if (Array.isArray(payload)) return payload;
-  //   if (Array.isArray(payload?.appointments)) return payload.appointments;
+    const payload = response?.data;
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.appointments)) return payload.appointments;
 
-  //   return [];
-  // } catch (error) {
-  // }
-  return mockAvailableAppointmentsInLeave;
+    return [];
+  } catch (error) {
+    console.error("Error fetching appointments in day:", error);
+  }
 }
 
-export async function fetchDoctorAppointments(token) {
-  if (!token) return [];
-  const client = AuthApis(token);
+export async function fetchDoctorAppointments(api) {
+  const client = api;
   const response = await client.get(endpoints.appointments);
   return Array.isArray(response?.data?.items) ? response.data.items : [];
 }
 
-export async function fetchDoctorTodayPatients(token) {
-  if (!token) return [];
+export async function fetchDoctorTodayPatients(api) {
+  if (!api) return [];
 
-  const client = AuthApis(token);
-  const response = await client.get(endpoints.appointments);
+  try {
+    const response = await api.get(endpoints.appointments);
 
-  const appointments = Array.isArray(response?.data?.items) ? response.data.items : [];
-  const todayAppointments = appointments.filter((appointment) =>
-    isTodayAppointment(appointment?.appointmentDate)
-  );
+    const appointments = Array.isArray(response?.data?.items)
+      ? response.data.items
+      : [];
 
-  const normalizedAppointments = await Promise.all(
-    todayAppointments.map(async (appointment) => {
-      let patientProfile = EMPTY_PATIENT;
+    const todayAppointments = appointments.filter((appointment) =>
+      isTodayAppointment(appointment?.appointmentDate),
+    );
 
-      try {
-        const patientRes = await client.get(
-          endpoints.appointment_patient_profile(appointment.id)
-        );
-        patientProfile = {
-          dateOfBirth: patientRes?.data?.dateOfBirth ?? null,
-          gender: patientRes?.data?.gender ?? null,
-        };
-      } catch {
-        patientProfile = EMPTY_PATIENT;
-      }
+    if (todayAppointments.length === 0) return [];
 
-      return normalizeDoctorAppointment(appointment, patientProfile);
-    })
-  );
+    const normalizedAppointments = await Promise.all(
+      todayAppointments.map(async (appointment) => {
+        let patientProfile = EMPTY_PATIENT;
 
-  return normalizedAppointments;
+        try {
+          const patientRes = await api.get(
+            endpoints.appointment_patient_profile(appointment.id),
+          );
+
+          if (patientRes?.data) {
+            patientProfile = {
+              dateOfBirth: patientRes.data.dateOfBirth ?? null,
+              gender: patientRes.data.gender ?? null,
+            };
+          }
+        } catch (error) {
+          console.warn(`Không thể lấy profile của lịch hẹn ${appointment.id}`);
+        }
+
+        return normalizeDoctorAppointment(appointment, patientProfile);
+      }),
+    );
+
+    return normalizedAppointments;
+  } catch (error) {
+    console.error("Lỗi khi tải danh sách lịch hẹn:", error);
+    throw error;
+  }
 }

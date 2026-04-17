@@ -18,8 +18,8 @@ def validate_appointment_date(appointment_datetime=None):
     target_date = appointment_datetime.date()
     today = date.today()
 
-    if target_date < today or target_date > (today + timedelta(days=7)):
-        return {"message": "Chỉ được đặt lịch trong 7 ngày tới"}, "ERROR_BAD_REQUEST"
+    if target_date < today or target_date > (today + timedelta(days=30)):
+        return {"message": "Chỉ được đặt lịch trong 30 ngày tới"}, "ERROR_BAD_REQUEST"
 
     return None, None
 
@@ -33,7 +33,7 @@ def validate_available_slot(appointment_datetime=None, available_slots=None):
     return None, None
 
 
-def format_appointment(appointment=None, doctor=None, patient_user=None, patient_name=None):
+def format_appointment(appointment=None, doctor=None, patient_user=None, patient_name=None, specialty=None):
     if patient_name is None:
         user = patient_user or appointment.patient_profile
         patient_name = f"{user.last_name} {user.first_name}"
@@ -44,6 +44,7 @@ def format_appointment(appointment=None, doctor=None, patient_user=None, patient
         "name": appointment.name,
         "patientName": patient_name,
         "doctorName": f"{doctor.last_name} {doctor.first_name}" if doctor else None,
+        "specialty": specialty if specialty else None,
         "appointmentDate": appointment.appointment_date.isoformat() + "Z",
         "status": appointment.status.name if appointment.status else None,
         "note": appointment.note,
@@ -84,5 +85,6 @@ def format_speciality_output(specialty=None):
         "id": specialty.id,
         "name": specialty.name,
         "description": specialty.description,
-        "level": specialty.level
+        "level": specialty.level,
+        "images": specialty.images if specialty.images else None
     }

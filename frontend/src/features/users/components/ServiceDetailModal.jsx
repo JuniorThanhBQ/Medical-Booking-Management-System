@@ -1,5 +1,6 @@
+import "@css/shared/service-detail.css";
+
 import { useNavigate } from "react-router-dom";
-import "@/assets/css/users/service-detail-modal.css";
 
 export function ServiceDetailModal({ isOpen, service, onClose }) {
   const navigate = useNavigate();
@@ -23,9 +24,7 @@ export function ServiceDetailModal({ isOpen, service, onClose }) {
         <div className="service-detail">
           <h2 className="service-detail__title">{service.name}</h2>
 
-          <p className="service-detail__description">
-            {service.description}
-          </p>
+          <p className="service-detail__description">{service.description}</p>
 
           {service.specialty && (
             <div className="service-detail__section">

@@ -21,6 +21,7 @@ class Specialty(Base):
 
     name = Column(String(255), nullable=False, unique=True)
     description = Column(Text)
+    images = Column(String(500))
     level = Column(String(255), nullable=False)
     medical_services = relationship(
         "MedicalService",

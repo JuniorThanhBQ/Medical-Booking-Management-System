@@ -1,10 +1,19 @@
-export default function LoadingSpinner({ fullPage = false, size, label }) {
-  const loaderClass = `app-loader${fullPage ? " app-loader--full-page" : ""}`;
-  const spinnerClass = `app-spinner${size === "sm" ? " app-spinner--sm" : ""}`;
+export default function LoadingSpinner({
+  fullPage = true,
+  size = "lg",
+  className = "",
+}) {
+  const loaderClass = [
+    "app-loader",
+    fullPage && "app-loader--full-page",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={loaderClass}>
-      <div className={spinnerClass} />
+      <div className={`app-spinner app-spinner--${size}`} role="status" />
     </div>
   );
 }

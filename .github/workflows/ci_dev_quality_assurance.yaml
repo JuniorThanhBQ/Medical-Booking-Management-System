@@ -9,6 +9,55 @@ on:
       - 'main'
 
 jobs:
+  build-check:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cài đặt thư viện Frontend
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Cài đặt thư viện Backend
+        working-directory: ./backend
+        run: |
+          pip install -r requirements/requirements.txt
+
+      - name: Tạo file .env 
+        working-directory: ./backend
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
+          fi
+
+      - name: Build backend
+        working-directory: ./backend
+        run: |
+          python -m src.index
+
   pytest-test:
     runs-on: ubuntu-latest
     

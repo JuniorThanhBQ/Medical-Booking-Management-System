@@ -1,4 +1,4 @@
-@import "@/assets/css/auth/landing.css";
+@import "@/assets/css/auth/landing-page.css";
 
 .booking {
   min-height: 100vh;
@@ -500,4 +500,59 @@
   display: flex;
   gap: 10px;
   margin-top: 8px;
+}
+
+.booking__receptionist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--lp-bg-light); /* Màu nền nhạt có sẵn */
+  border-radius: 14px;
+  border: 1px solid var(--lp-border);
+}
+
+.booking__receptionist-title {
+  font-family: var(--lp-font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--lp-heading);
+  margin: 0 0 4px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--lp-border);
+}
+
+.booking__input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.booking__input-group > * {
+  flex: 1;
+}
+
+/* Tận dụng lại style của notes-input nhưng tinh chỉnh cho form */
+.booking__receptionist-form .booking__notes-input {
+  width: 100%;
+  min-height: 42px; /* Đồng bộ chiều cao với các input khác */
+  padding: 10px 14px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid var(--lp-border);
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.booking__receptionist-form .booking__notes-input:focus {
+  border-color: var(--lp-primary);
+  outline: none;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 520px) {
+  .booking__input-group {
+    flex-direction: column;
+    gap: 12px;
+  }
 }

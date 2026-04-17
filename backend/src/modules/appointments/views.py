@@ -6,10 +6,17 @@ from src.modules.appointments.services import (
     create_patient_appointment_service,
     create_receptionist_appointment_service, delete_appointment_service,
     get_appointment_detail_service, get_appointments_list_service,
-    get_patient_profile_service, patch_appointment_service)
+    get_patient_profile_service, lock_booking_transaction_service,
+    patch_appointment_service, unlock_booking_transaction_service)
 from src.utils.utils import check_xss_violation, format_api_response
 
 appointments_namespace = Namespace("appointments", description="Các API lịch hẹn")
+
+transaction_lock_model = appointments_namespace.model('TransactionLockRequest', {
+    'doctorName': fields.String(required=True),
+    'appointmentDate': fields.String(required=True),
+    'serviceName': fields.String()
+})
 
 appointment_request_model = appointments_namespace.model('AppointmentRequest', {
     'doctorId': fields.Integer(required=True, description='ID của bác sĩ'),
@@ -118,4 +125,30 @@ class ReceptionistAppointmentCreateAPI(Resource):
         return format_api_response(
             *create_receptionist_appointment_service(current_user, data),
             success_code=201
+        )
+
+class TransactionLockAPI(Resource):
+    @appointments_namespace.expect(transaction_lock_model)
+    def post(self):
+        data = request.get_json(silent=True) or request.form.to_dict()
+
+        if check_xss_violation(data.values()):
+            return {"message": "Dữ liệu đầu vào chứa ký tự không hợp lệ"}, 400
+
+        return format_api_response(
+            *lock_booking_transaction_service(data),
+            success_code=204
+        )
+
+class TransactionUnlockAPI(Resource):
+    @appointments_namespace.expect(transaction_lock_model)
+    def post(self):
+        data = request.get_json(silent=True) or request.form.to_dict()
+
+        if check_xss_violation(data.values()):
+            return {"message": "Dữ liệu đầu vào chứa ký tự không hợp lệ"}, 400
+
+        return format_api_response(
+            *unlock_booking_transaction_service(data),
+            success_code=204
         )

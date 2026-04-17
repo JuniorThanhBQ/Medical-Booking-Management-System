@@ -1,14 +1,35 @@
+import "@css/shared/hero.css";
+
+import useAuth from "@contexts/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 import { ArrowRightIcon } from "@/assets/icons";
-import "@/assets/css/users/hero.css";
 
 const STATS = [
-  { value: "24/7", label: "Cấp cứu thần kinh 24/7" },
-  { value: "15+", label: "Bác sĩ thần kinh chuyên khoa" },
-  { value: "95%", label: "Mức độ hài lòng của bệnh nhân" },
-  { value: "50K+", label: "Bệnh nhân đã được điều trị" },
+  { value: "24/7", label: "Tiếp nhận lịch khám 24/7" },
+  { value: "100%", label: "Tận tâm trong từng ca bệnh" },
+  { value: "CS1", label: "Một cơ sở làm trọng tâm dịch vụ" },
+  { value: "5.0", label: "Đi theo xu hướng công nghệ hiện đại" },
 ];
 
 export default function HeroSection() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleBookingClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      toast.info("Nhắc nhở: Bạn sẽ cần đăng nhập để đặt lịch.", {
+        onAutoClose: () => {
+          navigate("/dashboard");
+        },
+      });
+    } else {
+      toast.success(`Chào mừng ${user.profile.firstName} đã quay lại!`, {});
+    }
+  };
+
   return (
     <section className="hero" id="hero">
       <div className="hero__bg">
@@ -34,13 +55,17 @@ export default function HeroSection() {
           </h1>
 
           <p className="hero__desc">
-            Đội ngũ bác sĩ giàu kinh nghiệm. Chăm sóc toàn diện cho não bộ và hệ
-            thần kinh – từ chẩn đoán chính xác đến phác đồ điều trị cá nhân hóa,
-            lâu dài.
+            Đội ngũ bác sĩ giàu kinh nghiệm, chăm sóc toàn diện với đa dạng dịch
+            vụ từ chẩn đoán chính xác đến phác đồ điều trị. Châm ngôn của chúng
+            tôi là lương y như từ mẫu.
           </p>
 
           <div className="hero__ctas">
-            <a href="/dashboard" className="hero__btn-primary">
+            <a
+              href="/dashboard"
+              className="hero__btn-primary"
+              onClick={handleBookingClick}
+            >
               Đặt lịch tư vấn
             </a>
             <a href="#services" className="hero__btn-ghost">

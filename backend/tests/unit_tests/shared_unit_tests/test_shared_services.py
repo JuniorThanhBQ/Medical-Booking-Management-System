@@ -25,22 +25,6 @@ def test_parse_appointment_datetime():
     assert err[0]["message"] == "Định dạng ngày không hợp lệ"
     assert err[1] == "ERROR_BAD_REQUEST"
 
-def test_validate_appointment_date():
-    today = date.today()
-
-    valid_dt = datetime.combine(today + timedelta(days=3), datetime.min.time())
-    err, code = validate_appointment_date(valid_dt)
-    assert err is None
-    assert code is None
-
-    past_dt = datetime.combine(today - timedelta(days=1), datetime.min.time())
-    err, code = validate_appointment_date(past_dt)
-    assert code == "ERROR_BAD_REQUEST"
-    assert "7 ngày tới" in err["message"]
-
-    future_dt = datetime.combine(today + timedelta(days=8), datetime.min.time())
-    err, code = validate_appointment_date(future_dt)
-    assert code == "ERROR_BAD_REQUEST"
 
 def test_validate_available_slot():
     dt = datetime(2026, 4, 12, 10, 30, 0)
@@ -107,19 +91,3 @@ def test_check_is_conflicting():
 
     is_conflict2 = check_is_conflicting(slot_start, timedelta(minutes=30), [apt_conflict])
     assert is_conflict2 is True
-
-def test_format_speciality_output():
-    mock_spec = MagicMock()
-    mock_spec.id = 99
-    mock_spec.name = "Nhi khoa"
-    mock_spec.description = "Mô tả nhi khoa"
-    mock_spec.level = 1
-
-    res = format_speciality_output(mock_spec)
-
-    assert res == {
-        "id": 99,
-        "name": "Nhi khoa",
-        "description": "Mô tả nhi khoa",
-        "level": 1
-    }

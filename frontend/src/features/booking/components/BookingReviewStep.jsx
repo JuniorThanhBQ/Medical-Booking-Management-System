@@ -1,4 +1,4 @@
-import { toISODate, formatTimeDisplay } from "@/utils/booking-utils.js";
+import { formatTimeDisplay, toISODate } from "@/utils/booking-utils.js";
 
 export function BookingReviewStep({
   specialtyName,
@@ -71,9 +71,7 @@ export function BookingReviewStep({
             {submitting ? "Đang xử lý..." : "Xác nhận lịch hẹn"}
           </button>
 
-          {submitError && (
-            <p className="booking__error">{submitError}</p>
-          )}
+          {submitError && <p className="booking__error">{submitError}</p>}
 
           <p className="booking__hint">
             Bằng việc xác nhận, bạn đồng ý thông tin trên là chính xác.
@@ -87,9 +85,7 @@ export function BookingReviewStep({
 
           <div className="booking__summary-row">
             <span className="booking__summary-label">Chuyên khoa</span>
-            <span className="booking__summary-value">
-              {specialtyName}
-            </span>
+            <span className="booking__summary-value">{specialtyName}</span>
           </div>
 
           <div className="booking__summary-row">
@@ -114,9 +110,7 @@ export function BookingReviewStep({
           </div>
 
           <div className="booking__summary-foot">
-            <div className="booking__summary-foot-title">
-              Quy trình
-            </div>
+            <div className="booking__summary-foot-title">Quy trình</div>
             <div className="booking__summary-foot-desc">
               Chọn ngày → thời gian → bác sĩ → xác nhận.
             </div>

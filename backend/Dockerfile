@@ -22,6 +22,7 @@ COPY --chown=appuser:appuser database/migrations ./migrations
 RUN mkdir -p /app/instance && chown -R appuser:appuser /app/instance
 COPY --chown=appuser:appuser backend/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+RUN mkdir -p /app/shared_tmp && chmod 777 /app/shared_tmp
 USER appuser
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=30s \

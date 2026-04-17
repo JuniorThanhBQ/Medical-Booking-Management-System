@@ -1,29 +1,34 @@
-import { useEffect, useState } from 'react';
-import { useProfileStore } from '../hooks/use-profile-store';
-import ProfileSidebar from '../components/ProfileSidebar';
-import ActivityView from '../components/activity/ActivityView';
-import Navbar from '../components/Navbar';
-import { TABS } from './ProfilePage';
-import { getActivityConfig } from '@utils/activity-config.js';
-import { getUserToken } from '@/utils/auth-helpers';
-import { getProfileSidebarItems } from '@configs/const';
-import '@/assets/css/users/profile.css';
+import "@css/users/profile.css";
+
+import { getProfileSidebarItems } from "@configs/const";
+import { TABS } from "@configs/const";
+import { getActivityConfig } from "@utils/activity-config.js";
+import { useEffect, useState } from "react";
+
+import useAuth from "@/contexts/auth/AuthContext";
+
+import ActivityView from "../components/activity/ActivityView";
+import Navbar from "../components/Navbar";
+import ProfileSidebar from "../components/ProfileSidebar";
 
 const ActivityPage = () => {
-  const { user } = useProfileStore();
-  const [activityData, setActivityData] = useState({ filters: [], items: [], upcomingItems: [], });
+  const { api, user: contextUser } = useAuth();
+  const [activityData, setActivityData] = useState({
+    filters: [],
+    items: [],
+    upcomingItems: [],
+  });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
 
     const loadActivity = async () => {
-      const token = getUserToken();
-      if (!token) {
+      if (!api) {
         if (mounted) {
           setActivityData({ filters: [], items: [], upcomingItems: [] });
-          setError('');
+          setError("");
           setLoading(false);
         }
         return;
@@ -31,14 +36,14 @@ const ActivityPage = () => {
 
       setLoading(true);
       try {
-        const config = await getActivityConfig(user?.role, token);
+        const config = await getActivityConfig(contextUser?.role, api);
         if (!mounted) return;
         setActivityData(config);
-        setError('');
+        setError("");
       } catch {
         if (!mounted) return;
         setActivityData({ filters: [], items: [], upcomingItems: [] });
-        setError('Không thể tải dữ liệu hoạt động');
+        setError("Không thể tải dữ liệu hoạt động");
       } finally {
         if (mounted) {
           setLoading(false);
@@ -51,15 +56,25 @@ const ActivityPage = () => {
     return () => {
       mounted = false;
     };
-  }, [user?.role]);
+  }, [contextUser?.role, api]);
 
-  const displayName = [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() || user?.name || 'User';
+  const displayName =
+    [contextUser?.firstName, contextUser?.lastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    contextUser?.name ||
+    "User";
 
   return (
     <>
       <Navbar />
       <div className="profile-layout">
-        <ProfileSidebar userName={displayName} activeKey={TABS.ACTIVITY} items={getProfileSidebarItems(user?.role)} />
+        <ProfileSidebar
+          userName={displayName}
+          activeKey={TABS.ACTIVITY}
+          items={getProfileSidebarItems(contextUser?.role)}
+        />
 
         <main className="profile-main">
           <h1 className="profile-main__title">Hoạt động</h1>

@@ -6,6 +6,10 @@ def get_user_by_email(email: str) -> User:
     return User.query.filter(User.email == email).first()
 
 
+def get_user_by_id(user_id: int) -> User:
+    return db.session.get(User, user_id)
+
+
 def add_user(user: User):
     db.session.add(user)
     db.session.flush()

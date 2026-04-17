@@ -9,7 +9,7 @@ COPY src/ ./src/
 COPY index.html vite.config.js eslint.config.js ./
 RUN npm run build
 
-FROM nginx:1.28.2-alpine
+FROM nginx:alpine
 RUN apk update && apk upgrade --no-cache
 RUN apk add --no-cache curl
 RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/*

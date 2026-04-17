@@ -49,6 +49,8 @@ def get_detail_notification_service(current_user, notification_id):
         "is_read": notification.is_read,
         "type": notification.type.name if notification.type else "SYSTEM",
         "created_at": notification.created_date.isoformat() + "Z" if notification.created_date else None,
+        "appointment_id": notification.appointment_id,
+        "send_email": notification.send_email,
     }
     return result, "SUCCESS"
 

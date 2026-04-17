@@ -1,0 +1,216 @@
+/* appointment-page.css 
+   Dựa trên hệ thống design system của dashboard.css và booking.css
+*/
+
+@import "@/assets/css/auth/landing-page.css";
+
+.dashboard {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, var(--lp-section-bg-alt), #ffffff);
+  padding: 48px 0 80px;
+}
+
+/* Section Wrapper */
+.dashboard__specialties-section {
+  max-width: var(--lp-container);
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+/* Header Section */
+.dashboard__specialties-header {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--lp-border);
+  padding-bottom: 24px;
+}
+
+.dashboard__specialties-title {
+  font-family: var(--lp-font-heading);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--lp-heading);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px 0;
+}
+
+.dashboard__specialties-subtitle {
+  color: var(--lp-muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Grid Layout - Đồng bộ với dashboard.css */
+.dashboard__specialties-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+/* Empty State */
+.dashboard__search-empty {
+  text-align: center;
+  padding: 80px 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 2px dashed var(--lp-border);
+  color: var(--lp-muted);
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Pagination - Theo phong cách booking.css & dashboard.css */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--lp-border);
+}
+
+.pagination span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--lp-body);
+  min-width: 100px;
+  text-align: center;
+  user-select: none;
+}
+
+.pagination button {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border: 1px solid var(--lp-border);
+  border-radius: 999px; /* Bo tròn theo style booking */
+  color: var(--lp-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--lp-primary);
+  border-color: var(--lp-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--lp-bg-light);
+  border-color: var(--lp-border);
+  box-shadow: none;
+}
+
+.pagination button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1100px) {
+  .dashboard__specialties-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .dashboard__specialties-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .dashboard__specialties-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .dashboard__specialties-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .dashboard {
+    padding-top: 32px;
+  }
+
+  .dashboard__specialties-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pagination button {
+    width: 100%;
+  }
+}
+
+.dashboard__filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filter-group {
+  position: relative;
+}
+
+.filter-input {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--lp-border);
+  font-size: 0.875rem;
+  width: 280px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.filter-input:focus {
+  border-color: var(--lp-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--lp-border);
+  font-size: 0.875rem;
+  background-color: #ffffff;
+  color: var(--lp-body);
+  outline: none;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.filter-select:focus {
+  border-color: var(--lp-primary);
+}
+
+@media (max-width: 820px) {
+  .dashboard__filters {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-input {
+    width: 100%;
+  }
+}

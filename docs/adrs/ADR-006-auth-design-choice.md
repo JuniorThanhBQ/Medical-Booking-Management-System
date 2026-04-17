@@ -1,0 +1,1 @@
+# ADR-003: Xác thực và phân quyền qua JWT HttpOnly Method

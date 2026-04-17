@@ -1,9 +1,15 @@
+import os
+import uuid
 from datetime import date, datetime, timedelta
 
 from sqlalchemy import func
+from werkzeug.utils import secure_filename
 
 from src.modules.appointments.models import Appointment, StatusRole
+from src.modules.appointments.repositories import get_locked_time_slots
 from src.modules.doctors.models import DayOfWeek
+from src.modules.doctors.rabbitmq.tasks import \
+    process_doctor_registration_email
 from src.modules.doctors.repositories import (commit_session, get_doctor_by_id,
                                               get_medical_service_by_id,
                                               get_or_create_work_schedule,
@@ -35,7 +41,6 @@ def parse_and_validate_date(date_str, max_day_searching=30):
     except ValueError:
         return None, "Định dạng không hợp lệ (YYYY-MM-DD)"
 
-
 def is_valid_working_day(doctor, target_date):
     if not doctor.profile or doctor.profile.profile_type != "doctor":
         return False, None
@@ -51,7 +56,6 @@ def is_valid_working_day(doctor, target_date):
         return False, None
 
     return True, schedule
-
 
 @handle_db_errors
 def get_my_schedule_service(current_user):
@@ -87,7 +91,6 @@ def get_my_schedule_service(current_user):
         "appointments": appointment_data
     }
     return result, "SUCCESS"
-
 
 @handle_db_errors
 def request_schedule_change_service(current_user, data):
@@ -136,7 +139,6 @@ def request_schedule_change_service(current_user, data):
 
     return {"message": "Cập nhật lịch thành công!"}, "SUCCESS"
 
-
 @handle_db_errors
 def get_specialties_service(page=1, per_page=5, keywords=None):
     pagination = get_paginated_specialties(page, per_page, keywords)
@@ -154,7 +156,6 @@ def get_specialties_service(page=1, per_page=5, keywords=None):
         }
     }
     return result, "SUCCESS"
-
 
 @handle_db_errors
 def get_doctors_service(page=1, per_page=5, keywords=None, specialty_id=None, work_dates=None):
@@ -187,7 +188,6 @@ def get_doctors_service(page=1, per_page=5, keywords=None, specialty_id=None, wo
     }
     return result, "SUCCESS"
 
-
 @handle_db_errors
 def get_medical_services_service(page=1, per_page=5, keywords=None, specialty_id=None):
     pagination = get_paginated_medical_services(page, per_page=per_page, keywords=keywords, specialty_id=specialty_id)
@@ -210,7 +210,6 @@ def get_medical_services_service(page=1, per_page=5, keywords=None, specialty_id
         }
     }
     return result, "SUCCESS"
-
 
 @handle_db_errors
 def get_medical_service_detail_service(service_id):
@@ -235,7 +234,6 @@ def get_medical_service_detail_service(service_id):
     }
     return result, "SUCCESS"
 
-
 @handle_db_errors
 def get_specialty_detail_service(specialty_id):
     specialty = get_specialty_by_id(specialty_id)
@@ -243,7 +241,6 @@ def get_specialty_detail_service(specialty_id):
         return {"message": "Không tồn tại chuyên khoa này"}, "NOT_FOUND"
 
     return format_speciality_output(specialty), "SUCCESS"
-
 
 @handle_db_errors
 def get_doctor_detail_service(doctor_id):
@@ -272,7 +269,6 @@ def get_doctor_detail_service(doctor_id):
     }
     return result, "SUCCESS"
 
-
 def format_work_schedule(work_schedule):
     if not work_schedule:
         return None
@@ -287,14 +283,12 @@ def format_work_schedule(work_schedule):
         "workDate": [wd.day_of_week.name.capitalize() for wd in work_schedule.work_dates],
     }
 
-
 def get_booked_appointments(doctor_id, target_date):
     return Appointment.query.filter(
         Appointment.doctor_profile_id == doctor_id,
         func.date(Appointment.appointment_date) == target_date,
         Appointment.status.in_([StatusRole.APPROVED, StatusRole.COMPLETED])
     ).all()
-
 
 def get_available_time_slots(doctor, target_date, medical_service):
     is_valid, schedule = is_valid_working_day(doctor, target_date)
@@ -305,18 +299,25 @@ def get_available_time_slots(doctor, target_date, medical_service):
     duration = visit_type.duration_minutes + visit_type.buffer_before + visit_type.buffer_after
 
     appointments = get_booked_appointments(doctor.profile.id, target_date)
+    doctor_name = f"{doctor.first_name} {doctor.last_name} ".strip()
+    locked_dates = get_locked_time_slots(doctor_name, target_date)
+
     current_date = datetime.combine(target_date, schedule.start_time)
     end_date = datetime.combine(target_date, schedule.end_time)
     now_date = datetime.now()
     available = []
+    print("=========================================\n\n\n")
+    print(locked_dates, current_date, end_date, now_date, doctor_name)
+    print("=========================================\n\n\n")
 
     while current_date + timedelta(minutes=duration) <= end_date:
-        if current_date > now_date and not check_is_conflicting(current_date, duration, appointments):
+        if (current_date > now_date
+                and not check_is_conflicting(current_date, duration, appointments)
+                and current_date not in locked_dates):
             available.append(current_date.isoformat() + "Z")
         current_date += timedelta(minutes=duration)
 
     return available
-
 
 @handle_db_errors
 def get_time_slots_service(doctor_id, date_str, service_id):
@@ -349,3 +350,19 @@ def get_time_slots_service(doctor_id, date_str, service_id):
         "workSchedule": work_schedule_data,
         "availableTimeSlots": available_slots,
     }], "SUCCESS"
+
+def send_doctor_registration_service(data, cv_file):
+    if not cv_file:
+        return {"message": "Vui lòng đính kèm file CV"}, "BAD_REQUEST"
+
+    filename = secure_filename(cv_file.filename)
+    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+    temp_dir = "/app/shared_tmp"
+    os.makedirs(temp_dir, exist_ok=True)
+    file_path = os.path.join(temp_dir, unique_filename)
+
+    cv_file.save(file_path)
+
+    process_doctor_registration_email.delay(data, file_path, filename)
+
+    return {"message": "Hồ sơ của bạn đã được tiếp nhận và đang xử lý."}, "SUCCESS"

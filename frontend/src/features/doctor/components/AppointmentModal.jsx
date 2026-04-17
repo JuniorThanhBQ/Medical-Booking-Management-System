@@ -1,12 +1,9 @@
+import LoadingSpinner from "@features/shared/components/LoadingSpinner";
 import { useEffect, useState } from "react";
-import { fetchAppointmentsInDay } from "../services/appointments-api.js";
-import LoadingSpinner from "@features/shared/components/LoadingSpinner"
 
-export default function AppointmentsPreviewModal({
-  date,
-  isOpen,
-  onClose,
-}) {
+import { fetchAppointmentsInDay } from "../services/appointments-api.js";
+
+export default function AppointmentsPreviewModal({ date, isOpen, onClose }) {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -75,9 +72,7 @@ export default function AppointmentsPreviewModal({
         </div>
 
         <div className="schedule-page__modal-body">
-          {loading && (
-            <LoadingSpinner size="sm" label="Đang tải lịch hẹn..." />
-          )}
+          {loading && <LoadingSpinner size="sm" label="Đang tải lịch hẹn..." />}
 
           {!loading && error && (
             <p className="schedule-page__modal-error">{error}</p>
@@ -112,7 +107,6 @@ export default function AppointmentsPreviewModal({
               ))}
             </ul>
           )}
-
         </div>
       </div>
     </div>

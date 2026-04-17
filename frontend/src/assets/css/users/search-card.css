@@ -1,0 +1,40 @@
+.search-card__type-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  background-color: #f1f5f9;
+  padding: 6px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.search-card__type-label {
+  position: relative;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.search-card__type-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.search-card__type-label:hover {
+  color: #334155;
+  background-color: rgba(226, 232, 240, 0.5);
+}
+
+.search-card__type-label.active {
+  background-color: #ffffff;
+  color: #0ea5e9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}

@@ -1,7 +1,9 @@
-import { useParams, useNavigate } from "react-router-dom";
-import "@/assets/css/users/appointment-record.css";
-import Navbar from "../components/Navbar";
+import "@css/users/appointment-record.css";
+
 import { useExamStore } from "@features/doctor/hooks/use-exam-store";
+import { useNavigate, useParams } from "react-router-dom";
+
+import Navbar from "../components/Navbar";
 
 export default function AppointmentRecordPage() {
   const { appointmentId } = useParams();
@@ -53,7 +55,10 @@ export default function AppointmentRecordPage() {
 
             <section className="record-page__section">
               <h2 className="record-page__section-title">Đơn thuốc</h2>
-              <p className="record-page__section-content" style={{ whiteSpace: "pre-line" }}>
+              <p
+                className="record-page__section-content"
+                style={{ whiteSpace: "pre-line" }}
+              >
                 {record.prescriptionText || "—"}
               </p>
             </section>

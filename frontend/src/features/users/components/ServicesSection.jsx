@@ -1,9 +1,12 @@
-import { useState } from "react";
-import useMedicalServices from "@features/users/hooks/use-services-section";
-import { ShieldIcon, GlobeIcon, EditSquareIcon } from "@/assets/icons";
-import { ServiceDetailModal } from "./ServiceDetailModal";
+import "@css/shared/services.css";
+
 import { getMedicalServiceDetail } from "@features/shared/services/public-api-service";
-import "@/assets/css/users/services.css";
+import useMedicalServices from "@features/users/hooks/useServicesSection";
+import { useState } from "react";
+
+import { EditSquareIcon, GlobeIcon, ShieldIcon } from "@/assets/icons";
+
+import { ServiceDetailModal } from "./ServiceDetailModal";
 
 const getIconComponent = (iconName) => {
   const iconMap = {
@@ -57,11 +60,7 @@ export default function ServicesSection() {
 
   const renderIconWrap = (visual) => {
     if (visual.logoText) {
-      return (
-        <span className="service-card__logo-text">
-          {visual.logoText}
-        </span>
-      );
+      return <span className="service-card__logo-text">{visual.logoText}</span>;
     } else {
       return (
         <span className="service-card__icon">

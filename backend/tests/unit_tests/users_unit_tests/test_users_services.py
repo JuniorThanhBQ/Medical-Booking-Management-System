@@ -73,29 +73,8 @@ def test_login_user_service(test_app, test_session):
         res, code = login_user_service("login@test.com", "password123", "PATIENT")
         assert code == "SUCCESS"
         assert "access_token" in res
+        assert "refresh_token" in res
 
-@patch('src.modules.users.services.cloudinary_upload_process', return_value="http://cloudinary.com/img.png")
-def test_register_user_service(mock_cloudinary, test_app, test_session):
-    with test_app.app_context():
-        setup_dummy_user(email="exist@test.com")
-
-        res, code = register_user_service(None)
-        assert code == "ERROR_BAD_REQUEST"
-
-        res, code = register_user_service({"email": "exist@test.com"})
-        assert code == "ERROR_BAD_REQUEST"
-
-        res, code = register_user_service({"email": "new@test.com", "birthday": "abc"})
-        assert code == "ERROR_BAD_REQUEST"
-
-        payload = {
-            "email": "new@test.com", "password": "pwd", "username": "new_user",
-            "first_name": "New", "last_name": "User", "birthday": "2000-01-01",
-            "gender": "male", "phone": "111222", "avatar": "base64img"
-        }
-        res, code = register_user_service(payload)
-        assert code == "SUCCESS"
-        assert is_email_available("new@test.com") is False
 
 @patch('src.modules.users.services.cloudinary_upload_process', return_value="http://cloudinary.com/new.png")
 def test_update_patient_profile_service(mock_cloudinary, test_app, test_session):

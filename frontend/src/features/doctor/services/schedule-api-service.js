@@ -1,17 +1,12 @@
-import { AuthApis, endpoints } from "@/configs/Apis";
-import { getToken } from "@/repository/local-storage-repository";
+import { endpoints } from "@/configs/apis";
 
-export async function fetchMySchedule() {
-  const token = getToken();
-  const res = await AuthApis(token).get(endpoints.doctor_my_schedule);
-  console.log("fetchMySchedule res", res.data)
+export async function fetchMySchedule(api) {
+  const res = await api.get(endpoints.doctor_schedule);
   return res.data;
 }
 
-export async function submitScheduleRequest(payload) {
-  console.log("submit Schedule payload", payload)
-  console.log("token", getToken())
-  const token = getToken();
-  const res = await AuthApis(token).post(endpoints.doctor_schedule_request, payload);
+export async function submitScheduleRequest(api, payload) {
+  console.log("submit Schedule payload", payload);
+  const res = await api.post(endpoints.doctor_schedule_request, payload);
   return res.data;
 }

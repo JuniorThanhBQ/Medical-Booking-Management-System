@@ -14,6 +14,7 @@ from src.routes import api_v1
 
 load_dotenv(find_dotenv())
 
+
 def init_celery(app, celery):
     celery.conf.update(
         broker_url=app.config.get('CELERY_BROKER_URL'),

@@ -1,16 +1,20 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { getStoredUser } from "@/utils/auth-helpers";
+import LoadingSpinner from "@features/shared/components/LoadingSpinner";
+import { Navigate, Outlet } from "react-router-dom";
 
-export default function RoleRoute({ allowedRoles }) {
-  const user = getStoredUser();
-  const location = useLocation();
+import useAuth from "@/contexts/auth/AuthContext";
 
-  if (!user) {
-    const returnUrl = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/auth?returnUrl=${returnUrl}`} replace />;
+export default function RoleRoute({ allowedRoles = [] }) {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(user?.role)) {
     return <Navigate to="/" replace />;
   }
 

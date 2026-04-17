@@ -1,8 +1,9 @@
 import {
   formatDayLabel,
-  toISODate,
   formatTimeDisplay,
+  toISODate,
 } from "@/utils/booking-utils.js";
+
 import { BookingPanelHeader } from "./BookingPanelHeader";
 
 export function BookingDateTimeStep({
@@ -37,12 +38,8 @@ export function BookingDateTimeStep({
               }`}
               onClick={() => onSelectDate(d)}
             >
-              <div className="booking__choice-title">
-                {formatDayLabel(d)}
-              </div>
-              <div className="booking__choice-meta">
-                {toISODate(d)}
-              </div>
+              <div className="booking__choice-title">{formatDayLabel(d)}</div>
+              <div className="booking__choice-meta">{toISODate(d)}</div>
             </button>
           );
         })}
