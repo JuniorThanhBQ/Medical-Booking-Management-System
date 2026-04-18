@@ -6,6 +6,14 @@ class AppointmentModelView(AdminModelView):
     column_searchable_list = ['name']
     column_filters = ['status', 'appointment_date']
     form_excluded_columns = ['created_date', 'updated_date', 'notifications', 'medical_record']
+    form_columns = [
+        'patient',
+        'medical_service',
+        'appointment_date',
+        'name',
+        'note',
+        'status'
+    ]
 
 
 class BookingLockModelView(AdminModelView):

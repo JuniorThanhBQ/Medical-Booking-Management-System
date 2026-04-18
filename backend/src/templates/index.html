@@ -14,8 +14,8 @@
 <header class="navbar">
     <div class="logo">Medical Appointment B3</div>
     <nav>
-        <a href="/">Trang chủ</a>
-        <a href="{{ app_url }}">Đặt lịch</a>
+        <a href="/" target="_blank">Trang chủ</a>
+        <a href="{{ app_url }}" target="_blank">Đặt lịch</a>
 
         {% if current_user.is_authenticated %}
             {% if current_user.role and current_user.role.name == 'ADMIN' %}
@@ -34,7 +34,7 @@
     <div class="hero-content">
         <h1>Chào mừng đến với Medical Appointment B3</h1>
         <p>Hệ thống đặt lịch khám nha khoa trực tuyến chuyên nghiệp, tận tâm và nhanh chóng.</p>
-        <a href="/appointments" class="btn">Đặt lịch ngay</a>
+        <a href="{{ app_url }}" target="_blank" class="btn">Đặt lịch ngay</a>
 
         {% if not current_user.is_authenticated %}
             <div class="google-login-wrapper">

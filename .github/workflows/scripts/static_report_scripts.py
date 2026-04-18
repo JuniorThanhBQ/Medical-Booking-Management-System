@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 
+
 class ComprehensiveReport:
     def __init__(self):
         self.extensions = [".py", ".js", ".jsx", ".sql"]
