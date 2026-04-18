@@ -1,5 +1,4 @@
 import datetime
-from zoneinfo import ZoneInfo
 
 from flask import flash
 from flask_admin.contrib.sqla import ModelView
@@ -13,18 +12,12 @@ from src.modules.users.models import PatientProfile, Profile, User
 
 account_profile_label = 'Tài khoản và hồ sơ'
 
-vn_time_zone = ZoneInfo("Asia/Ho_Chi_Minh")
-
 
 def vn_datetime_formatter(_view, value):
     if value is None:
         return ""
 
-    if value.tzinfo is None:
-        value = value.replace(tzinfo=datetime.timezone.utc)
-
-    value_vn = value.astimezone(vn_time_zone)
-    return value_vn.strftime('%d/%m/%Y %H:%M:%S')
+    return value.strftime('%d/%m/%Y %H:%M:%S')
 
 
 def vn_date_formatter(_view, value):
@@ -56,6 +49,7 @@ class ProfileInline(InlineFormAdmin):
 
 class AdminModelView(ModelView):
     form_excluded_columns = ['created_date', 'updated_date']
+
 
 
 class UserModelView(AdminModelView):

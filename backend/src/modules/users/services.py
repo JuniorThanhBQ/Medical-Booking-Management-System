@@ -25,7 +25,7 @@ class AuthService:
             return {"message": "Sai tên đăng nhập hoặc mật khẩu"}, "ERROR_UNAUTHORIZED"
 
         if not user.is_active:
-            return {"message": "Tài khoản bị khoá"}, "FORBIDDEN"
+            return {"message": "Tài khoản bị khoá hoặc chưa xác thực"}, "FORBIDDEN"
 
         if role.upper() != user.role.name:
             return {"message": "Tài khoản không có thẩm quyền truy cập"}, "FORBIDDEN"
@@ -88,7 +88,7 @@ class AuthService:
 
         token = generate_verification_token(new_user.email)
         verification_link = (f"{current_app.config.get("FRONTEND_URL")}"
-                             f"/email_verification?token={token}")
+                             f"/email-verification?token={token}")
 
         send_verification_email_task.delay(new_user.email, verification_link)
 
@@ -124,7 +124,7 @@ class AuthService:
                 return {"message": "Người dùng không tồn tại"}, "ERROR_UNAUTHORIZED"
 
             if not user.is_active:
-                return {"message": "Tài khoản bị khoá"}, "FORBIDDEN"
+                return {"message": "Tài khoản bị khoá hoặc chưa xác thực"}, "FORBIDDEN"
 
             new_access_token = create_token(user=user)
             new_refresh_token = create_refresh_token(user=user)

@@ -1,4 +1,5 @@
 import datetime
+from zoneinfo import ZoneInfo
 import enum
 
 from flask_login import UserMixin
@@ -7,6 +8,8 @@ from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
 from sqlalchemy.orm import backref, relationship
 
 from src.extensions import db
+
+VN_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
 
 
 class UserRole(enum.Enum):
@@ -26,9 +29,10 @@ class GenderRole(enum.Enum):
 class Base(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
-    created_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
-    updated_date = Column(DateTime, default=datetime.datetime.now(datetime.UTC),
-                          onupdate=datetime.datetime.now(datetime.UTC))
+    created_date = Column(DateTime, default=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None))    
+    updated_date = Column(DateTime, 
+                          default=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None),
+                          onupdate=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None))
 
 
 class User(Base, UserMixin):

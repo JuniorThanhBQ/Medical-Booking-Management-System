@@ -17,6 +17,7 @@ import Dashboard from "@features/users/pages/Dashboard.jsx";
 import LandingPage from "@features/users/pages/LandingPage.jsx";
 import PatientProfilePage from "@features/users/pages/PatientProfilePage.jsx";
 import ProfilePage from "@features/users/pages/ProfilePage.jsx";
+import EmailVerificationPage from "@features/auth/pages/EmailVerificationPage.jsx";
 import { Route, Routes } from "react-router-dom";
 
 import PrivateRoute from "./PrivateRoute.jsx";
@@ -31,6 +32,7 @@ export default function AppRoute() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/doctors/:id" element={<DoctorDetail />} />
       <Route path="/doctor-registration" element={<DoctorRegistration />} />
+      <Route path="/email-verification" element={<EmailVerificationPage />} />
 
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<ProfilePage />} />

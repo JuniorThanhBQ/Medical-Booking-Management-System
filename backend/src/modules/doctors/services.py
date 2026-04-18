@@ -43,7 +43,7 @@ class DoctorService:
             if (current_date > now_date
                     and not check_is_conflicting(current_date, duration, appointments)
                     and current_date not in locked_dates):
-                available.append(current_date.isoformat() + "Z")
+                available.append(current_date.isoformat() + "+07:00")
             current_date += timedelta(minutes=duration)
 
         return available

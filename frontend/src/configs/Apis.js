@@ -9,6 +9,7 @@ export const endpoints = {
   auth_logout: "/api/v1/auth/logout",
   auth_current_user: "/api/v1/auth/current-user",
   auth_email_validator: "/api/v1/auth/email-validator",
+  auth_email_verification: "/api/v1/auth/email-verification",
   public_specialties: "/api/v1/public/specialties",
   public_specialty_detail: (id) => `/api/v1/public/specialties/${id}`,
   public_doctors: "/api/v1/public/doctors",

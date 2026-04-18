@@ -1,4 +1,5 @@
 import TreatmentOrderForm from "./TreatmentOrderForm";
+import { toast } from "sonner";
 
 export default function ExamForm({
   formData,
@@ -84,7 +85,7 @@ export default function ExamForm({
             className="exam__btn exam__btn--primary"
             onClick={() => {
               if (!formData.diagnosis.trim()) {
-                alert("Vui lòng nhập chẩn đoán trước khi hoàn tất.");
+                toast.error("Vui lòng nhập chẩn đoán trước khi hoàn tất.");
                 return;
               }
               if (

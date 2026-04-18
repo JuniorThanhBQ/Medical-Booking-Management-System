@@ -8,7 +8,7 @@ export function BookingDoctorStep({
 }) {
   return (
     <div className="booking__step-panel">
-      <BookingPanelHeader onNext={onNext} title="Chọn bác sĩ" />
+      <BookingPanelHeader onNext={onNext} title="Chọn bác sĩ" disabled={!selectedDoctorId} />
       <p className="booking__panel-subtitle">Chọn bác sĩ bạn muốn gặp.</p>
       <div className="booking__doctors">
         {doctorsForSpecialty.length === 0 ? (

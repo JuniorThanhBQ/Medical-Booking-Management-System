@@ -200,6 +200,7 @@ export const useBookingStore = create((set, get) => ({
         return;
       }
       await createAppointment(api, payload, isReceptionist);
+      console.log("Booking confirmed:", payload);
       set({ confirmed: true, submitting: false });
     } catch (err) {
       console.error("Booking failed:", err);

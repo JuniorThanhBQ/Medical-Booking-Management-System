@@ -13,5 +13,5 @@ def format_medical_record(record):
         "specialty": specialty.name if specialty else None,
         "status": appointment.status.name if appointment and appointment.status else None,
         "diagnosis": record.diagnosis,
-        "createdAt": record.created_date.isoformat() + "Z" if record.created_date else None,
+        "createdAt": record.created_date.isoformat() + "+07:00" if record.created_date else None,
     }

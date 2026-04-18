@@ -180,7 +180,7 @@ class FixtureLoader:
             created_at = notification_data.get("created_at")
             created_dt = None
             if created_at:
-                clean_str = created_at.replace("Z", "+00:00")
+                clean_str = created_at.replace("Z", "+07:00")
                 created_dt = datetime.fromisoformat(clean_str)
 
             notification = Notification(

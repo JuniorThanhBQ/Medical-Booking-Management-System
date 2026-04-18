@@ -29,7 +29,7 @@ def processing_appointment_notification(appointment=None, connection=None, actio
             or connection is None or appointment is None):
         return
 
-    if appointment.status == StatusRole.COMPLETED.name:
+    if appointment.status == StatusRole.COMPLETED:
         return
 
     notification_list = notification_services.insert_appointment_notifications(

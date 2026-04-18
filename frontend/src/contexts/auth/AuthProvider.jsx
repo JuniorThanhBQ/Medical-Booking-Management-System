@@ -1,5 +1,6 @@
 import { apis as api, endpoints } from "@configs/apis";
 import { useEffect, useMemo, useReducer, useRef } from "react";
+import { toast } from "sonner";
 
 import { AuthContext } from "./AuthContext";
 import authReducer, { initialState } from "./authReducer";
@@ -117,6 +118,12 @@ const createAuthActions = (dispatch) => ({
       });
       return { success: true, user };
     } catch (error) {
+      if (error.response?.status === 403) {
+        const errorMessage = "Tài khoản chưa xác thực hoặc đã bị khoá.";
+        toast.error(errorMessage);
+        return { success: false, message: errorMessage };
+      }
+      
       return { success: false, message: error.response?.data?.message };
     }
   },

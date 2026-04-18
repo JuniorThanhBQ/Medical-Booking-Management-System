@@ -3,6 +3,7 @@ import "./NotificationDropdown.css";
 import { NotificationContext } from "@contexts/notifications/NotificationContext";
 import { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import NotificationItem from "./NotificationItem";
 
@@ -31,7 +32,7 @@ const NotificationDropdown = ({ onClose }) => {
   const handleDeleteAll = async () => {
     const readNotifications = notifications.filter((n) => n.is_read);
     if (readNotifications.length === 0) {
-      alert("Không có thông báo đã đọc để xoá");
+      toast.info("Không có thông báo đã đọc nào để xóa.");
       return;
     }
 

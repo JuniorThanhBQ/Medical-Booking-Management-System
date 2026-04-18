@@ -53,8 +53,10 @@ const handleAuth = async ({
   login,
   register,
 }) => {
+  let result;
+
   if (mode === "register") {
-    await register(
+    result = await register(
       email,
       password,
       profile.firstName,
@@ -63,9 +65,15 @@ const handleAuth = async ({
       profile.dateOfBirth,
       profile.gender,
     );
+    if (!result.success) 
+      throw new Error(result.message);
+    return result;
   }
-  const result = await login(email, password, role);
-  if (!result.success) throw new Error(result.message);
+
+  result = await login(email, password, role);
+  if (!result.success) 
+    throw new Error(result.message);
+  
   return result;
 };
 
@@ -184,7 +192,7 @@ export function useAuthFlow({ role, onAuthenticated, onBackToRoleSelect }) {
     setAuthStep("password");
   };
 
-  const handlePasswordSubmit = async (event) => {
+ const handlePasswordSubmit = async (event) => {
     event.preventDefault();
     const passwordError = validatePassword(mode, password);
     if (passwordError) {
@@ -203,10 +211,16 @@ export function useAuthFlow({ role, onAuthenticated, onBackToRoleSelect }) {
         login,
         register,
       });
-      toast.success(
-        mode === "register" ? "Đăng ký thành công!" : "Đăng nhập thành công!",
-      );
+
+      if (mode === "register") {
+        toast.success("Đăng ký thành công! Vui lòng kiểm tra mail để xác thực tài khoản.");
+        resetAuthFlow(); 
+        return;
+      }
+
+      toast.success("Đăng nhập thành công!");
       onAuthenticated?.({ token: null, user: null });
+      
     } catch (err) {
       const message = resolveErrorMessage(err);
       setError(message);

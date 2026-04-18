@@ -10,3 +10,8 @@ export async function verifyEmailStatus(email) {
     throw new Error(err?.response?.data?.message);
   }
 }
+
+export const verifyEmailToken = async (token) => {
+  const response = await apis.post(endpoints["auth_email_verification"], { token });
+  return response.data;
+};

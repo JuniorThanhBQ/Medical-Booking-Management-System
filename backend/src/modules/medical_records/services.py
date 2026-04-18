@@ -115,7 +115,7 @@ class MedicalRecordService:
             "notes": record.note,
             "prescriptionText": record.prescription_text,
             "treatmentOrders": record.treatment_orders,
-            "updatedAt": record.updated_date.isoformat() + "Z" if record.updated_date else None,
+            "updatedAt": record.updated_date.isoformat() + "+07:00" if record.updated_date else None,
         })
 
         return result, "SUCCESS"

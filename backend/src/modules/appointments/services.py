@@ -174,7 +174,7 @@ class AppointmentService:
                     "patientName": f"{patient_user.last_name} {patient_user.first_name}",
                     "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
                     "status": appointment.status.name if appointment.status else None,
-                    "appointmentDate": appointment.appointment_date.isoformat() + "Z",
+                    "appointmentDate": appointment.appointment_date.isoformat() + "+07:00",
                 }
             )
 

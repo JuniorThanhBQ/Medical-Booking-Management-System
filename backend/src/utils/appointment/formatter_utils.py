@@ -4,7 +4,7 @@ from datetime import datetime
 def parse_appointment_datetime(str_appointment_date=None):
     try:
         appointment_datetime = datetime.strptime(
-            str_appointment_date.replace("Z", "").split(".")[0],
+            str_appointment_date.replace("+07:00", "").split(".")[0],
             "%Y-%m-%dT%H:%M:%S"
         )
 
@@ -26,9 +26,9 @@ def format_appointment(appointment=None, doctor=None, patient_user=None, patient
         "patientName": patient_name,
         "doctorName": f"{doctor.last_name} {doctor.first_name}" if doctor else None,
         "specialty": specialty if specialty else None,
-        "appointmentDate": appointment.appointment_date.isoformat() + "Z",
+        "appointmentDate": appointment.appointment_date.isoformat() + "+07:00",
         "status": appointment.status.name if appointment.status else None,
         "note": appointment.note,
-        "createdAt": appointment.created_date.isoformat() + "Z",
-        "updatedAt": appointment.updated_date.isoformat() + "Z",
+        "createdAt": appointment.created_date.isoformat() + "+07:00",
+        "updatedAt": appointment.updated_date.isoformat() + "+07:00",
     }

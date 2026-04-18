@@ -23,7 +23,7 @@ class NotificationAPIService:
                     "message": n.message,
                     "is_read": n.is_read,
                     "type": n.type.name if n.type else "SYSTEM",
-                    "created_at": n.created_date.isoformat() + "Z" if n.created_date else None,
+                    "created_at": n.created_date.isoformat() + "+07:00" if n.created_date else None,
                 } for n in paginated_data.items
             ],
             "meta": {
@@ -50,7 +50,7 @@ class NotificationAPIService:
             "message": notification.message,
             "is_read": notification.is_read,
             "type": notification.type.name if notification.type else "SYSTEM",
-            "created_at": notification.created_date.isoformat() + "Z"
+            "created_at": notification.created_date.isoformat() + "+07:00"
             if notification.created_date else None,
             "appointment_id": notification.appointment_id,
             "send_email": notification.send_email,

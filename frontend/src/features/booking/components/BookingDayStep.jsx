@@ -10,7 +10,7 @@ export function BookingDayStep({
 }) {
   return (
     <div className="booking__step-panel">
-      <BookingPanelHeader onNext={onNext} title="Chọn ngày" />
+      <BookingPanelHeader onNext={onNext} title="Chọn ngày" disabled={!selectedDate} />
       <p className="booking__panel-subtitle">
         Chọn một trong {availableDays.length} ngày tiếp theo.
       </p>

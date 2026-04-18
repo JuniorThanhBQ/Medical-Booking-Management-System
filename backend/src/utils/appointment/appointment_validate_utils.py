@@ -12,7 +12,7 @@ def validate_appointment_date(appointment_datetime=None):
 
 
 def validate_available_slot(appointment_datetime=None, available_slots=None):
-    booked_slot = appointment_datetime.isoformat() + "Z"
+    booked_slot = appointment_datetime.isoformat() + "+07:00"
 
     if booked_slot not in available_slots:
         return {"message": "Khung giờ không khả dụng"}, "ERROR_BAD_REQUEST"
