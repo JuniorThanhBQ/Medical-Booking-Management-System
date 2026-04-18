@@ -200,7 +200,6 @@ const fetchMedicalRecords = async (api, details) => {
 const processActivities = (details, recordMap, isDoctor = false) => {
   const upcomingItems = [];
   const pastItems = [];
-
   const startOfTomorrow = new Date();
   startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
   startOfTomorrow.setHours(0, 0, 0, 0);

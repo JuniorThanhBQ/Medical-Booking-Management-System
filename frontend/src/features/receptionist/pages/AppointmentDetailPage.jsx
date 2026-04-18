@@ -1,13 +1,8 @@
 import "@css/users/profile.css";
 
+import { useAppointmentDetailPage } from "@features/receptionist/hooks/use-appointment-detail";
 import Navbar from "@features/users/components/Navbar";
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-
-import useAuth from "@/contexts/auth/AuthContext";
-
-import { useReceptionistStore } from "../hooks/use-receptionist-store";
 
 const InfoRow = ({ label, value }) => (
   <p>
@@ -117,71 +112,21 @@ const AppointmentContent = ({
   );
 };
 
-const useAppointmentData = (appointmentId, api) => {
-  const {
-    setApi,
-    fetchAppointmentDetail,
-    clearAppointmentDetail,
-    appointmentDetail,
-    loading,
-    error,
-    updateAppointmentStatus,
-  } = useReceptionistStore();
-
-  useEffect(() => {
-    if (api) setApi(api);
-  }, [api, setApi]);
-
-  useEffect(() => {
-    if (!appointmentId || !api) return;
-    fetchAppointmentDetail(appointmentId);
-    return () => clearAppointmentDetail();
-  }, [appointmentId, api, fetchAppointmentDetail, clearAppointmentDetail]);
-
-  return {
-    appointmentDetail,
-    loading,
-    error,
-    updateAppointmentStatus,
-    fetchAppointmentDetail,
-  };
-};
-
 const AppointmentDetailPage = () => {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
-  const { api } = useAuth();
 
   const {
     appointmentDetail,
     loading,
     error,
-    updateAppointmentStatus,
-    fetchAppointmentDetail,
-  } = useAppointmentData(appointmentId, api);
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ status: "", note: "" });
-
-  const handleSave = async () => {
-    if (!api) return;
-    try {
-      await updateAppointmentStatus(appointmentId, formData);
-      toast.success("Cập nhật thành công!");
-      setIsEditing(false);
-      fetchAppointmentDetail(appointmentId);
-    } catch (err) {
-      toast.error("Cập nhật thất bại: " + err.message);
-    }
-  };
-
-  const handleEdit = () => {
-    setFormData({
-      status: appointmentDetail?.status || "PENDING",
-      note: appointmentDetail?.note || "",
-    });
-    setIsEditing(true);
-  };
+    isEditing,
+    formData,
+    setFormData,
+    handleSave,
+    handleEdit,
+    handleCancel,
+  } = useAppointmentDetailPage(appointmentId);
 
   if (loading) return <p>Đang tải chi tiết lịch hẹn...</p>;
   if (error)
@@ -200,7 +145,7 @@ const AppointmentDetailPage = () => {
           className="record-page__back"
           onClick={() => navigate(-1)}
         >
-          ← Quay
+          &#8592; Quay
         </button>
         <h1 className="profile-main__title">Chi tiết lịch hẹn</h1>
         <div className="record-page__card">
@@ -210,7 +155,7 @@ const AppointmentDetailPage = () => {
             formData={formData}
             setFormData={setFormData}
             onSave={handleSave}
-            onCancel={() => setIsEditing(false)}
+            onCancel={handleCancel}
             onEdit={handleEdit}
           />
         </div>

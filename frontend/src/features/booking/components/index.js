@@ -3,7 +3,6 @@ export { BookingDayStep } from "./BookingDayStep";
 export { BookingDoctorStep } from "./BookingDoctorStep";
 export { BookingNotFoundView } from "./BookingNotFoundView";
 export { BookingServiceStep } from "./BookingServiceStep";
-export { BookingStepNav } from "./BookingStepNav";
 export { BookingStepper } from "./BookingStepper";
 export { BookingSuccessView } from "./BookingSuccessView";
 export { BookingSummary } from "./BookingSummary";

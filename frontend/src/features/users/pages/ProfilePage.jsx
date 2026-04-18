@@ -9,7 +9,7 @@ import EditProfileForm from "../components/EditProfileForm";
 import Navbar from "../components/Navbar";
 import ProfileCard from "../components/ProfileCard";
 import ProfileSidebar from "../components/ProfileSidebar";
-import { useProfileStore } from "../hooks/useProfileStore";
+import { useProfileStore } from "../hooks/use-profile-store";
 
 const ProfilePage = () => {
   const { user: contextUser, api } = useAuth();

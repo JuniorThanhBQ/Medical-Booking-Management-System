@@ -1,4 +1,4 @@
-import "@css/shared/cta-banner.css";
+import "@css/common/cta-banner.css";
 
 import { Link } from "react-router-dom";
 

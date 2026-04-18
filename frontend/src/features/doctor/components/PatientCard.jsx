@@ -3,7 +3,7 @@ import "@css/doctor/patient-tab.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import { APPOINTMENT_STATUS, getStatusLabel } from "@/configs/const";
+import { getStatusLabel } from "@/configs/const";
 import { getAge } from "@/utils/Utils.js";
 
 export default function PatientCard({

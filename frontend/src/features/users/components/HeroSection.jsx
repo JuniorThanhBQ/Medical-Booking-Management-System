@@ -1,4 +1,4 @@
-import "@css/shared/hero.css";
+import "@css/common/hero.css";
 
 import useAuth from "@contexts/auth/AuthContext";
 import { useNavigate } from "react-router-dom";

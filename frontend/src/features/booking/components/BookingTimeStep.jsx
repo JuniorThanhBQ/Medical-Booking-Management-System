@@ -12,7 +12,11 @@ export function BookingTimeStep({
 }) {
   return (
     <div className="booking__step-panel">
-      <BookingPanelHeader onNext={onNext} title="Chọn thời gian" disabled={!selectedTime} />
+      <BookingPanelHeader
+        onNext={onNext}
+        title="Chọn thời gian"
+        disabled={!selectedTime}
+      />
       <p className="booking__panel-subtitle">
         {selectedDate
           ? `Thời gian có sẵn cho ${toISODate(selectedDate)}`

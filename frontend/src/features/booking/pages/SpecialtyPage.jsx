@@ -1,47 +1,11 @@
 import "@css/users/specialty.css";
 
+import { useSpecialtyPage } from "@features/booking/hooks/use-specialty-page";
 import LoadingSpinner from "@features/shared/components/LoadingSpinner";
-import { getSpecialtyDetail } from "@features/shared/services/public-api-service";
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-
-import useAuth from "@/contexts/auth/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function SpecialtyPage() {
-  const { specialtyId } = useParams();
-  const { accessToken } = useAuth();
-  const loggedIn = Boolean(accessToken);
-  const [specialty, setSpecialty] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!specialtyId) {
-      setError("Không tìm thấy chuyên khoa.");
-      setLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    const fetchSpecialty = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getSpecialtyDetail(specialtyId);
-        if (!cancelled) setSpecialty(data);
-      } catch (err) {
-        console.error("Failed to fetch specialty:", err);
-        if (!cancelled)
-          setError("Không thể tải thông tin chuyên khoa. Vui lòng thử lại.");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-    fetchSpecialty();
-    return () => {
-      cancelled = true;
-    };
-  }, [specialtyId]);
+  const { loggedIn, specialty, loading, error } = useSpecialtyPage();
 
   if (loading) {
     return (
@@ -72,7 +36,7 @@ export default function SpecialtyPage() {
         <section className="specialty__hero">
           <div className="specialty__hero-inner">
             <Link to="/dashboard" className="specialty__back">
-              <span aria-hidden="true">←</span> Quay lại Dashboard
+              <span aria-hidden="true">&#8592;</span> Quay lại Dashboard
             </Link>
 
             {!specialty ? (
@@ -122,7 +86,7 @@ export default function SpecialtyPage() {
                       Các bước tiếp theo
                     </span>
                     <span className="specialty__hero-card-value">
-                      Chọn ngày → bác sĩ → giờ → xác nhận
+                      Chọn ngày &#8594; bác sĩ &#8594; giờ &#8594; xác nhận
                     </span>
                   </div>
                   <div className="specialty__hero-card-row">

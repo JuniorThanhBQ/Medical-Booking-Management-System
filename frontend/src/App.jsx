@@ -11,10 +11,11 @@ function App() {
         position="top-right"
         expand={false}
         richColors
-        visibleToasts={2}
-        duration={2000}
+        visibleToasts={3}
+        duration={3000}
         pauseWhenPageIsHidden
         closeButton
+        offset="8px"
         theme="light"
       />
     </>

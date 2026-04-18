@@ -1,4 +1,4 @@
-import "@css/shared/feature-highlight.css";
+import "@css/common/feature-highlight.css";
 
 export default function FeatureHighlightBand() {
   return (

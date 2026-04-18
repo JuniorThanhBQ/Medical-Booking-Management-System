@@ -1,27 +1,9 @@
-import { apis, endpoints } from "@/configs/apis";
+import { endpoints } from "@/configs/apis";
 import {
   EMPTY_PATIENT,
   isTodayAppointment,
   normalizeDoctorAppointment,
 } from "@/utils/appointments-utils.js";
-
-export async function fetchAppointmentsInDay({ date }) {
-  if (!date) return [];
-
-  try {
-    const response = await apis.get(endpoints["appointments"], {
-      params: { date },
-    });
-
-    const payload = response?.data;
-    if (Array.isArray(payload)) return payload;
-    if (Array.isArray(payload?.appointments)) return payload.appointments;
-
-    return [];
-  } catch (error) {
-    console.error("Error fetching appointments in day:", error);
-  }
-}
 
 export async function fetchDoctorAppointments(api) {
   const client = api;
@@ -60,7 +42,7 @@ export async function fetchDoctorTodayPatients(api) {
               gender: patientRes.data.gender ?? null,
             };
           }
-        } catch (error) {
+        } catch {
           console.warn(`Không thể lấy profile của lịch hẹn ${appointment.id}`);
         }
 

@@ -1,5 +1,36 @@
 import { ActivityIcon, BellIcon, UserProfileIcon } from "@/assets/icons";
 
+export const FIELDS = [
+  { label: "Họ", key: "firstName", type: "text" },
+  { label: "Tên", key: "lastName", type: "text" },
+  { label: "Số điện thoại", key: "phone", type: "tel" },
+  { label: "Ngày sinh", key: "dateOfBirth", type: "date" },
+];
+
+export const GENDER_OPTIONS = [
+  { value: "male", label: "Nam" },
+  { value: "female", label: "Nữ" },
+  { value: "other", label: "Khác" },
+];
+
+export const OPTIONS = [
+  {
+    id: "patient",
+    title: "Đăng nhập bệnh nhân",
+    description: "Đặt lịch hẹn và theo dõi bệnh án",
+  },
+  {
+    id: "doctor",
+    title: "Đăng nhập bác sĩ",
+    description: "Đăng ký và quản lý hồ sơ sức khoẻ bệnh nhân",
+  },
+  {
+    id: "receptionist",
+    title: "Đăng nhập lễ tân",
+    description: "Quản lý lịch hẹn và hỗ trợ bệnh nhân",
+  },
+];
+
 export const ROLE = {
   Patient: "PATIENT",
   Doctor: "DOCTOR",
@@ -17,6 +48,10 @@ export const DEFAULT_AUTH_NAV_LINKS = {
   ADMIN: [{ label: "Trang chủ", href: "/dashboard" }],
   RECEPTIONIST: [{ label: "Trang chủ", href: "/dashboard" }],
 };
+
+export const DEFAULT_MENU_ITEMS = [
+  { label: "Đăng nhập & Đăng ký", href: "/auth" },
+];
 
 export const DEFAULT_AUTH_MENU_ITEMS = {
   PATIENT: [
@@ -41,12 +76,6 @@ export const DEFAULT_AUTH_MENU_ITEMS = {
     { label: "Thông báo", href: "/notifications" },
   ],
 };
-
-export const CTA_DISPLAY_MAP = {};
-
-export const DEFAULT_MENU_ITEMS = [
-  { label: "Đăng nhập & Đăng ký", href: "/auth" },
-];
 
 export const PROFILE_SIDEBAR_ITEMS = [
   {
@@ -79,34 +108,22 @@ export const APPOINTMENT_STATUS = {
   CANCELLED: "CANCEL",
 };
 
-export const STATUS_LABELS = {
-  PENDING: "Chờ xác nhận",
-  APPROVED: "Đã xác nhận",
-  in_progress: "Đang khám",
-  COMPLETED: "Hoàn thành",
-  CANCEL: "Đã hủy",
-};
-
 export const EXAM_STATUS = {
   DRAFT: "draft",
   COMPLETED: "completed",
 };
 
+const STATUS_LABELS = {
+  PENDING: "Đang chờ",
+  APPROVED: "Đã duyệt",
+  IN_PROGRESS: "Đang tiến hành",
+  COMPLETED: "Đã hoàn thành",
+  CANCEL: "Đã hủy",
+};
+
 export const OPEN_HOURS = {
   start: 9,
   end: 16,
-};
-
-export const AVAILABLE_BOOKING_DAYS = 7;
-
-export const DAY_LABELS = {
-  MONDAY: "Thứ 2",
-  TUESDAY: "Thứ 3",
-  WEDNESDAY: "Thứ 4",
-  THURSDAY: "Thứ 5",
-  FRIDAY: "Thứ 6",
-  SATURDAY: "Thứ 7",
-  SUNDAY: "Chủ nhật",
 };
 
 export const INITIAL_DAYS = [
@@ -119,11 +136,15 @@ export const INITIAL_DAYS = [
   "SUNDAY",
 ];
 
-export const GENDER_OPTIONS = [
-  { value: "MALE", label: "Nam" },
-  { value: "FEMALE", label: "Nữ" },
-  { value: "OTHER", label: "Khác" },
-];
+export const DAY_LABELS = {
+  MONDAY: "Thứ 2",
+  TUESDAY: "Thứ 3",
+  WEDNESDAY: "Thứ 4",
+  THURSDAY: "Thứ 5",
+  FRIDAY: "Thứ 6",
+  SATURDAY: "Thứ 7",
+  SUNDAY: "Chủ nhật",
+};
 
 export const SUPPORTED_COUNTRIES = [
   { code: "VN", label: "Việt Nam", phoneCode: "+84" },
@@ -133,10 +154,10 @@ export function getStatusLabel(status) {
   return STATUS_LABELS[status] || status;
 }
 
-const DOCTOR_SIDEBAR = PROFILE_SIDEBAR_ITEMS.map((item) =>
-  item.key === "activity" ? { ...item, path: "/activity" } : item,
-);
-
 export function getProfileSidebarItems(role) {
-  return role === ROLE.Doctor ? DOCTOR_SIDEBAR : PROFILE_SIDEBAR_ITEMS;
+  return role === ROLE.Doctor
+    ? PROFILE_SIDEBAR_ITEMS.map((item) =>
+        item.key === "activity" ? { ...item, path: "/activity" } : item,
+      )
+    : PROFILE_SIDEBAR_ITEMS;
 }

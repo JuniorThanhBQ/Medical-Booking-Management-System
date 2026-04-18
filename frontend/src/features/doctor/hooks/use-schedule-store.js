@@ -93,7 +93,9 @@ export const useScheduleStore = create((set, get) => ({
             appointments: data.appointments ?? [],
           });
         }
-      } catch {}
+      } catch {
+        toast.error("Không thể tải lịch làm việc sau khi lưu.");
+      }
     } catch (error) {
       const status = error?.response?.status;
       const msg =

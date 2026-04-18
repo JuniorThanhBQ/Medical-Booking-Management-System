@@ -1,6 +1,6 @@
 import "@css/receptionist/appointment-card.css";
 
-import { useState } from "react";
+import { useAppointmentCard } from "@features/receptionist/hooks/use-appointment-card";
 
 const AppointmentCard = ({
   appointment,
@@ -8,14 +8,15 @@ const AppointmentCard = ({
   onDelete,
   onViewDetail,
 }) => {
-  const [showActions, setShowActions] = useState(false);
-  const [newStatus, setNewStatus] = useState(appointment.status);
-  const [newNote, setNewNote] = useState(appointment.note || "");
-
-  const handleUpdate = () => {
-    onUpdateStatus(appointment.id, newStatus, newNote);
-    setShowActions(false);
-  };
+  const {
+    showActions,
+    newStatus,
+    setNewStatus,
+    newNote,
+    setNewNote,
+    handleUpdate,
+    toggleActions,
+  } = useAppointmentCard(appointment, onUpdateStatus);
 
   return (
     <div className="appointment-card">
@@ -53,9 +54,9 @@ const AppointmentCard = ({
       <div className="appointment-card__actions-wrapper">
         <button
           className="appointment-card__actions-trigger"
-          onClick={() => setShowActions(!showActions)}
+          onClick={toggleActions}
         >
-          {showActions ? "✕ Đóng chỉnh sửa" : "⚙ Quản lý lịch hẹn"}
+          {showActions ? "&#10005; Đóng chỉnh sửa" : "&#9881; Quản lý lịch hẹn"}
         </button>
 
         {showActions && (
@@ -67,10 +68,10 @@ const AppointmentCard = ({
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
               >
-                <option value="PENDING">🕒 PENDING</option>
-                <option value="APPROVED">✅ APPROVED</option>
-                <option value="COMPLETED">✔ COMPLETED</option>
-                <option value="CANCEL">❌ CANCEL</option>
+                <option value="PENDING">&#128336; PENDING</option>
+                <option value="APPROVED">&#9989; APPROVED</option>
+                <option value="COMPLETED">&#10004; COMPLETED</option>
+                <option value="CANCEL">&#10060; CANCEL</option>
               </select>
             </div>
 

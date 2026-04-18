@@ -125,7 +125,7 @@ export function BookingConfirmStep({
     try {
       await api.post(endpoints.booking_transaction_unlock, payload);
       onConfirm();
-    } catch (error) {
+    } catch {
       isConfirmedRef.current = false;
       toast.error("Lỗi khi mở khóa lịch hẹn, vui lòng thử lại.");
     }

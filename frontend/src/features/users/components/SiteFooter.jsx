@@ -1,4 +1,4 @@
-import "@css/shared/footer.css";
+import "@css/common/footer.css";
 
 const NAV_COLS = {
   "Trang web": [{ label: "Về chúng tôi", href: "#" }],

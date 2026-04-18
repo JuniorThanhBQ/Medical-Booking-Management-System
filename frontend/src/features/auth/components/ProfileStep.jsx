@@ -1,16 +1,4 @@
-const FIELDS = [
-  { label: "Họ", key: "lastName", type: "text" },
-  { label: "Tên", key: "firstName", type: "text" },
-  { label: "Số điện thoại", key: "phone", type: "tel" },
-  { label: "Ngày sinh", key: "dateOfBirth", type: "date" },
-];
-
-const GENDER_OPTIONS = [
-  { value: "male", label: "Nam" },
-  { value: "female", label: "Nữ" },
-  { value: "other", label: "Khác" },
-];
-
+import { FIELDS, GENDER_OPTIONS } from "@configs/const";
 export default function ProfileStep({
   email,
   profile,

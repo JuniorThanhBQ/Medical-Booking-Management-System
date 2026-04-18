@@ -1,7 +1,7 @@
-import "@css/shared/services.css";
+import "@css/common/services.css";
 
 import { getMedicalServiceDetail } from "@features/shared/services/public-api-service";
-import useMedicalServices from "@features/users/hooks/useServicesSection";
+import useMedicalServices from "@features/users/hooks/use-services-section";
 import { useState } from "react";
 
 import { EditSquareIcon, GlobeIcon, ShieldIcon } from "@/assets/icons";

@@ -3,7 +3,7 @@ import "@/assets/css/auth/email-auth.css";
 import EmailStep from "../components/EmailStep.jsx";
 import PasswordStep from "../components/PasswordStep.jsx";
 import ProfileStep from "../components/ProfileStep.jsx";
-import { useEmailAuthorization } from "../hooks/useEmailAuthorization";
+import { useEmailAuthorization } from "../hooks/use-email-authorization";
 
 export default function EmailAuthorizationPage({
   role,

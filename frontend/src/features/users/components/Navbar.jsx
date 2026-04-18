@@ -1,13 +1,13 @@
-import "@css/shared/navbar.css";
+import "@css/common/navbar.css";
 
 import { useEffect, useState } from "react";
 
 import { DEFAULT_MENU_ITEMS } from "@/configs/const";
 import useAuth from "@/contexts/auth/AuthContext";
-import NotificationBell from "@/features/notifications/components/NotificationBell";
+import NotificationBell from "@/features/notification/components/NotificationBell";
 import { getRoleMenuItems, getRoleNavLinks } from "@/utils/Utils.js";
 
-import { useNavbarMenu } from "../hooks/useNavbarMenu";
+import { useNavbarMenu } from "../hooks/use-navbar-menu";
 
 export default function Navbar() {
   const { scrolled, menuOpen, menuRef, toggleMenu, closeMenu } =

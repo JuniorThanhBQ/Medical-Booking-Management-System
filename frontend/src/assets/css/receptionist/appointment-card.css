@@ -1,5 +1,3 @@
-/* appointment-card.css */
-
 .appointment-card {
   background: #ffffff;
   border-radius: 18px;
@@ -18,7 +16,6 @@
   border-color: var(--lp-primary-border);
 }
 
-/* Phần nội dung chính có thể click */
 .appointment-card__clickable {
   cursor: pointer;
   display: flex;
@@ -54,7 +51,6 @@
   min-width: 85px;
 }
 
-/* Badge trạng thái */
 .appointment-card__status {
   display: inline-flex;
   padding: 4px 12px;
@@ -68,21 +64,22 @@
 .status--pending {
   background: #fff7ed;
   color: #c2410c;
-} /* Cam */
+}
+
 .status--approved {
   background: #f0fdf4;
   color: #15803d;
-} /* Xanh lá */
+}
+
 .status--completed {
   background: #eff6ff;
   color: #1d4ed8;
-} /* Xanh dương */
+}
 .status--cancel {
   background: #fef2f2;
   color: #b91c1c;
-} /* Đỏ */
+}
 
-/* Ghi chú */
 .appointment-card__note {
   background: var(--lp-bg-light);
   padding: 10px;
@@ -92,7 +89,6 @@
   border-left: 3px solid var(--lp-border);
 }
 
-/* Khu vực hành động */
 .appointment-card__actions-trigger {
   width: 100%;
   padding: 8px;
@@ -156,7 +152,6 @@
   margin-top: 8px;
 }
 
-/* Button Styles */
 .btn {
   flex: 1;
   padding: 10px;

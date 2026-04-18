@@ -171,7 +171,7 @@ export const useBookingStore = create((set, get) => ({
       const slots = data?.[0]?.availableTimeSlots ?? [];
 
       set({ timeSlots: slots, timeSlotsLoading: false });
-    } catch (err) {
+    } catch {
       set({
         timeSlots: [],
         timeSlotsLoading: false,

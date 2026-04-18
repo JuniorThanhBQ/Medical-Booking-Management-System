@@ -18,6 +18,7 @@ export const endpoints = {
   public_medical_services: "/api/v1/public/medical-services",
   public_medical_service_detail: (id) =>
     `/api/v1/public/medical-services/${id}`,
+  doctor_registration: "/api/v1/public/doctors-registration",
   appointments: "/api/v1/appointments",
   appointment_detail: (id) => `/api/v1/appointments/${id}`,
   appointment_patient_profile: (id) =>
@@ -31,7 +32,6 @@ export const endpoints = {
     `/api/v1/medical-records/appointments/${appointmentId}`,
   doctor_schedule: "/api/v1/doctors/my-schedule",
   doctor_schedule_request: "/api/v1/doctors/schedule-requests",
-  doctor_registration: "/api/v1/public/doctors-registration",
   notification: "/api/v1/notifications",
   notification_detail: (id) => `/api/v1/notifications/${id}`,
 };
@@ -41,19 +41,5 @@ export const apis = axios.create({
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
-
-export const AuthApis = (token) => {
-  const headers = { "Content-Type": "application/json" };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  return axios.create({
-    baseURL: BASE_URL,
-    headers,
-    withCredentials: true,
-  });
-};
 
 export default apis;

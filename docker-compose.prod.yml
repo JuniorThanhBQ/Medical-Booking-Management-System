@@ -26,15 +26,6 @@ services:
         reservations:
           memory: 512M
 
-  db-migration:
-    image: "${BACKEND_IMAGE_NAME}"
-    command: bash -c "flask --app src.index:app db upgrade"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-
   db:
     restart: always
     deploy:

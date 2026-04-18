@@ -58,6 +58,7 @@ const actionHandlers = {
     error: action.payload,
     loading: false,
   }),
+  CLEAR_NOTIFICATIONS: () => initialState,
 };
 
 export const notificationReducer = (state, action) => {

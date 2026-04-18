@@ -1,92 +1,18 @@
 import "@css/doctor/registration.css";
 
-import apis, { endpoints } from "@configs/apis";
-import { useEffect, useRef, useState } from "react";
+import { useDoctorRegistration } from "@features/doctor/hooks/use-doctor-registration";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
+
 export default function DoctorRegistration() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    dob: "",
-    gender: "MALE",
-    address: "",
-    email: "",
-    phone: "",
-    reason: "",
-  });
-  const [file, setFile] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const hasShownToast = useRef(false);
-
-  useEffect(() => {
-    if (!hasShownToast.current) {
-      toast.info("Khuyến khích gửi hồ sơ trực tiếp qua mail.");
-      hasShownToast.current = true;
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (selectedFile.type !== "application/pdf") {
-        setError("Chỉ chấp nhận file định dạng PDF.");
-        setFile(null);
-        e.target.value = null;
-        return;
-      }
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError("Kích thước file không được vượt quá 5MB.");
-        setFile(null);
-        e.target.value = null;
-        return;
-      }
-      setError("");
-      setFile(selectedFile);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      setError("Vui lòng đính kèm CV (PDF).");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const submitData = new FormData();
-      submitData.append("fullName", formData.fullName);
-      submitData.append("dateOfBirth", formData.dob);
-      submitData.append("gender", formData.gender);
-      submitData.append("address", formData.address);
-      submitData.append("email", formData.email);
-      submitData.append("phone", formData.phone);
-      submitData.append("reason", formData.reason);
-      submitData.append("CV", file);
-
-      await apis.post(endpoints["doctor_registration"], submitData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setSuccess(true);
-    } catch (err) {
-      setError("Có lỗi xảy ra khi gửi thông tin. Vui lòng thử lại sau.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    formData,
+    error,
+    loading,
+    success,
+    handleChange,
+    handleFileChange,
+    handleSubmit,
+  } = useDoctorRegistration();
 
   if (success) {
     return (
@@ -109,19 +35,7 @@ export default function DoctorRegistration() {
     <div className="doctor-registration-page">
       <div className="doctor-registration-header">
         <Link to="/" className="back-link">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Trở về trang chủ
+          &#8592; Trở về trang chủ
         </Link>
       </div>
 
@@ -247,21 +161,7 @@ export default function DoctorRegistration() {
             </p>
 
             <div className="info-block">
-              <div className="info-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-              </div>
+              <div className="info-icon">&#10004;</div>
               <div className="info-text">
                 <h4>1. Tiêu chuẩn chuyên môn</h4>
                 <p>
@@ -273,20 +173,7 @@ export default function DoctorRegistration() {
             </div>
 
             <div className="info-block">
-              <div className="info-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg>
-              </div>
+              <div className="info-icon">&#128274;</div>
               <div className="info-text">
                 <h4>2. Đạo đức và pháp lý</h4>
                 <p>
@@ -298,21 +185,7 @@ export default function DoctorRegistration() {
             </div>
 
             <div className="info-block">
-              <div className="info-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
+              <div className="info-icon">&#128336;</div>
               <div className="info-text">
                 <h4>3. Quy Trình xét hồ sơ</h4>
                 <p>
@@ -324,21 +197,7 @@ export default function DoctorRegistration() {
             </div>
 
             <div className="info-block">
-              <div className="info-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-              </div>
+              <div className="info-icon">&#128336;</div>
               <div className="info-text">
                 <h4>4. Phản hồi và chờ phỏng vấn</h4>
                 <p>

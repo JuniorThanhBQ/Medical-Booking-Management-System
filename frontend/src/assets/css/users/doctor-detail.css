@@ -66,14 +66,6 @@
   padding-bottom: 2rem;
 }
 
-@media (min-width: 640px) {
-  .doctor-profile-header {
-    flex-direction: row;
-    text-align: left;
-    align-items: flex-start;
-  }
-}
-
 .doctor-avatar {
   width: 100px;
   height: 100px;
@@ -144,12 +136,6 @@
   margin-bottom: 2rem;
 }
 
-@media (min-width: 640px) {
-  .doctor-contact-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 .contact-item {
   display: flex;
   align-items: flex-start;
@@ -211,12 +197,6 @@
   width: 100%;
 }
 
-@media (min-width: 640px) {
-  .btn-primary {
-    width: auto;
-  }
-}
-
 .btn-primary:hover {
   background-color: #0284c7;
   transform: translateY(-2px);
@@ -273,14 +253,6 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .schedule-content {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
 }
 
 .schedule-info {
@@ -365,4 +337,32 @@
 .btn-back svg {
   width: 18px;
   height: 18px;
+}
+
+@media (min-width: 640px) {
+  .doctor-profile-header {
+    flex-direction: row;
+    text-align: left;
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 640px) {
+  .btn-primary {
+    width: auto;
+  }
+}
+
+@media (min-width: 640px) {
+  .schedule-content {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 640px) {
+  .doctor-contact-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }

@@ -1,32 +1,15 @@
 import "@/assets/css/auth/auth-page.css";
 
+import { OPTIONS } from "@configs/const";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { AuthFooter } from "../components/AuthFooter";
 import { AuthHeader } from "../components/AuthHeader";
 import { RoleCard } from "../components/RoleCard";
-import { useAuthRedirect } from "../hooks/useAuthRedirect";
-import { useRoleSelection } from "../hooks/useRoleSelection";
+import { useAuthRedirect } from "../hooks/use-auth-redirect";
+import { useRoleSelection } from "../hooks/use-role-selection";
 import EmailAuthorizationPage from "./EmailAuthorizationPage.jsx";
-
-const OPTIONS = [
-  {
-    id: "patient",
-    title: "Đăng nhập bệnh nhân",
-    description: "Đặt lịch hẹn và tra cứu hồ sơ y tế",
-  },
-  {
-    id: "doctor",
-    title: "Đăng nhập bác sĩ",
-    description: "Đăng ký và tra cứu hồ sơ y tế",
-  },
-  {
-    id: "receptionist",
-    title: "Đăng nhập lễ tân",
-    description: "Quản lý lịch hẹn và hỗ trợ bệnh nhân",
-  },
-];
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -54,7 +37,7 @@ export default function AuthPage() {
       <AuthHeader onBack={() => navigate("/")} />
 
       <main className="signin-page__main">
-        <h1 className="signin-page__title">Đăng ký hoặc đăng nhập</h1>
+        <h1 className="signin-page__title">Đăng nhập và đăng ký</h1>
         <div className="signin-page__cards">
           {OPTIONS.map((option) => (
             <RoleCard

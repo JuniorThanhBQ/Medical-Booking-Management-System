@@ -9,7 +9,7 @@ export function RoleCard({ option, isSelected, onSelect }) {
         <div className="signin-card__title">{option.title}</div>
         <div className="signin-card__description">{option.description}</div>
       </div>
-      <span className="signin-card__chevron">→</span>
+      <span className="signin-card__chevron">&#8594;</span>
     </button>
   );
 }

@@ -1,12 +1,12 @@
 import apis, { endpoints } from "@/configs/apis";
 
 export const getSpecialties = async (params = {}) => {
-  const res = await apis.get(endpoints.public_specialties, { params });
+  const res = await apis.get(endpoints["public_specialties"], { params });
   return res.data.data;
 };
 
 export const getDoctors = async (params = {}) => {
-  const res = await apis.get(endpoints.public_doctors, { params });
+  const res = await apis.get(endpoints["public_doctors"], { params });
   return res.data.data;
 };
 
@@ -21,7 +21,7 @@ export const getDoctorDetail = async (doctorId) => {
 };
 
 export const getMedicalServices = async (params = {}) => {
-  const res = await apis.get(endpoints.public_medical_services, { params });
+  const res = await apis.get(endpoints["public_medical_services"], { params });
   return res.data.data.items ?? [];
 };
 

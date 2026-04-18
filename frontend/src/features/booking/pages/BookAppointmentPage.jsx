@@ -1,16 +1,10 @@
 import "@css/users/booking.css";
 
-import { useBookingStore } from "@features/booking/hooks/use-booking-store";
+import { useBookAppointmentPage } from "@features/booking/hooks/use-booking-appointment-page";
 import LoadingSpinner from "@features/shared/components/LoadingSpinner";
-import { useEffect, useMemo } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import useAuth from "@/contexts/auth/AuthContext";
-import {
-  getDoctorAvailableDays,
-  STEPS,
-  toISODate,
-} from "@/utils/booking-utils.js";
+import { STEPS } from "@/utils/booking-utils.js";
 
 import {
   BookingConfirmStep,
@@ -25,12 +19,9 @@ import {
 } from "../components";
 
 export default function BookAppointmentPage() {
-  const { specialtyId } = useParams();
-  const navigate = useNavigate();
-  const { accessToken, user } = useAuth();
-  const isReceptionist = user?.role === "RECEPTIONIST";
-
   const {
+    specialtyId,
+    isReceptionist,
     stepIndex,
     selectedMedicalServiceId,
     selectedDate,
@@ -41,13 +32,21 @@ export default function BookAppointmentPage() {
     specialty,
     medicalServices,
     doctors,
-    selectedDoctorSchedule,
     timeSlots,
     loading,
     timeSlotsLoading,
     fetchError,
     submitting,
     submitError,
+    firstName,
+    lastName,
+    phone,
+    gender,
+    birthday,
+    address,
+    availableDays,
+    selectedService,
+    selectedDoctor,
     setSelectedMedicalServiceId,
     setSelectedDate,
     setSelectedTime,
@@ -55,117 +54,16 @@ export default function BookAppointmentPage() {
     setPatientNotes,
     goToStep,
     increaseStepIndex,
-    resetBooking,
-    confirmBooking,
-    fetchSpecialtyAndDoctors,
-    fetchDoctorDetail,
-    fetchTimeSlots,
     resetFormOnly,
-    firstName,
-    lastName,
-    phone,
-    gender,
-    birthday,
-    address,
     setFirstName,
     setLastName,
     setPhone,
     setGender,
     setBirthday,
     setAddress,
-  } = useBookingStore();
-
-  useEffect(() => {
-    resetBooking();
-    let cancelled = false;
-    fetchSpecialtyAndDoctors(specialtyId).then(() => {
-      if (cancelled) resetBooking();
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [specialtyId, fetchSpecialtyAndDoctors, resetBooking]);
-
-  useEffect(() => {
-    if (!selectedDoctorId) return;
-    let cancelled = false;
-    fetchDoctorDetail(selectedDoctorId).then(() => {
-      if (cancelled) return;
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedDoctorId, fetchDoctorDetail]);
-
-  useEffect(() => {
-    if (!selectedDoctorId || !selectedDate || !selectedMedicalServiceId) return;
-    let cancelled = false;
-    fetchTimeSlots(
-      selectedDoctorId,
-      toISODate(selectedDate),
-      selectedMedicalServiceId,
-    ).then(() => {
-      if (cancelled) return;
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    selectedDoctorId,
-    selectedDate,
-    selectedMedicalServiceId,
-    fetchTimeSlots,
-  ]);
-
-  const availableDays = useMemo(() => {
-    if (selectedDoctorSchedule?.workDate?.length) {
-      return getDoctorAvailableDays(selectedDoctorSchedule.workDate, 30);
-    }
-
-    const base = new Date();
-    base.setHours(0, 0, 0, 0);
-    const days = [];
-    for (let i = 1; i <= 30; i += 1) {
-      const d = new Date(base);
-      d.setDate(base.getDate() + i);
-      days.push(d);
-    }
-    return days;
-  }, [selectedDoctorSchedule]);
-
-  const selectedService = useMemo(
-    () =>
-      medicalServices.find((s) => s.id === selectedMedicalServiceId) ?? null,
-    [medicalServices, selectedMedicalServiceId],
-  );
-
-  const selectedDoctor = useMemo(
-    () => doctors.find((d) => d.id === selectedDoctorId) ?? null,
-    [doctors, selectedDoctorId],
-  );
-
-  const handleConfirm = () => {
-    const basePayload = {
-      doctorId: selectedDoctorId,
-      medicalServiceId: selectedMedicalServiceId,
-      appointmentDate: selectedTime,
-      note: patientNotes.trim() || "",
-    };
-
-    const finalPayload = isReceptionist
-      ? {
-          ...basePayload,
-          firstName,
-          lastName,
-          phone,
-          gender,
-          birthday,
-          address,
-        }
-      : basePayload;
-
-    confirmBooking(accessToken, finalPayload, isReceptionist);
-  };
+    handleConfirm,
+    handleBrowseSpecialties,
+  } = useBookAppointmentPage();
 
   if (loading) {
     return (
@@ -185,7 +83,7 @@ export default function BookAppointmentPage() {
 
   if (!specialty) {
     return (
-      <BookingNotFoundView onBrowseSpecialties={() => navigate("/dashboard")} />
+      <BookingNotFoundView onBrowseSpecialties={handleBrowseSpecialties} />
     );
   }
 
@@ -209,7 +107,7 @@ export default function BookAppointmentPage() {
                 to={`/specialties/${specialtyId}`}
                 className="booking__back"
               >
-                <span aria-hidden="true">←</span> {specialty.name}
+                <span aria-hidden="true">&#8592;</span> {specialty.name}
               </Link>
               <h1 className="booking__title">Đặt lịch khám</h1>
               <p className="booking__subtitle">

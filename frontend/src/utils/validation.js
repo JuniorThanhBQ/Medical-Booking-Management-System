@@ -18,9 +18,12 @@ export function isValidEmail(value) {
 }
 
 export function isValidPassword(value) {
-  if (!value) return false;
+  const v = value.trim();
+  if (!v) return false;
 
-  return PASSWORD_REGEX.test(value);
+  if (containsXss(v)) return false;
+
+  return PASSWORD_REGEX.test(v);
 }
 
 export function getPasswordErrors(value) {
@@ -60,8 +63,4 @@ export function isValidDateOfBirth(value) {
 
 export function isValidGender(value) {
   return value === "male" || value === "female" || value === "other";
-}
-
-export function isValidRole(value) {
-  return value === "patient" || value === "doctor";
 }

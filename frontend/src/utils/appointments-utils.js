@@ -1,4 +1,4 @@
-export const APPOINTMENT_STATUS_TO_UI = {
+const APPOINTMENT_STATUS_TO_UI = {
   APPROVED: "APPROVED",
   COMPLETED: "COMPLETED",
   PENDING: "PENDING",
@@ -10,7 +10,7 @@ export const EMPTY_PATIENT = {
   gender: null,
 };
 
-export function toViTime(isoString) {
+function toViTime(isoString) {
   if (!isoString) return "";
   const date = new Date(isoString);
   if (isNaN(date.getTime())) return "";
@@ -19,12 +19,14 @@ export function toViTime(isoString) {
   return timePart ? timePart.substring(0, 5) : "";
 }
 
-export function getDefaultEndTime(startTime) {
+function getDefaultEndTime(startTime) {
   if (!startTime) return "";
+
   const [hourText, minuteText] = startTime.split(":");
   const hour = Number(hourText);
   const minute = Number(minuteText);
   if (Number.isNaN(hour) || Number.isNaN(minute)) return "";
+
   const endHour = (hour + 1).toString().padStart(2, "0");
   return `${endHour}:${minuteText}`;
 }

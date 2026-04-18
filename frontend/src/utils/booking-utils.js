@@ -38,7 +38,6 @@ const WEEKDAY_NAME_TO_INDEX = {
   FRIDAY: 5,
   SATURDAY: 6,
 };
-
 export function getDoctorAvailableDays(workDateNames = [], maxDays = 30) {
   const allowedWeekdays = workDateNames
     .map((name) => name?.toUpperCase())

@@ -9,7 +9,7 @@ const payload_result = {
   LOGIN_SUCCESS: (state, action) => ({
     ...state,
     user: action.payload.user,
-    accessToken: action.payload.accessToken,
+    accessToken: action.payload.accessToken || state.accessToken,
     isAuthenticated: true,
     isLoading: false,
   }),
@@ -17,7 +17,6 @@ const payload_result = {
     ...state,
     accessToken: action.payload.accessToken,
     isAuthenticated: true,
-    isLoading: true,
   }),
   AUTH_FAILED: () => ({
     ...initialState,

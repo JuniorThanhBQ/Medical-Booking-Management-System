@@ -57,6 +57,13 @@ a {
   border-width: 2px;
 }
 
+.app-loader__label {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--lp-primary, #2563eb);
+}
+
 @keyframes app-spin {
   to {
     transform: rotate(360deg);

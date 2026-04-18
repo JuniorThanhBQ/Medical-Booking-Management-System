@@ -2,6 +2,7 @@ export default function LoadingSpinner({
   fullPage = true,
   size = "lg",
   className = "",
+  label = "",
 }) {
   const loaderClass = [
     "app-loader",
@@ -14,6 +15,7 @@ export default function LoadingSpinner({
   return (
     <div className={loaderClass}>
       <div className={`app-spinner app-spinner--${size}`} role="status" />
+      <p className="app-loader__label">{label}</p>
     </div>
   );
 }

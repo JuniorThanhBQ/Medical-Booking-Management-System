@@ -1,4 +1,4 @@
-import "@css/shared/feature-sections.css";
+import "@css/common/feature-sections.css";
 
 import { ArrowRightIcon, BadgeCheckIcon } from "@/assets/icons";
 

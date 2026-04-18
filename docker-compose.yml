@@ -26,8 +26,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      db-migration:
-        condition: service_completed_successfully
       redis:
         condition: service_healthy
       rabbitmq:
@@ -44,18 +42,6 @@ services:
       start_period: 30s
     networks:
       - frontend-network
-      - backend-network
-
-  db-migration:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
-    networks:
       - backend-network
 
   db:
@@ -110,6 +96,8 @@ services:
         condition: service_healthy
     networks:
       - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
 
   email-worker:
     build:
@@ -130,6 +118,8 @@ services:
         condition: service_healthy
     networks:
       - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
 
   rabbitmq:
     restart: unless-stopped
@@ -158,3 +148,4 @@ volumes:
   mysql-data:
   redis-data:
   rabbitmq-data:
+  shared_tmp_volume:

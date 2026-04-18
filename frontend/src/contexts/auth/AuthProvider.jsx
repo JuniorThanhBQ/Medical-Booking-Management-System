@@ -1,17 +1,33 @@
 import { apis as api, endpoints } from "@configs/apis";
+import { BASE_URL } from "@configs/apis";
+import axios from "axios";
 import { useEffect, useMemo, useReducer, useRef } from "react";
 import { toast } from "sonner";
 
 import { AuthContext } from "./AuthContext";
 import authReducer, { initialState } from "./authReducer";
 
+let isRefreshing = false;
+let failedQueue = [];
+
 const fetchNewToken = async () => {
-  const res = await api.post(
-    endpoints["auth_refresh"],
+  const res = await axios.post(
+    `${BASE_URL}${endpoints["auth_refresh"]}`,
     {},
     { withCredentials: true },
   );
   return res.data.access_token;
+};
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
 };
 
 const handleAuthError = (dispatch, error) => {
@@ -21,7 +37,7 @@ const handleAuthError = (dispatch, error) => {
 };
 
 const setupInterceptors = (dispatch, accessTokenRef) => {
-  const reqIntercept = api.interceptors.request.use(
+  const requestIntercept = api.interceptors.request.use(
     (config) => {
       if (accessTokenRef.current) {
         config.headers["Authorization"] = `Bearer ${accessTokenRef.current}`;
@@ -31,37 +47,54 @@ const setupInterceptors = (dispatch, accessTokenRef) => {
     (error) => Promise.reject(error),
   );
 
-  const resIntercept = api.interceptors.response.use(
+  const responseIntercept = api.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const prevRequest = error?.config;
+      const originalRequest = error?.config;
       const isAuth = localStorage.getItem("isAuth") === "true";
-
-      if (
-        error?.response?.status !== 401 ||
-        !prevRequest ||
-        prevRequest.sent ||
-        !isAuth
-      ) {
+      if (error?.response?.status !== 401 || !originalRequest || !isAuth) {
         return Promise.reject(error);
       }
 
-      prevRequest.sent = true;
-      try {
-        const newAccessToken = await fetchNewToken();
-        dispatch({
-          type: "REFRESH_TOKEN_SUCCESS",
-          payload: { accessToken: newAccessToken },
-        });
-        prevRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(prevRequest);
-      } catch (err) {
-        return handleAuthError(dispatch, err);
+      if (!originalRequest._retry) {
+        if (isRefreshing) {
+          return new Promise(function (resolve, reject) {
+            failedQueue.push({ resolve, reject });
+          })
+            .then((token) => {
+              originalRequest.headers["Authorization"] = `Bearer ${token}`;
+              return api(originalRequest);
+            })
+            .catch((err) => {
+              return Promise.reject(err);
+            });
+        }
+
+        originalRequest._retry = true;
+        isRefreshing = true;
+        try {
+          const newAccessToken = await fetchNewToken();
+          dispatch({
+            type: "REFRESH_TOKEN_SUCCESS",
+            payload: { accessToken: newAccessToken },
+          });
+
+          processQueue(null, newAccessToken);
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
+          return api(originalRequest);
+        } catch (err) {
+          processQueue(err, null);
+          return handleAuthError(dispatch, err);
+        } finally {
+          isRefreshing = false;
+        }
       }
+      return Promise.reject(error);
     },
   );
 
-  return { reqIntercept, resIntercept };
+  return { requestIntercept, responseIntercept };
 };
 
 const initializeUser = async (dispatch, accessTokenRef) => {
@@ -72,29 +105,24 @@ const initializeUser = async (dispatch, accessTokenRef) => {
 
   dispatch({ type: "SET_LOADING", payload: true });
 
-  let activeToken = accessTokenRef.current;
-  if (!activeToken) {
-    try {
-      activeToken = await fetchNewToken();
+  try {
+    if (!accessTokenRef.current) {
+      const newToken = await fetchNewToken();
       dispatch({
         type: "REFRESH_TOKEN_SUCCESS",
-        payload: { accessToken: activeToken },
+        payload: { accessToken: newToken },
       });
-    } catch {
-      localStorage.removeItem("isAuth");
-      dispatch({ type: "AUTH_FAILED" });
-      return;
-    }
-  }
 
-  try {
-    const headers = activeToken
-      ? { Authorization: `Bearer ${activeToken}` }
-      : undefined;
-    const response = await api.get(endpoints["auth_current_user"], { headers });
+      accessTokenRef.current = newToken;
+    }
+
+    const response = await api.get(endpoints["auth_current_user"]);
     dispatch({
       type: "LOGIN_SUCCESS",
-      payload: { user: response.data.user, accessToken: activeToken },
+      payload: {
+        user: response.data.user,
+        accessToken: accessTokenRef.current,
+      },
     });
   } catch {
     localStorage.removeItem("isAuth");
@@ -123,8 +151,12 @@ const createAuthActions = (dispatch) => ({
         toast.error(errorMessage);
         return { success: false, message: errorMessage };
       }
-      
-      return { success: false, message: error.response?.data?.message };
+
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Lỗi xảy ra trong luồng đăng nhập.",
+      };
     }
   },
 
@@ -150,7 +182,11 @@ const createAuthActions = (dispatch) => ({
       const response = await api.post(endpoints["auth_register"], payload);
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, message: error.response?.data?.message };
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Email không tồn tại trong thực tế.",
+      };
     }
   },
 
@@ -175,14 +211,14 @@ export const AuthProvider = ({ children }) => {
   }, [state.accessToken]);
 
   useEffect(() => {
-    const { reqIntercept, resIntercept } = setupInterceptors(
+    const { requestIntercept, responseIntercept } = setupInterceptors(
       dispatch,
       accessTokenRef,
     );
     initializeUser(dispatch, accessTokenRef);
     return () => {
-      api.interceptors.request.eject(reqIntercept);
-      api.interceptors.response.eject(resIntercept);
+      api.interceptors.request.eject(requestIntercept);
+      api.interceptors.response.eject(responseIntercept);
     };
   }, []);
 

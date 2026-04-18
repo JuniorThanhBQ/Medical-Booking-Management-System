@@ -1,4 +1,4 @@
-import "@css/shared/service-detail.css";
+import "@css/common/service-detail.css";
 
 import { useNavigate } from "react-router-dom";
 

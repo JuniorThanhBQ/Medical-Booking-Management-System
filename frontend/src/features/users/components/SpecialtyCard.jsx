@@ -1,6 +1,3 @@
-import { ArrowRightFilledIcon } from "@/assets/icons";
-import { CTA_DISPLAY_MAP } from "@/configs/const";
-
 const SpecialtyCard = ({ specialty, onClick }) => {
   const { id, level, name, description, images } = specialty;
 

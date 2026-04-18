@@ -1,10 +1,11 @@
 import { apis as api, endpoints } from "@configs/apis";
 import { AuthContext } from "@contexts/auth/AuthContext";
 import { useContext, useEffect, useMemo, useReducer, useRef } from "react";
+import { toast } from "sonner";
 
 import { NotificationContext } from "./NotificationContext";
 import notificationReducer, { initialState } from "./notificationReducer";
-const fetchNotificationsData = async (dispatch, page = 1, perPage = 10) => {
+const fetchNotificationsData = async (dispatch, page = 1, perPage = 6) => {
   try {
     dispatch({ type: "SET_LOADING", payload: true });
     const response = await api.get(endpoints["notification"], {
@@ -16,6 +17,9 @@ const fetchNotificationsData = async (dispatch, page = 1, perPage = 10) => {
       type: "SET_ERROR",
       payload: error.response?.data?.message || "Failed to fetch notifications",
     });
+    toast.error("Có lỗi trong lấy thông báo.");
+  } finally {
+    dispatch({ type: "SET_LOADING", payload: false });
   }
 };
 const createNotificationActions = (dispatch) => ({
@@ -41,25 +45,27 @@ const createNotificationActions = (dispatch) => ({
 
   getNotificationDetail: async (notificationId) => {
     try {
-      const response = await api.get(
-        endpoints["notification_detail"](notificationId),
-      );
-      await api.patch(endpoints["notification_detail"](notificationId));
+      const [response] = await Promise.all([
+        api.get(endpoints["notification_detail"](notificationId)),
+        api
+          .patch(endpoints["notification_detail"](notificationId))
+          .catch(() => {}),
+      ]);
       dispatch({ type: "MARK_AS_READ", payload: notificationId });
+
       return response.data;
     } catch (error) {
-      console.error(error);
+      toast.error("Lỗi khi tải chi tiết thông báo.");
       throw error;
     }
   },
   deleteNotification: async (notificationId) => {
     try {
-      if (endpoints["notification_detail"]) {
-        await api.delete(endpoints["notification_detail"](notificationId));
-      }
+      await api.delete(endpoints["notification_detail"](notificationId));
       dispatch({ type: "DELETE_NOTIFICATION", payload: notificationId });
     } catch (error) {
       console.error(error);
+      toast.error("Xóa thông báo thất bại.");
     }
   },
 });
@@ -71,6 +77,7 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     if (!accessToken) {
       isInitialized.current = false;
+      dispatch({ type: "CLEAR_NOTIFICATIONS" });
       return;
     }
 

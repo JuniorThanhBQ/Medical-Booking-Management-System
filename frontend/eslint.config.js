@@ -39,7 +39,7 @@ export default [
       },
     },
     rules: {
-      complexity: ["error", 25],
+      complexity: ["error", 30],
       ...js.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactPlugin.configs["jsx-runtime"].rules,

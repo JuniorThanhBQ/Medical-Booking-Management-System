@@ -8,6 +8,7 @@ export function splitName(fullName = "") {
 
 export function splitBirthday(birthdayStr = "") {
   if (!birthdayStr) return { day: "", month: "", year: "" };
+
   const [year, month, day] = birthdayStr.split("-");
   return {
     day: parseInt(day, 10) || "",
@@ -16,7 +17,7 @@ export function splitBirthday(birthdayStr = "") {
   };
 }
 
-export function formatBirthday(year, month, day) {
+function formatBirthday(year, month, day) {
   if (!year || !month || !day) return "";
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
@@ -42,7 +43,6 @@ export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
 const ALLOWED_AVATAR_TYPES = ["image/jpeg", "image/png", "image/webp"];
-
 export function readAvatarFile(event, callback) {
   const file = event.target.files[0];
   event.target.value = "";
@@ -59,38 +59,6 @@ export function readAvatarFile(event, callback) {
   reader.onload = () => callback(reader.result);
   reader.onerror = () => console.error("Không thể đọc tệp ảnh");
   reader.readAsDataURL(file);
-}
-
-export function normalizeActivity(item, doctorMap = {}) {
-  if (item.type === "medical_records") {
-    return {
-      ...item,
-      title: item.diagnosis || "Hồ sơ bệnh án",
-      meta: [item.doctorName, item.specialty].filter(Boolean).join(" · "),
-    };
-  }
-  if (item.type === "appointments") {
-    const doctor = doctorMap[item.doctorId];
-    return {
-      ...item,
-      title: doctor?.name || "Lịch hẹn",
-      meta: [item.date, item.startTime].filter(Boolean).join(" "),
-    };
-  }
-  return { ...item, title: item.title ?? "", meta: item.meta ?? "" };
-}
-
-export function getActivityStatusLabel(status) {
-  switch (status) {
-    case "cancelled":
-      return "Đã hủy";
-    case "completed":
-      return "Hoàn thành";
-    case "active":
-      return "Đang hoạt động";
-    default:
-      return status || "Trạng thái";
-  }
 }
 
 export function getStatusClassName(status) {
