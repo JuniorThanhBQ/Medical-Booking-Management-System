@@ -20,8 +20,8 @@ export default function DoctorRegistration() {
         <div className="registration-success">
           <h2>Đăng ký thành công!</h2>
           <p>
-            Chúng tôi đã nhận được hồ sơ của bạn và sẽ liên hệ trong thời gian
-            sớm nhất.
+            Hồ sơ của bạn đã được chúng tôi ghi nhận. Vui lòng theo dõi mail
+            trong vòng 3-5 ngày làm việc tới. 
           </p>
           <Link to="/" className="btn-back-home">
             Quay về trang chủ

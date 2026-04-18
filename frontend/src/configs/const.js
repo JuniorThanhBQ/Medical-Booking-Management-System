@@ -67,12 +67,12 @@ export const DEFAULT_AUTH_MENU_ITEMS = {
   ],
   ADMIN: [
     { label: "Quản lý bác sĩ", href: "/doctors" },
-    { label: "Quản lý lịch hẹn", href: "/appointments" },
+    { label: "Quản lý lịch hẹn", href: "/receptionist/appointments" },
     { label: "Quản lý bệnh nhân", href: "/patients" },
     { label: "Thông báo", href: "/notifications" },
   ],
   RECEPTIONIST: [
-    { label: "Quản lý lịch hẹn", href: "/appointments" },
+    { label: "Quản lý lịch hẹn", href: "/receptionist/appointments" },
     { label: "Thông báo", href: "/notifications" },
   ],
 };

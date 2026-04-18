@@ -56,7 +56,7 @@ const AppointmentCard = ({
           className="appointment-card__actions-trigger"
           onClick={toggleActions}
         >
-          {showActions ? "&#10005; Đóng chỉnh sửa" : "&#9881; Quản lý lịch hẹn"}
+          {showActions ? "✕ Đóng chỉnh sửa" : "⚙ Quản lý lịch hẹn"}
         </button>
 
         {showActions && (

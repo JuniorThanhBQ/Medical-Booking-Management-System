@@ -214,7 +214,6 @@ class VerifyEmailAPI(Resource):
     def post(self, auth_service=Provide[AppContainer.user_app.auth_service]):
         data = request.get_json()
         token = data.get("token")
-        
         if not token:
             return {"message": "Token không được cung cấp"}, 400
 

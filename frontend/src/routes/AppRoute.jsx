@@ -81,7 +81,7 @@ export default function AppRoute() {
             element={<ReceptionistAppointmentDetailPage />}
           />
           <Route
-            path="/receptionist/appointments/:appointmentId/patient-profile"
+            path="/appointments/:appointmentId/patient-profile"
             element={<PatientProfilePage />}
           />
         </Route>

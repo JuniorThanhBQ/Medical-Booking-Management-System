@@ -14,7 +14,7 @@ export function useAuthRedirect() {
     } else if (user?.role === "DOCTOR") {
       navigate("/doctor/today", { replace: true });
     } else if (user?.role === "RECEPTIONIST") {
-      navigate("/appointments", { replace: true });
+      navigate("/receptionist/appointments", { replace: true });
     } else {
       navigate("/dashboard", { replace: true });
     }

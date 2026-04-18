@@ -29,8 +29,8 @@ class GenderRole(enum.Enum):
 class Base(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
-    created_date = Column(DateTime, default=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None))    
-    updated_date = Column(DateTime, 
+    created_date = Column(DateTime, default=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None))
+    updated_date = Column(DateTime,
                           default=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None),
                           onupdate=lambda: datetime.datetime.now(VN_TZ).replace(tzinfo=None))
 
