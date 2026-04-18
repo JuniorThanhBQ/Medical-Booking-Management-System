@@ -3,12 +3,12 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.modules.shared.services import (check_is_conflicting,
-                                         format_appointment,
-                                         format_speciality_output,
-                                         parse_appointment_datetime,
-                                         validate_appointment_date,
-                                         validate_available_slot)
+from src.utils.appointment.appointment_validate_utils import (
+    validate_appointment_date, validate_available_slot)
+from src.utils.appointment.formatter_utils import (format_appointment,
+                                                   parse_appointment_datetime)
+from src.utils.doctor.formatter_utils import format_speciality_output
+from src.utils.doctor.time_slots_utils import check_is_conflicting
 
 
 def test_parse_appointment_datetime():

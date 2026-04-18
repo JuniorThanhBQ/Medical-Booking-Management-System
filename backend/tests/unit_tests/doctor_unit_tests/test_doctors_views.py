@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 
 from src.modules.users.models import User, UserRole
 from src.modules.users.repositories import add_user, commit
-from src.modules.users.services import create_token
+from src.utils.users.jwt_utils import create_token
 from tests.test_base import test_app, test_client, test_session
 
 

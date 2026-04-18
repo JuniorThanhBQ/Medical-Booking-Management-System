@@ -4,11 +4,12 @@ from werkzeug.security import generate_password_hash
 
 from src.modules.users.models import GenderRole, PatientProfile, User, UserRole
 from src.modules.users.repositories import add_profile, add_user, commit
-from src.modules.users.services import (create_token, get_user_data,
-                                        is_email_available, login_user_service,
-                                        parse_date, parse_gender,
+from src.modules.users.services import (get_user_data, is_email_available,
+                                        login_user_service,
                                         register_user_service,
                                         update_patient_profile_service)
+from src.utils.users.jwt_utils import create_token
+from src.utils.utils import parse_date, parse_gender
 from tests.test_base import test_app, test_session
 
 

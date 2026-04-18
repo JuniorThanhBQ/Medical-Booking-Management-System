@@ -8,7 +8,7 @@ from src.modules.notification.services import (
     mark_all_notification_service, mark_detail_notification_service)
 
 
-@patch('src.modules.notification.services.get_paginated_by_user_id')
+@patch('src.modules.notification.services.get_paginated_notification_by_user_id')
 def test_get_notifications_service(mock_get_paginated):
     mock_paginated = MagicMock()
     mock_item = MagicMock(id=1, title="Test", message="Msg", is_read=False)

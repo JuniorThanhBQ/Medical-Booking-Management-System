@@ -8,6 +8,7 @@ from flask_cors import CORS
 
 import src.modules.notification.rabbitmq  # noqa: F401
 from src.admin import init_admin
+from src.containers import AppContainer
 from src.extensions import cache, celery_app, db, login, mail, migrate
 from src.middlewares.middlewares import middlewares
 from src.routes import api_v1
@@ -70,7 +71,8 @@ def create_app():
     cache.init_app(app)
     mail.init_app(app)
     init_celery(app, celery_app)
-
+    container = AppContainer()
+    app.container = container
     app.register_blueprint(api_v1)
 
     cloudinary.config(

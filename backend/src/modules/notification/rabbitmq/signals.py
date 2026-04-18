@@ -1,13 +1,14 @@
 import secrets
 from functools import partial
 
+from dependency_injector.wiring import Provide, inject
 from flask import current_app
 from sqlalchemy import event
 
+from src.containers import AppContainer
 from src.extensions import db
 from src.modules.appointments.models import Appointment, StatusRole
 from src.modules.notification.rabbitmq.tasks import reminder_email_task
-from src.modules.notification.services import insert_appointment_notifications
 
 
 def hook_after_commit(_session, notification_list):
@@ -19,7 +20,11 @@ def hook_after_commit(_session, notification_list):
         )
 
 
-def processing_appointment_notification(appointment=None, connection=None, action_name=None):
+@inject
+def processing_appointment_notification(appointment=None, connection=None, action_name=None,
+                                        notification_services=Provide[
+                                            AppContainer.notification_app.notification_services
+                                        ]):
     if (current_app.config.get("DISABLE_SIGNALS")
             or connection is None or appointment is None):
         return
@@ -27,8 +32,8 @@ def processing_appointment_notification(appointment=None, connection=None, actio
     if appointment.status == StatusRole.COMPLETED.name:
         return
 
-    notification_list = insert_appointment_notifications(appointment=appointment, connection=connection,
-                                                         action_name=action_name)
+    notification_list = notification_services.insert_appointment_notifications(
+        appointment=appointment, connection=connection, action_name=action_name)
 
     if not notification_list:
         return

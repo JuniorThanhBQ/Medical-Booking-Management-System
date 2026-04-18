@@ -66,6 +66,23 @@ class Profile(Base):
     def __str__(self):
         return f"{self.user.last_name} {self.user.first_name}"
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "address": self.address,
+            "dateOfBirth": self.birthday.isoformat() if self.birthday else None,
+            "phone": self.phone,
+            "gender": self.gender.name if self.gender else None,
+            "avatar": self.avatar,
+            "profileType": self.profile_type
+        }
+
+    def update_from_dict(self, data):
+        if "address" in data:
+            self.address = data["address"]
+        if "phone" in data:
+            self.phone = data["phone"]
+
 
 class PatientProfile(Profile):
     __tablename__ = "patient_profile"
@@ -74,3 +91,15 @@ class PatientProfile(Profile):
                 ForeignKey("profile.id", ondelete="CASCADE"),
                 primary_key=True)
     medical_history = Column(Text)
+
+    def to_dict(self):
+        data = super().to_dict()
+        data.update({
+            "medicalHistory": self.medical_history
+        })
+        return data
+
+    def update_from_dict(self, data):
+        super().update_from_dict(data)
+        if "medicalHistory" in data:
+            self.medical_history = data["medicalHistory"]

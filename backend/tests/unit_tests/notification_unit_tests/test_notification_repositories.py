@@ -10,7 +10,7 @@ from src.modules.notification.repositories import (
     add_and_commit_notification, bulk_mark_as_read, commit,
     delete_notification, get_appointments_for_date, get_by_id_and_user_id,
     get_doctor_user_info, get_existing_notification, get_notification_by_id,
-    get_paginated_by_user_id, get_patient_user_info,
+    get_paginated_notification_by_user_id, get_patient_user_info,
     get_pending_email_notifications, get_unread_by_user_id,
     insert_notifications_list, rollback, update_email_status)
 from src.modules.users.models import PatientProfile, User
@@ -44,7 +44,7 @@ def test_notification_repositories(test_app, test_session):
         add_and_commit_notification(n1)
 
         assert get_notification_by_id(n1.id).title == "T1"
-        assert len(get_paginated_by_user_id(pat_user.id, 1, 10).items) == 2
+        assert len(get_paginated_notification_by_user_id(pat_user.id, 1, 10).items) == 2
         assert len(get_unread_by_user_id(pat_user.id)) == 2
         assert get_by_id_and_user_id(n1.id, pat_user.id) is not None
 

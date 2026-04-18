@@ -41,6 +41,7 @@ class Config:
     SERVER_NAME = os.getenv('SERVER_NAME', 'localhost:8000')
 
     EMAIL_VALIDATOR = os.getenv('EMAIL_VALIDATOR')
+    FRONTEND_URL = os.getenv('FRONTEND_URL')
 
 
 class DevelopmentConfig(Config):

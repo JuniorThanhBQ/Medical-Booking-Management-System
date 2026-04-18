@@ -8,6 +8,7 @@ from src.extensions import celery_app, mail
 
 logger = logging.getLogger(__name__)
 
+
 @celery_app.task(bind=True, max_retries=3)
 def process_doctor_registration_email(self, data, file_path, filename):
     try:
