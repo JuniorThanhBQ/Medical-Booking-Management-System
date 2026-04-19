@@ -11,24 +11,24 @@
 
 | Thành viên         | MSSV       | Công việc | Link Commit/PR | 
 |--------------------|------------|-----------|----------------| 
-| Văn Trung Thành    | 2351050164 | Đang làm  | [abc123](link) | 
-| Nguyễn Thanh Phong | 2351050133 | Đang làm  | [def456](link) | 
-| Trương Hưng Phát   | 2351010154 | Đang làm  | [ghi789](link) | 
+| Văn Trung Thành    | 2351050164 | Hoàn tất refactor frontend và backend. Thống nhất và hoàn hiện chức năng còn thiếu. Thực hiện release phiên bản v2.0.0 (Productionable). Kết thúc phát triển ứng dụng, chuyển sang theo dõi và bảo trì trên production | [abc123](link) | 
+| Nguyễn Thanh Phong | 2351050133 | Công việc không commit: Cập nhật và bổ sung chương 3, 4 trong báo cáo. Đề xuất một số thay đổi trong giai đoạn triển khai thiết kế (design và implementation). Cân nhắc một số thuật toán đặt lịch time-slot | (Tuần này không commit để tập trung vào báo cáo và một bạn đảm nhiệm CI/CD toàn phần) | 
+| Trương Hưng Phát   | 2351010154 | Công việc không commit: Cập nhật và bổ sung chương 1, 2 trong báo cáo. Viết lại user stories phù hợp bối cảnh nghiệp vụ thực tế và kiểm tra văn phong chính tả. | (Tuần này không commit để tập trung vào báo cáo và một bạn đảm nhiệm CI/CD toàn phần) | 
 
 --- 
 
 ## 2. Tiến độ tổng thể
 
-| Hạng mục           | Trạng thái    | %  | 
-|--------------------|---------------|----| 
-| Phân tích yêu cầu  | Đang làm      | 0% | 
-| Thiết kế kiến trúc | Chưa bắt đầu | 0% | 
-| Backend API        | Chưa bắt đầu | 0% | 
-| Frontend UI        | Chưa bắt đầu | 0% | 
-| Docker             | Chưa bắt đầu | 0% | 
-| Testing            | Chưa bắt đầu | 0% | 
+| Hạng mục           | Trạng thái    | %    | 
+|--------------------|---------------|------| 
+| Phân tích yêu cầu  | Đã hoàn thành | 100% | 
+| Thiết kế kiến trúc | Đã hoàn thành | 100% | 
+| Backend API        | Đang làm      | 96% | 
+| Frontend UI        | Đang làm      | 95% | 
+| Docker             | Đang làm      | 97% | 
+| Testing            | Đang làm      | 38% | 
 
-**Tổng tiến độ: 0%**
+**Tổng tiến độ: 88%**
 
 --- 
 
@@ -36,16 +36,18 @@
 
 | Thành viên         | Công việc dự kiến | 
 |--------------------|-------------------| 
-| Văn Trung Thành    | ...               | 
-| Nguyễn Thanh Phong | ...               | 
-| Trương Hưng Phát   | ...               | 
+| Văn Trung Thành    | Tích hợp redis vào backend và nginx. Theo dõi và hotfix những lỗi xảy ra khi ứng dụng trên production (hotfix). Hoàn thiện và tổng kết báo cáo trước chủ nhật 26/04/2026. | 
+| Nguyễn Thanh Phong | Viết unit test để phủ 70% backend. Thực hiện test Postman và quy chuẩn hoá backend (xử lý nợ kiến trúc giai đoạn cuối). | 
+| Trương Hưng Phát   | Quy chuẩn hoá lại frontend (xử lý nợ kiến trúc giai đoạn cuối). Thực hiện acceptance test frontend (thử luồng nghiệp vụ). | 
+
+Ghi chú phụ: kết thúc tuần 10 thì nhóm sẽ kết thúc đồ án với version 3.0
 
 --- 
 
 ## 4. Khó khăn / Cần hỗ trợ
 
-- [ ] [Mô tả khó khăn nếu có]
-- [ ] [Câu hỏi cần GV giải đáp nếu có]
+- [ ] [Nhóm không gặp khó khăn trong đồ án]
+- [ ] [Nhóm không có thắc mắc dành cho giảng viên]
 
 --- 
 

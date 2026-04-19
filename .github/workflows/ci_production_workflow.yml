@@ -8,32 +8,44 @@ on:
 
 jobs:
   build-app:
-    uses: ./.github/workflows/pipelines/ci_app_build_pipeline.yml
+    uses: ./.github/workflows/ci_app_build_pipeline.yml
     secrets: inherit
 
   static-test:
-    needs: build
-    uses: ./.github/workflows/pipelines/ci_code_static_pipeline.yml
+    needs: build-app
+    uses: ./.github/workflows/ci_code_static_pipeline.yml
     secrets: inherit
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
 
   dynamic-test:
     needs: static-test
-    uses: ./.github/workflows/pipelines/ci_code_quality_pipeline.yml
+    uses: ./.github/workflows/ci_code_quality_pipeline.yml
     secrets: inherit
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
 
   docker-scan:
     needs: dynamic-test
-    uses: ./.github/workflows/pipelines/ci_docker_image_scan.yml
+    uses: ./.github/workflows/ci_docker_image_scan.yml
     secrets: inherit
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
 
   deploy:
     needs: docker-scan
     if: github.event_name == 'push'
-    uses: ./.github/workflows/pipelines/ci_docker_image_deploy.yml
+    uses: ./.github/workflows/ci_docker_image_deploy.yml
     secrets: inherit
 
   production-workflow-report:
-    needs: [build, static-test, dynamic-test, docker-scan, deploy]
+    needs: [build-app, static-test, dynamic-test, docker-scan, deploy]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
@@ -47,7 +59,7 @@ jobs:
           python-version: '3.13'
       - name: Tạo báo cáo tổng kết
         env:
-          TEST_BUILD: ${{ needs.build.result }}
+          TEST_BUILD: ${{ needs.build-app.result }}
           BACKEND_LINT: ${{ needs.static-test.result }}
           FRONTEND_LINT: ${{ needs.static-test.result }}
           BACKEND_SECURITY: ${{ needs.static-test.result }}
@@ -70,4 +82,3 @@ jobs:
               repo: context.repo.repo,
               body: issueBody
             });
-            
