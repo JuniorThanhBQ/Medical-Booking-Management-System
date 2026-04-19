@@ -14,13 +14,14 @@
 }
 
 .signin-page__back {
+  display: flex;
   border: none;
   background: transparent;
   cursor: pointer;
   padding: 8px;
   border-radius: 999px;
-  display: inline-flex;
   align-items: center;
+  align-content: center;
   justify-content: center;
   transition: background-color 160ms ease;
 }
@@ -36,6 +37,12 @@
 
 .signin-page__back-icon {
   font-size: 1.25rem;
+}
+
+.signin-page__back-text {
+  font-size: 0.875rem;
+  color: #333941;
+  margin-left: 12px;
 }
 
 .signin-page__main {

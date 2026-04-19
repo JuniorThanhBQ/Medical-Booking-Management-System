@@ -3,7 +3,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=${BACKEND_API_URL}
+        - VITE_API_URL=${VITE_API_URL}
     depends_on:
       backend:
         condition: service_healthy
@@ -26,14 +26,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      db-migration:
-        condition: service_completed_successfully
       redis:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-    ports:
-      - "${BACKEND_PORT}:8000"
     env_file:
       - .env
     healthcheck:
@@ -45,18 +41,8 @@ services:
     networks:
       - frontend-network
       - backend-network
-
-  db-migration:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
-    networks:
-      - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
 
   db:
     restart: unless-stopped
@@ -108,8 +94,12 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
 
   email-worker:
     build:
@@ -128,8 +118,12 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
 
   rabbitmq:
     restart: unless-stopped
@@ -158,3 +152,4 @@ volumes:
   mysql-data:
   redis-data:
   rabbitmq-data:
+  shared_tmp_volume:

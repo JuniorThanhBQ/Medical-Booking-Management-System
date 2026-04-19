@@ -1,4 +1,4 @@
-@import "@/assets/css/auth/landing.css";
+@import "@/assets/css/users/landing-page.css";
 
 .specialty__rules-list {
   list-style: none;
@@ -27,12 +27,6 @@
   line-height: 1.6;
   color: var(--lp-muted);
   margin: 0;
-}
-
-@media (max-width: 640px) {
-  .specialty__rule-card {
-    padding: 12px 14px;
-  }
 }
 
 .specialty {
@@ -129,8 +123,16 @@
 
 .specialty__secondary-cta {
   font-size: 0.9rem;
-  color: var(--lp-body);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: gray;
+  color: #ffffff;
+  font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .specialty__hero-card {
@@ -211,12 +213,17 @@
   color: var(--lp-muted);
 }
 
+@media (max-width: 640px) {
+  .specialty__rule-card {
+    padding: 12px 14px;
+  }
+}
+
 @media (max-width: 960px) {
   .specialty__hero-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
-
 
 @media (max-width: 640px) {
   .specialty__hero {

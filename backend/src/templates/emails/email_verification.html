@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực email của bạn</title>
+    <style>
+        body, a {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        td {
+            padding: 0;
+        }
+
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            color: #3c4043;
+        }
+
+        .email-wrapper {
+            background-color: #f8f9fa;
+            padding: 40px 20px;
+        }
+
+        .wrapper-inner {
+            text-align: center;
+        }
+
+        .email-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #dadce0;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .email-header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .email-body {
+            padding: 40px 32px;
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .email-body h2 {
+            font-size: 20px;
+            color: #202124;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message-box {
+            background-color: #e8f0fe;
+            border-left: 4px solid #1a73e8;
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            color: #1a73e8;
+            font-weight: 500;
+        }
+
+        .content-text {
+            color: #3c4043;
+            margin-bottom: 30px;
+        }
+
+        .cta-container {
+            text-align: center;
+            margin: 35px 0;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b0;
+        }
+
+        .signature {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f3f4;
+            font-size: 15px;
+        }
+
+        .highlight-name {
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .footer-table {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .email-footer {
+            text-align: center;
+            padding: 24px;
+            color: #70757a;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .email-footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .email-wrapper {
+                padding: 20px 10px;
+            }
+
+            .email-body {
+                padding: 30px 20px;
+            }
+
+            .email-header {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<table class="email-wrapper" role="presentation">
+    <tr>
+        <td class="wrapper-inner">
+            <table class="email-card" role="presentation">
+                <tr>
+                    <td class="email-header">
+                        <h1>Medical Appointment B3</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-body">
+                        <h2>Xác thực địa chỉ email</h2>
+                        <div class="message-box">
+                            Chào mừng bạn đến với hệ thống đặt lịch khám Medical Appointment B3!
+                        </div>
+
+                        <div class="content-text">
+                            <p>Cảm ơn bạn đã đăng ký tài khoản. Để bắt đầu sử dụng đầy đủ các tính năng của hệ thống và bảo mật tài khoản, vui lòng xác nhận rằng đây là địa chỉ email của bạn bằng cách nhấn vào nút bên dưới:</p>
+                        </div>
+
+                        <div class="cta-container">
+                            <a href="{{ verification_link }}" class="btn-primary">Xác thực tài khoản ngay</a>
+                        </div>
+
+                        <div class="content-text">
+                            <p>Nếu nút trên không hoạt động, bạn có thể sao chép và dán liên kết sau vào trình duyệt của mình:</p>
+                            <p style="word-break: break-all; font-size: 14px; color: #70757a;">{{ verification_link }}</p>
+                            <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này. Tài khoản sẽ không được kích hoạt nếu chưa được xác thực.</p>
+                        </div>
+
+                        <div class="signature">
+                            <p>Trân trọng,<br>
+                                <span class="highlight-name">Đội ngũ quản lý Medical Appointment B3</span></p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="footer-table" role="presentation">
+                <tr>
+                    <td class="email-footer">
+                        <p>Vui lòng không phản hồi trực tiếp email này.</p>
+                        <p>Hỗ trợ kỹ thuật: <a href="mailto:juniorthanh09@gmail.com">juniorthanh09@gmail.com</a></p>
+                        <p>© 2026 Medical Appointment B3. All rights reserved.</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

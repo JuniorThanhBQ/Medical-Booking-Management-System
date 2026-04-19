@@ -11,6 +11,8 @@ from src.modules.medical_records.admin import medical_records
 from src.modules.notification.admin import notification
 from src.modules.users.admin import auth_profile
 
+ModelView.page_size = 10
+
 
 class MyAdminIndexView(AdminIndexView):
     def is_visible(self):

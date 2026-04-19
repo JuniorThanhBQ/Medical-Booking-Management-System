@@ -1,0 +1,209 @@
+services:
+  frontend:
+    image: juniorthanh09/medical-appointment-b3-8-frontend:latest
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - frontend-network
+
+  backend:
+    image: juniorthanh09/medical-appointment-b3-8-backend:latest
+    restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      - FLASK_MODE=production
+      - TMPDIR=/tmp
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1G
+        reservations:
+          memory: 512M
+    networks:
+      - frontend-network
+      - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
+
+  db:
+    image: mysql:8.0-debian
+    restart: always
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE ${DB_NAME}; SELECT 1;"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+    environment:
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          memory: 1G
+    networks:
+      - backend-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
+    networks:
+      - backend-network
+    volumes:
+      - redis-data:/data
+
+  celery-beat:
+    image: juniorthanh09/medical-appointment-b3-8-backend:latest
+    restart: always
+    command: celery -A src.celery_worker.celery_app beat --loglevel=info -s /tmp/celerybeat-schedule
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
+    networks:
+      - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
+
+  email-worker:
+    image: juniorthanh09/medical-appointment-b3-8-backend:latest
+    restart: always
+    command: celery -A src.celery_worker.celery_app worker --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
+
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    restart: always
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          memory: 512M
+    networks:
+      - backend-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command: "http frontend:8080"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    networks:
+      - frontend-network
+    ports:
+      - "7000:4040"
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:
+  rabbitmq-data:
+  shared_tmp_volume:

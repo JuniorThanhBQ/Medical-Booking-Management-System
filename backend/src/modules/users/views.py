@@ -1,19 +1,18 @@
 import re
 
-from flask import current_app, request
+from dependency_injector.wiring import Provide, inject
+from flask import current_app, make_response, request
 from flask_restx import Resource, fields
 
-from src.extensions import limiter
+from src.containers import AppContainer
 from src.libs.email_validator import verify_email_existence
 from src.middlewares.auth import auth_required
 from src.modules.users import auth_namespace
-from src.modules.users.services import (get_user_data, is_email_available,
-                                        login_user_service,
-                                        register_user_service,
-                                        update_patient_profile_service)
+from src.utils.users.jwt_utils import confirm_verification_token
 from src.utils.utils import (EMAIL_REGEX, check_xss_violation,
                              format_api_response, generate_username,
-                             get_request_data, validate_email_password)
+                             get_request_data, handle_auth_refresh_response,
+                             validate_email_password)
 
 login_payload = auth_namespace.model('LoginInput', {
     'email': fields.String(required=True),
@@ -52,10 +51,9 @@ email_validator_payload = auth_namespace.model('EmailValidatorInput', {
 
 
 class LoginAPI(Resource):
-    decorators = [limiter.limit("10 per minute")]
-
     @auth_namespace.expect(login_payload)
-    def post(self):
+    @inject
+    def post(self, auth_service = Provide[AppContainer.user_app.auth_service]):
         data = get_request_data(request)
         login_email = data.get("email")
         password = data.get("password")
@@ -68,17 +66,21 @@ class LoginAPI(Resource):
         if invalid_input:
             return invalid_input, 400
 
-        return format_api_response(*login_user_service(login_email=login_email,
-                                                       password=password,
-                                                       role=role),
-                                   success_code=201)
+        data, status = auth_service.login_user_service(login_email=login_email,
+                                          password=password,
+                                          role=role)
+
+        return handle_auth_refresh_response(
+            data, status,
+            success_code=201,
+            refresh_token=data.get("refresh_token") if status == "SUCCESS" else None
+        )
 
 
 class RegisterAPI(Resource):
-    decorators = [limiter.limit("10 per minute")]
-
     @auth_namespace.expect(register_payload)
-    def post(self):
+    @inject
+    def post(self, auth_service = Provide[AppContainer.user_app.auth_service]):
         data = get_request_data(request)
         password = data.get("password")
         email = data.get("email")
@@ -108,7 +110,7 @@ class RegisterAPI(Resource):
             return invalid_input, 400
 
         if not verify_email_existence(current_app.config.get('EMAIL_VALIDATOR'), email):
-            return {"message": "Email không tồn tại trong thực tế"}, 400
+            return {"is_valid": False, }, 400
 
         user_payload = {
             "username": username,
@@ -124,15 +126,14 @@ class RegisterAPI(Resource):
             "medical_history": medical_history
         }
 
-        return format_api_response(*register_user_service(user_payload),
+        return format_api_response(*auth_service.register_user_service(user_payload),
                                    success_code=201)
 
 
 class EmailValidatorAPI(Resource):
-    decorators = [limiter.limit("30 per minute")]
-
     @auth_namespace.expect(email_validator_payload)
-    def post(self):
+    @inject
+    def post(self, auth_service = Provide[AppContainer.user_app.auth_service]):
         data = get_request_data(request)
         email = data.get("email")
 
@@ -142,20 +143,20 @@ class EmailValidatorAPI(Resource):
         if not re.match(EMAIL_REGEX, email):
             return {"is_valid": False, }, 400
 
-        is_valid = is_email_available(email)
+        is_available_valid = auth_service.is_email_available(email)
+        if not is_available_valid:
+            return is_available_valid, 400
 
-        if not is_valid:
-            return {"is_valid": is_valid, }, 400
-
-        return {"is_valid": is_valid, }, 201
+        return {"is_valid": is_available_valid, }, 201
 
 
 class RetrieveCurrentUserAPI(Resource):
     method_decorators = [auth_required]
 
     @auth_namespace.doc(security='api_key')
-    def get(self, current_user):
-        user_data = get_user_data(current_user)
+    @inject
+    def get(self, current_user, user_service = Provide[AppContainer.user_app.profile_service]):
+        user_data = user_service.get_user_data(current_user)
 
         if not user_data:
             return {"message": "Có vấn đề trong lấy thông tin người dùng"}, 500
@@ -167,12 +168,62 @@ class RetrieveCurrentUserAPI(Resource):
 
     @auth_namespace.doc(security='api_key')
     @auth_namespace.expect(patch_user_payload)
-    def patch(self, current_user):
+    @inject
+    def patch(self, current_user, user_service = Provide[AppContainer.user_app.profile_service]):
         data = get_request_data(request)
         data["avatar"] = request.files.get("avatar") or data.get("avatar")
 
         if check_xss_violation(data.values()):
             return {"message": "Dữ liệu đầu vào chứa ký tự không hợp lệ"}, 400
 
-        return format_api_response(*update_patient_profile_service(
+        return format_api_response(*user_service.update_patient_profile_service(
             current_user=current_user, data=data), success_code=200)
+
+
+class RefreshTokenAPI(Resource):
+    @inject
+    def post(self, user_service = Provide[AppContainer.user_app.auth_service]):
+        refresh_token = request.cookies.get("refresh_token")
+        if not refresh_token:
+            return {"message": "Refresh token không tồn tại trong cookie"}, 400
+
+        data, status = user_service.refresh_token_service(refresh_token_str=refresh_token)
+
+        return handle_auth_refresh_response(
+            data, status,
+            success_code=201,
+            refresh_token=data.get("refresh_token") if status == "SUCCESS" else None
+        )
+
+
+class LogoutAPI(Resource):
+    method_decorators = [auth_required]
+
+    @auth_namespace.doc(security='api_key')
+    def post(self):
+        data, status = {"message": "Đăng xuất thành công"}, "SUCCESS"
+        response = make_response(format_api_response(data, status), 200)
+        if status == "SUCCESS":
+            response.delete_cookie("refresh_token")
+
+        return response
+
+
+class VerifyEmailAPI(Resource):
+    @inject
+    def post(self, auth_service=Provide[AppContainer.user_app.auth_service]):
+        data = request.get_json()
+        token = data.get("token")
+        if not token:
+            return {"message": "Token không được cung cấp"}, 400
+
+        email = confirm_verification_token(token)
+        if not email:
+            return {"message": "Liên kết xác thực không hợp lệ hoặc đã hết hạn."}, 400
+
+        msg, status = auth_service.activate_user_account(email)
+
+        if status == "SUCCESS":
+            return {"message": "Tài khoản đã được kích hoạt thành công. Bạn có thể đăng nhập."}, 200
+
+        return {"message": msg}, 400

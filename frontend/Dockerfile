@@ -1,15 +1,15 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 COPY public/ ./public/
 COPY src/ ./src/
-COPY index.html vite.config.js eslint.config.js .eslintrc.json ./
+COPY index.html vite.config.js eslint.config.js ./
 RUN npm run build
 
-FROM nginx:1.28.3-alpine
+FROM nginx:1.30-alpine
 RUN apk update && apk upgrade --no-cache
 RUN apk add --no-cache curl
 RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/*

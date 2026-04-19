@@ -19,8 +19,14 @@ def upgrade():
     op.execute(
         "ALTER TABLE notification MODIFY COLUMN type ENUM('SYSTEM', 'APPOINTMENT', 'PROMOTION', 'REMINDER')"
     )
+    op.execute(
+        "ALTER TABLE appointment MODIFY COLUMN status ENUM('COMPLETED', 'APPROVED', 'PENDING', 'CANCEL', 'SKIPPED')"
+    )
 
 def downgrade():
     op.execute(
         "ALTER TABLE notification MODIFY COLUMN type ENUM('SYSTEM', 'APPOINTMENT', 'PROMOTION')"
+    )
+    op.execute(
+        "ALTER TABLE appointment MODIFY COLUMN status ENUM('COMPLETED', 'APPROVED', 'PENDING', 'CANCEL')"
     )

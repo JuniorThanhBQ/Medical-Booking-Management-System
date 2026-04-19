@@ -1,3 +1,4 @@
+import { FIELDS, GENDER_OPTIONS } from "@configs/const";
 export default function ProfileStep({
   email,
   profile,
@@ -6,6 +7,19 @@ export default function ProfileStep({
   onProfileChange,
   onSubmit,
 }) {
+  const renderField = (field) => (
+    <div className="auth-field" key={field.key}>
+      <label className="auth-field__label">{field.label}</label>
+      <input
+        className="auth-field__input"
+        type={field.type}
+        value={profile[field.key]}
+        onChange={(e) => onProfileChange(field.key, e.target.value)}
+        required
+      />
+    </div>
+  );
+
   return (
     <form className="auth-form" onSubmit={onSubmit} noValidate>
       <div className="auth-field">
@@ -18,49 +32,7 @@ export default function ProfileStep({
         />
       </div>
 
-      <div className="auth-field">
-        <label className="auth-field__label">Họ</label>
-        <input
-          className="auth-field__input"
-          type="text"
-          value={profile.lastName}
-          onChange={(e) => onProfileChange("lastName", e.target.value)}
-          required
-        />
-      </div>
-
-      <div className="auth-field">
-        <label className="auth-field__label">Tên</label>
-        <input
-          className="auth-field__input"
-          type="text"
-          value={profile.firstName}
-          onChange={(e) => onProfileChange("firstName", e.target.value)}
-          required
-        />
-      </div>
-
-      <div className="auth-field">
-        <label className="auth-field__label">Số điện thoại</label>
-        <input
-          className="auth-field__input"
-          type="tel"
-          value={profile.phone}
-          onChange={(e) => onProfileChange("phone", e.target.value)}
-          required
-        />
-      </div>
-
-      <div className="auth-field">
-        <label className="auth-field__label">Ngày sinh</label>
-        <input
-          className="auth-field__input"
-          type="date"
-          value={profile.dateOfBirth}
-          onChange={(e) => onProfileChange("dateOfBirth", e.target.value)}
-          required
-        />
-      </div>
+      {FIELDS.map(renderField)}
 
       <div className="auth-field">
         <label className="auth-field__label">Giới tính</label>
@@ -71,9 +43,11 @@ export default function ProfileStep({
           required
         >
           <option value="">Chọn giới tính</option>
-          <option value="male">Nam</option>
-          <option value="female">Nữ</option>
-          <option value="other">Khác</option>
+          {GENDER_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
 

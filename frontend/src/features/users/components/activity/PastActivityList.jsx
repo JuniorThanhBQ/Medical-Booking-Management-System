@@ -34,4 +34,3 @@ const PastActivityList = ({ items, selectedId, onSelect }) => {
 };
 
 export default PastActivityList;
-

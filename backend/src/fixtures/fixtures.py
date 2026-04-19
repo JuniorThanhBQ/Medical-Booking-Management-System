@@ -38,7 +38,8 @@ class FixtureLoader:
             specialty = Specialty(
                 name=specialty_data["name"],
                 description=specialty_data["description"],
-                level=specialty_data["level"]
+                level=specialty_data["level"],
+                images=specialty_data.get("images")
             )
             db.session.add(specialty)
             db.session.flush()
@@ -179,7 +180,7 @@ class FixtureLoader:
             created_at = notification_data.get("created_at")
             created_dt = None
             if created_at:
-                clean_str = created_at.replace("Z", "+00:00")
+                clean_str = created_at.replace("Z", "+07:00")
                 created_dt = datetime.fromisoformat(clean_str)
 
             notification = Notification(
@@ -208,7 +209,7 @@ class FixtureLoader:
 
             db.session.commit()
 
-        except Exception as e:
+        except Exception:
             db.session.rollback()
             traceback.print_exc()
             sys.exit(1)

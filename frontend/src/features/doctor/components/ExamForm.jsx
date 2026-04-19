@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import TreatmentOrderForm from "./TreatmentOrderForm";
 
 export default function ExamForm({
@@ -54,7 +56,9 @@ export default function ExamForm({
         <textarea
           id="prescription"
           className="exam__textarea"
-          placeholder={"Mỗi thuốc một dòng. Ví dụ:\nParacetamol 500mg (2 lần/ngày)"}
+          placeholder={
+            "Mỗi thuốc một dòng. Ví dụ:\nParacetamol 500mg (2 lần/ngày)"
+          }
           rows={3}
           value={formData.prescriptionText}
           onChange={handleChange("prescriptionText")}
@@ -82,10 +86,14 @@ export default function ExamForm({
             className="exam__btn exam__btn--primary"
             onClick={() => {
               if (!formData.diagnosis.trim()) {
-                alert("Vui lòng nhập chẩn đoán trước khi hoàn tất.");
+                toast.error("Vui lòng nhập chẩn đoán trước khi hoàn tất.");
                 return;
               }
-              if (window.confirm("Xác nhận hoàn tất khám? Không thể chỉnh sửa sau khi hoàn tất.")) {
+              if (
+                window.confirm(
+                  "Xác nhận hoàn tất khám? Không thể chỉnh sửa sau khi hoàn tất.",
+                )
+              ) {
                 onComplete();
               }
             }}
@@ -95,9 +103,7 @@ export default function ExamForm({
         </div>
       )}
 
-      {isCompleted && (
-        <p className="exam__completed-badge">Đã hoàn tất khám</p>
-      )}
+      {isCompleted && <p className="exam__completed-badge">Đã hoàn tất khám</p>}
     </div>
   );
 }

@@ -71,8 +71,9 @@ body {
 .dropdown-item:hover,
 .dropdown-menu > li.active > a,
 .dropdown-item.active {
-    background-color: var(--primary) !important;
-    color: var(--bg) !important;
+    background-color: #e0f2fe !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
 }
 
 .nav-tabs {
@@ -424,4 +425,230 @@ input[name="_continue_editing"] {
 .btn-secondary:hover,
 input[name="_continue_editing"]:hover {
     background-color: #475569 !important;
+}
+
+.form-control-file {
+    padding: 0.2rem 0 !important;
+    cursor: pointer;
+    width: 100%;
+}
+
+.form-control-file::file-selector-button {
+    background-color: var(--surface) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    margin-right: 1rem !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    cursor: pointer;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.form-control-file::file-selector-button:hover {
+    background-color: #f1f5f9 !important;
+    color: var(--primary) !important;
+    border-color: var(--border) !important;
+}
+
+#avatar_upload::file-selector-button:focus {
+    outline: none !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+}
+
+CSS
+.daterangepicker .calendar-date table {
+    width: 100%;
+    border-collapse: separate !important;
+    border-spacing: 2px !important;
+}
+
+.daterangepicker .calendar-date th,
+.daterangepicker .calendar-date td {
+    text-align: center;
+    width: 32px;
+    height: 32px;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    vertical-align: middle;
+}
+
+.daterangepicker .calendar-date th {
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+}
+
+.daterangepicker .calendar-date td.available:hover:not(.active) {
+    background-color: #e0f2fe !important;
+    color: var(--primary) !important;
+    cursor: pointer;
+}
+
+.daterangepicker .calendar-date td.off {
+    color: #cbd5e1 !important;
+}
+
+.daterangepicker select.monthselect,
+.daterangepicker select.yearselect,
+.daterangepicker select.hourselect,
+.daterangepicker select.minuteselect {
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
+    padding: 2px 6px !important;
+    background-color: var(--surface) !important;
+    color: var(--text-main) !important;
+    font-size: 0.85rem !important;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.daterangepicker select.monthselect:focus,
+.daterangepicker select.yearselect:focus,
+.daterangepicker select.hourselect:focus,
+.daterangepicker select.minuteselect:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+    outline: none;
+}
+
+.daterangepicker .calendar-time {
+    text-align: center;
+    margin-top: 12px !important;
+    padding-top: 12px !important;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.daterangepicker .ranges {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.daterangepicker .ranges .range_inputs {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.daterangepicker .ranges .range_inputs .btn {
+    margin: 0 !important;
+}
+
+.daterangepicker th.prev,
+.daterangepicker th.next {
+    cursor: pointer;
+}
+
+.daterangepicker th.prev i,
+.daterangepicker th.next i {
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.daterangepicker th.prev:hover i,
+.daterangepicker th.next:hover i {
+    color: var(--primary);
+}
+
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    gap: 6px;
+    margin: 1rem 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination .page-item .page-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.5rem !important;
+    margin-left: 0;
+    color: var(--text-muted) !important;
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    text-decoration: none !important;
+}
+
+.pagination .page-item:not(.disabled):not(.active) .page-link:hover {
+    z-index: 2;
+    color: var(--primary) !important;
+    background-color: #e0f2fe !important;
+    border-color: #bae6fd !important;
+}
+
+.pagination .page-item.active .page-link {
+    z-index: 3;
+    color: #ffffff !important;
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.25), 0 2px 4px -1px rgba(14, 165, 233, 0.1) !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #94a3b8 !important;
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: var(--bg) !important;
+    border-color: var(--border) !important;
+    box-shadow: none !important;
+}
+
+.navbar-nav {
+    gap: 0.25rem;
+}
+
+.navbar-dark .navbar-nav > li.active > .nav-link,
+.navbar .navbar-nav > li.active > .nav-link {
+    color: var(--primary) !important;
+    background-color: #e0f2fe !important;
+    box-shadow: inset 0 0 0 1px #bae6fd !important;
+}
+
+.navbar-nav .nav-link i.glyphicon-chevron-down {
+    margin-left: 6px;
+    font-size: 0.7rem;
+    opacity: 0.6;
+    vertical-align: middle;
+    transition: transform 0.2s ease;
+}
+
+.navbar-nav .dropdown:hover .nav-link i.glyphicon-chevron-down,
+.navbar-nav .dropdown.show .nav-link i.glyphicon-chevron-down {
+    transform: rotate(180deg);
+}
+
+.navbar-brand,
+.navbar-brand span {
+    color: var(--text-main) !important;
+    transition: color 0.2s ease;
+}
+
+.navbar-brand:hover,
+.navbar-brand:hover span {
+    color: var(--primary-hover) !important;
 }

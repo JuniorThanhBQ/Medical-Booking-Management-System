@@ -1,4 +1,3 @@
-import gzip
 import logging
 import time
 
@@ -21,32 +20,7 @@ def middlewares(app):
         g.start_time = time.time()
 
     @app.after_request
-    def gzip_response(response):
-        if response.direct_passthrough or 'Content-Encoding' in response.headers:
-            return response
-
-        if response.mimetype not in ['application/json', 'text/html', 'text/plain', 'text/css']:
-            return response
-
-        if 'gzip' not in request.headers.get('Accept-Encoding', '').lower():
-            return response
-
-        data = response.get_data()
-        if len(data) < 200:
-            return response
-
-        gzip_buffer = gzip.compress(data)
-        response.set_data(gzip_buffer)
-        response.headers['Content-Encoding'] = 'gzip'
-        response.headers['Content-Length'] = len(gzip_buffer)
-        response.headers['Vary'] = 'Accept-Encoding'
-
-        return response
-
-    @app.after_request
     def add_security_headers(response):
-        response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; "
             "img-src 'self' data: https://res.cloudinary.com; "

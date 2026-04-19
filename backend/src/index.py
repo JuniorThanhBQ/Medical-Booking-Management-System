@@ -20,7 +20,8 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    app_url = app.config.get("FRONTEND_URL")
+    return render_template("index.html", app_url=app_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])

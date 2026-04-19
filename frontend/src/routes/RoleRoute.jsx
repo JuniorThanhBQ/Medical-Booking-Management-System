@@ -1,16 +1,32 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { getStoredUser } from "@/utils/auth-helpers";
+import LoadingSpinner from "@features/shared/components/LoadingSpinner";
+import { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { toast } from "sonner";
 
-export default function RoleRoute({ allowedRoles }) {
-  const user = getStoredUser();
-  const location = useLocation();
+import useAuth from "@/contexts/auth/AuthContext";
 
-  if (!user) {
-    const returnUrl = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/auth?returnUrl=${returnUrl}`} replace />;
+export default function RoleRoute({ allowedRoles = [] }) {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        toast.info("Vui lòng đăng nhập để tiếp tục.");
+      } else if (!allowedRoles.includes(user?.role)) {
+        toast.error("Bạn không có quyền truy cập trang này.");
+      }
+    }
+  }, [isLoading, isAuthenticated, user?.role, allowedRoles]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner fullPage label="Đang tải trang..." />
+      </div>
+    );
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(user?.role)) {
     return <Navigate to="/" replace />;
   }
 

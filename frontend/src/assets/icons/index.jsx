@@ -1,5 +1,16 @@
-export { ArrowRightIcon, ArrowRightFilledIcon } from './arrow-icons';
-export { MedicalFileIcon, DoctorIcon, BriefcaseIcon } from './medical-icons';
-export { BellIcon, ChevronRightIcon, SearchIcon, UserProfileIcon } from './navigation-icons';
-export { EditPenIcon, EditSquareIcon, CalendarIcon, EmailIcon, ActivityIcon } from './action-icons';
-export { ShieldIcon, GlobeIcon, BadgeCheckIcon } from './feature-icons';
+export {
+  ActivityIcon,
+  CalendarIcon,
+  EditPenIcon,
+  EditSquareIcon,
+  EmailIcon,
+} from "./action-icons";
+export { ArrowRightFilledIcon, ArrowRightIcon } from "./arrow-icons";
+export { BadgeCheckIcon, GlobeIcon, ShieldIcon } from "./feature-icons";
+export { BriefcaseIcon, DoctorIcon, MedicalFileIcon } from "./medical-icons";
+export {
+  BellIcon,
+  ChevronRightIcon,
+  SearchIcon,
+  UserProfileIcon,
+} from "./navigation-icons";

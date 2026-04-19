@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
-import ActivityFilters from "./ActivityFilters";
-import UpcomingActivityCard from "./UpcomingActivityCard";
-import PastActivityList from "./PastActivityList";
+import { useMemo, useState } from "react";
+
 import ActivityDetailPanel from "./ActivityDetailPanel";
+import ActivityFilters from "./ActivityFilters";
+import PastActivityList from "./PastActivityList";
+import UpcomingActivityCard from "./UpcomingActivityCard";
 
 const ActivityView = ({
   filters = [],
@@ -23,7 +24,10 @@ const ActivityView = ({
 
   const handleFilterChange = (nextFilter) => {
     setActiveFilter(nextFilter);
-    const nextItems = nextFilter === "all" ? items : items.filter((it) => it.type === nextFilter);
+    const nextItems =
+      nextFilter === "all"
+        ? items
+        : items.filter((it) => it.type === nextFilter);
     setSelectedId(nextItems[0]?.id ?? null);
   };
 
@@ -70,11 +74,17 @@ const ActivityView = ({
         <UpcomingActivityCard items={upcomingItems} />
 
         <h3 className="profile-activity__section-title">Đã qua</h3>
-        <PastActivityList
-          items={filteredItems}
-          selectedId={selectedId}
-          onSelect={setSelectedId}
-        />
+        {filteredItems.length === 0 && items.length > 0 ? (
+          <p className="profile-activity__muted">
+            Không có hoạt động nào cho bộ lọc này.
+          </p>
+        ) : (
+          <PastActivityList
+            items={filteredItems}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
+        )}
       </div>
 
       <ActivityDetailPanel item={selectedItem} />

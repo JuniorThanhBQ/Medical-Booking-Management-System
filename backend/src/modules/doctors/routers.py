@@ -1,5 +1,6 @@
 from src.modules.doctors import doctors_namespace, public_namespace
 from src.modules.doctors.views import (PublicDoctorListAPI,
+                                       PublicDoctorRegisterAPI,
                                        PublicDoctorRetrieveAPI,
                                        PublicDoctorSlotListAPI,
                                        PublicMedicalServiceListAPI,
@@ -18,3 +19,4 @@ public_namespace.add_resource(PublicMedicalServiceRetrieveAPI, "/medical-service
 public_namespace.add_resource(PublicDoctorListAPI, "/doctors")
 public_namespace.add_resource(PublicDoctorRetrieveAPI, "/doctors/<int:doctor_id>")
 public_namespace.add_resource(PublicDoctorSlotListAPI, "/doctors/<int:doctor_id>/time-slots")
+public_namespace.add_resource(PublicDoctorRegisterAPI, "/doctors-registration")

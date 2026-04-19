@@ -36,5 +36,4 @@ def handle_db_errors(f):
             logger.exception("Lỗi truy vấn SQL: %s", e, exc_info=True)
             raise InternalServerError("Có lỗi xảy ra trong khi xử lý dữ liệu!") from e
 
-
     return errors_wrapper

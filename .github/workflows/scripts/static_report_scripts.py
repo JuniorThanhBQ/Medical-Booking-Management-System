@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 
+
 class ComprehensiveReport:
     def __init__(self):
         self.extensions = [".py", ".js", ".jsx", ".sql"]
@@ -71,3 +72,4 @@ class ComprehensiveReport:
 
 if __name__ == "__main__":
     ComprehensiveReport().run_pipeline()
+    

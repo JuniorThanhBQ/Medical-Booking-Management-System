@@ -7,8 +7,6 @@ from src.modules.medical_records.routers import medical_records_namespace
 from src.modules.notification.routers import notification_namespace
 from src.modules.users.routers import auth_namespace
 
-api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
-
 authorizations = {
     'api_key': {
         'type': 'apiKey',
@@ -18,6 +16,7 @@ authorizations = {
     }
 }
 
+api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
 api = Api(
     api_v1,
     version='3.0.0',

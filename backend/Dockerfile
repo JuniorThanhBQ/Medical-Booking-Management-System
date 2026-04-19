@@ -3,10 +3,7 @@ WORKDIR /app
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 COPY backend/requirements/requirements.txt .
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential  \
-    && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r requirements.txt
-
 
 FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -22,9 +19,10 @@ COPY --chown=appuser:appuser database/migrations ./migrations
 RUN mkdir -p /app/instance && chown -R appuser:appuser /app/instance
 COPY --chown=appuser:appuser backend/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+RUN mkdir -p /app/shared_tmp && chmod 777 /app/shared_tmp
 USER appuser
 EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=30s \
   CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["gunicorn", "--bind=0.0.0.0:8000", "--access-logfile=-", "--error-logfile=-", "src.index:app"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "--workers=5", "--worker-tmp-dir", "/tmp", "--access-logfile=-", "--error-logfile=-", "src.index:app"]

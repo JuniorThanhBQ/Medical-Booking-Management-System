@@ -21,6 +21,7 @@ class Specialty(Base):
 
     name = Column(String(255), nullable=False, unique=True)
     description = Column(Text)
+    images = Column(String(500))
     level = Column(String(255), nullable=False)
     medical_services = relationship(
         "MedicalService",
@@ -124,3 +125,24 @@ class DoctorProfile(Profile):
         cascade="all, delete-orphan",
         single_parent=True,
     )
+
+    def to_dict(self):
+        data = super().to_dict()
+        data.update({
+            "title": self.title,
+            "bio": self.bio,
+            "specialty": (
+                {"id": self.specialty.id, "name": self.specialty.name}
+                if self.specialty else None
+            ),
+        })
+        return data
+
+    def update_from_dict(self, data):
+        super().update_from_dict(data)
+        if "title" in data:
+            self.title = data["title"]
+        if "bio" in data:
+            self.bio = data["bio"]
+        if "specialty_id" in data:
+            self.specialty_id = data["specialty_id"]
