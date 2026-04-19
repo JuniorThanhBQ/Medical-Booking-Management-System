@@ -30,8 +30,6 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-    ports:
-      - "${BACKEND_PORT}:8000"
     env_file:
       - .env
     healthcheck:
@@ -96,6 +94,8 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - backend-network
     volumes:
@@ -117,6 +117,8 @@ services:
       rabbitmq:
         condition: service_healthy
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - backend-network

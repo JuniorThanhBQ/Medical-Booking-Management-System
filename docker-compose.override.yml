@@ -4,6 +4,8 @@ services:
 
   backend:
     restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT}:8000"
     environment:
       - FLASK_MODE=development
     command: gunicorn --bind 0.0.0.0:8000 --reload --access-logfile - --error-logfile - src.index:app

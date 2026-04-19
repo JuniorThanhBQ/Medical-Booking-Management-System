@@ -1,6 +1,5 @@
 services:
   frontend:
-    image: "${FRONTEND_IMAGE_NAME}"
     restart: always
     deploy:
       resources:
@@ -11,7 +10,6 @@ services:
           memory: 256M
 
   backend:
-    image: "${BACKEND_IMAGE_NAME}"
     restart: always
     read_only: true
     tmpfs:
