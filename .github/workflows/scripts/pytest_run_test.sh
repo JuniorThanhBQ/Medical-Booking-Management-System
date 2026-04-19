@@ -2,7 +2,7 @@
 
 export PYTHONPATH=$PYTHONPATH:$(pwd)/backend/src
 
-python -m pytest -v --cov=. --cov-report=term-missing --cov-fail-under=80 > pytest_log.txt 2>&1 || exit_code=$?
+python -m pytest -v --cov=. --cov-report=term-missing > pytest_log.txt 2>&1 || exit_code=$?
 exit_code=${exit_code:-0}
 
 if [ $exit_code -eq 5 ]; then

@@ -1,4 +1,4 @@
-@import "@/assets/css/auth/landing.css";
+@import "@/assets/css/users/landing-page.css";
 
 .dashboard {
   min-height: 100vh;
@@ -62,7 +62,6 @@
   justify-content: flex-end;
 }
 
-/* ── Search Card ───────────────────────────────────────── */
 .search-card {
   width: 100%;
   max-width: 480px;
@@ -71,20 +70,18 @@
   padding: 28px 28px 24px;
   box-shadow:
     0 4px 6px rgba(15, 23, 42, 0.04),
-    0 20px 60px rgba(15, 23, 42, 0.10);
+    0 20px 60px rgba(15, 23, 42, 0.1);
   border: 1px solid var(--lp-border);
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Header block */
 .search-card__header {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 
 .search-card__title {
   font-family: var(--lp-font-heading);
@@ -102,7 +99,6 @@
   margin: 0;
 }
 
-/* Input + button row */
 .search-card__field-wrap {
   display: flex;
   flex-direction: column;
@@ -134,7 +130,9 @@
   font-size: 0.875rem;
   color: var(--lp-body);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .search-card__input::placeholder {
@@ -183,7 +181,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: background 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    transform 0.1s;
 }
 
 .search-card__btn:hover:not(:disabled) {
@@ -204,7 +204,6 @@
   height: 16px;
 }
 
-/* Loading spinner */
 .search-card__spinner {
   width: 15px;
   height: 15px;
@@ -214,11 +213,6 @@
   animation: search-card-spin 0.6s linear infinite;
   flex-shrink: 0;
 }
-
-@keyframes search-card-spin {
-  to { transform: rotate(360deg); }
-}
-
 
 .dashboard__specialties-section {
   background: #ffffff;
@@ -297,7 +291,9 @@
 .dashboard-specialty-card__media {
   height: 190px;
   border-radius: 14px;
-  background: radial-gradient(circle at 20% 0, #38bdf8, #1d4ed8);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -347,6 +343,58 @@
 .dashboard-specialty-card__cta svg {
   width: 14px;
   height: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  background-color: #ffffff;
+  color: #0284c7;
+  border: 1px solid #0284c7;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+}
+
+.pagination-controls button:disabled {
+  background-color: #f8fafc;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pagination-controls span {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #334155;
+  min-width: 120px;
+  text-align: center;
+  user-select: none;
+}
+
+@keyframes search-card-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 1100px) {

@@ -6,15 +6,24 @@
     <title>Trang chủ - Medical Appointment B3</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <script>
+        (function() {
+            var script = document.createElement('script');
+            script.src = "https://accounts.google.com/gsi/client";
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        })();
+    </script>
 </head>
 <body>
 
 <header class="navbar">
     <div class="logo">Medical Appointment B3</div>
     <nav>
-        <a href="/">Trang chủ</a>
-        <a href="/link-to-vitejs">Đặt lịch</a>
+        <a href="/" target="_blank">Trang chủ</a>
+        <a href="{{ app_url }}" target="_blank">Đặt lịch</a>
 
         {% if current_user.is_authenticated %}
             {% if current_user.role and current_user.role.name == 'ADMIN' %}
@@ -31,9 +40,9 @@
 
 <section class="hero">
     <div class="hero-content">
-        <h1>Chào mừng đến với OU Dental Clinic</h1>
+        <h1>Chào mừng đến với Medical Appointment B3</h1>
         <p>Hệ thống đặt lịch khám nha khoa trực tuyến chuyên nghiệp, tận tâm và nhanh chóng.</p>
-        <a href="/appointments" class="btn">Đặt lịch ngay</a>
+        <a href="{{ app_url }}" target="_blank" class="btn">Đặt lịch ngay</a>
 
         {% if not current_user.is_authenticated %}
             <div class="google-login-wrapper">
@@ -51,7 +60,7 @@
     <div class="about-container">
         <h2>Giới thiệu</h2>
         <p>
-            OU Dental Clinic cung cấp dịch vụ chăm sóc răng miệng chất lượng cao.
+            Medical Appointment B3 cung cấp dịch vụ chăm sóc răng miệng chất lượng cao.
             Người dùng có thể đặt lịch khám với bác sĩ một cách nhanh chóng và tiện lợi ngay trên nền tảng của chúng
             tôi.
         </p>
@@ -59,7 +68,7 @@
 </section>
 
 <footer class="footer">
-    <p>© 2026 OU Dental Clinic. All rights reserved.</p>
+    <p>© 2026 Medical Appointment B3. All rights reserved.</p>
 </footer>
 
 </body>

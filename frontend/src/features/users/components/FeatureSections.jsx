@@ -1,54 +1,55 @@
+import "@css/common/feature-sections.css";
+
 import { ArrowRightIcon, BadgeCheckIcon } from "@/assets/icons";
-import "@/assets/css/users/feature-sections.css";
 
 const FEATURES = [
   {
-    id: "diagnostics",
+    id: "booking-service",
     imgSide: "left",
-    badge: "CHẨN ĐOÁN",
-    title: "Chẩn Đoán Hình Ảnh Não Bộ Chính Xác",
-    desc: "Hệ thống MRI hiện đại, chẩn đoán hình ảnh thần kinh chức năng và EEG giúp hiển thị rõ nhất tình trạng thần kinh của bạn – hỗ trợ chẩn đoán nhanh hơn, chính xác hơn, giảm số lần tái khám không cần thiết.",
+    badge: "DỊCH VỤ",
+    title: "Quy Trình Đặt Lịch Hoàn Toàn Tự Động",
+    desc: "Hệ thống quản lý lịch hẹn thông minh giúp tối ưu hóa thời gian của bệnh nhân. Với tính năng tự động gửi thông báo nhắc hẹn qua email và hệ thống, bạn sẽ luôn chủ động trong việc sắp xếp thời gian thăm khám mà không lo bỏ lỡ các đợt kiểm tra quan trọng.",
     stats: [
-      { value: "98%", label: "ĐỘ CHÍNH XÁC CHẨN ĐOÁN" },
-      { value: "<48H", label: "THỜI GIAN TRẢ KẾT QUẢ" },
-      { value: "12+", label: "PHƯƠNG THỨC CHỤP ẢNH" },
+      { value: "100%", label: "TỰ ĐỘNG THÔNG BÁO" },
+      { value: "<3 Phút", label: "HOÀN TẤT ĐẶT LỊCH" },
+      { value: "24/7", label: "HỆ THỐNG TRỰC TUYẾN" },
     ],
     secondaryCta: {
-      label: "Xem dịch vụ chẩn đoán hình ảnh",
+      label: "Tìm hiểu quy trình đặt lịch",
       href: "#services",
     },
     card: {
-      title: "Phòng MRI Hiện Đại",
-      sub: "MRI từ trường cao 3T cho hình ảnh cực kỳ sắc nét",
+      title: "Thông Báo Thông Minh",
+      sub: "Tự động gửi lời nhắc và cập nhật trạng thái lịch hẹn",
     },
     img: {
-      src: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=700&auto=format&fit=crop&q=80",
+      src: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=700&auto=format&fit=crop&q=80",
       srcSet:
-        "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&auto=format&fit=crop&q=70 400w, https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=700&auto=format&fit=crop&q=80 700w",
-      alt: "Bác sĩ thần kinh đang xem phim chụp MRI não",
+        "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&auto=format&fit=crop&q=70 400w, https://images.unsplash.com/photo-1516549655169-df83a0774514?w=700&auto=format&fit=crop&q=80 700w",
+      alt: "Giao diện quản lý lịch hẹn y tế chuyên nghiệp",
     },
   },
   {
-    id: "treatment",
+    id: "medical-team",
     imgSide: "right",
-    badge: "ĐIỀU TRỊ",
-    title: "Đội Ngũ Chuyên Khoa Dày Dặn Kinh Nghiệm",
-    desc: "Mỗi bệnh nhân đều được xây dựng phác đồ phù hợp với tình trạng, lối sống và mục tiêu riêng – được phối hợp chặt chẽ giữa bác sĩ thần kinh, các chuyên gia liên quan và gia đình bệnh nhân.",
+    badge: "ĐỘI NGŨ",
+    title: "Kết Nối Trực Tiếp Với Chuyên Gia",
+    desc: "Chúng tôi quy tụ đội ngũ bác sĩ có chuyên môn cao và giàu kinh nghiệm trong nhiều lĩnh vực thăm khám. Thông qua hệ thống, bệnh nhân có thể dễ dàng xem hồ sơ năng lực và lựa chọn bác sĩ phù hợp nhất cho nhu cầu chăm sóc sức khỏe cá nhân.",
     stats: [
-      { value: "10K+", label: "CA ĐIỀU TRỊ ĐÃ THỰC HIỆN" },
-      { value: "92%", label: "TỶ LỆ PHỤC HỒI" },
-      { value: "30+", label: "BỆNH LÝ ĐƯỢC ĐIỀU TRỊ" },
+      { value: "50+", label: "BÁC SĨ CHUYÊN KHOA" },
+      { value: "15+", label: "NĂM KINH NGHIỆM" },
+      { value: "100%", label: "TẬN TÂM CHĂM SÓC" },
     ],
-    secondaryCta: { label: "Xem tất cả dịch vụ", href: "#services" },
+    secondaryCta: { label: "Xem danh sách bác sĩ", href: "/dashboard" },
     card: {
-      title: "Đội Ngũ Chuyên Gia",
-      sub: "Bác sĩ thần kinh và chuyên khoa được chứng nhận",
+      title: "Chuyên Gia Đầu Ngành",
+      sub: "Đội ngũ được đào tạo bài bản và cấp phép hành nghề",
     },
     img: {
-      src: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=700&auto=format&fit=crop&q=80",
+      src: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=700&auto=format&fit=crop&q=80",
       srcSet:
-        "https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=400&auto=format&fit=crop&q=70 400w, https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=700&auto=format&fit=crop&q=80 700w",
-      alt: "Bác sĩ thần kinh đang xem kế hoạch điều trị cho bệnh nhân",
+        "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&auto=format&fit=crop&q=70 400w, https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=700&auto=format&fit=crop&q=80 700w",
+      alt: "Đội ngũ bác sĩ đang thảo luận chuyên môn",
     },
   },
 ];

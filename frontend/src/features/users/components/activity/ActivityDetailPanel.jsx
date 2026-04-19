@@ -1,11 +1,13 @@
-import { getStatusClassName } from "../../utils/profile-utils";
+import { DoctorIcon, MedicalFileIcon } from "@/assets/icons";
 import { getStatusLabel } from "@/configs/const";
-import { MedicalFileIcon, DoctorIcon } from "@/assets/icons";
-
+import { getStatusClassName } from "@/utils/profile-utils.js";
 
 const MedicalDetailPanel = ({ item }) => {
   const rxItems = item.prescriptionText
-    ? item.prescriptionText.split("\n").map((s) => s.trim()).filter(Boolean)
+    ? item.prescriptionText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
 
   return (
@@ -15,16 +17,23 @@ const MedicalDetailPanel = ({ item }) => {
           <MedicalFileIcon />
         </div>
         <div className="profile-activity__medical-header-info">
-          <p className="profile-activity__medical-record-id">{item.recordId ?? item.id}</p>
+          <p className="profile-activity__medical-record-id">
+            {item.recordId ?? item.id}
+          </p>
           <p className="profile-activity__medical-header-date">
-            {item.dateTimeLabel ?? (item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : "")}
+            {item.dateTimeLabel ??
+              (item.createdAt
+                ? new Date(item.createdAt).toLocaleDateString("vi-VN")
+                : "")}
           </p>
         </div>
       </div>
 
       <div className="profile-activity__detail-body">
         <div className="profile-activity__status-row">
-          <span className={`profile-activity__pill ${getStatusClassName(item.status)}`}>
+          <span
+            className={`profile-activity__pill ${getStatusClassName(item.status)}`}
+          >
             {getStatusLabel(item.status)}
           </span>
         </div>
@@ -34,18 +43,26 @@ const MedicalDetailPanel = ({ item }) => {
             <DoctorIcon />
           </div>
           <div>
-            <p className="profile-activity__medical-doctor-name">{item.doctorName}</p>
-            <p className="profile-activity__medical-specialty">{item.specialty}</p>
+            <p className="profile-activity__medical-doctor-name">
+              {item.doctorName}
+            </p>
+            <p className="profile-activity__medical-specialty">
+              {item.specialty}
+            </p>
           </div>
         </div>
 
         <div className="profile-activity__medical-card">
           <p className="profile-activity__medical-card-label">Chẩn đoán</p>
-          <p className="profile-activity__medical-card-value">{item.diagnosis}</p>
+          <p className="profile-activity__medical-card-value">
+            {item.diagnosis}
+          </p>
         </div>
 
         <div className="profile-activity__medical-section">
-          <p className="profile-activity__medical-section-label">Ghi chú lâm sàng</p>
+          <p className="profile-activity__medical-section-label">
+            Ghi chú lâm sàng
+          </p>
           <p className="profile-activity__medical-notes">{item.notes}</p>
         </div>
 
@@ -54,7 +71,9 @@ const MedicalDetailPanel = ({ item }) => {
             <p className="profile-activity__medical-section-label">Đơn thuốc</p>
             <ul className="profile-activity__medical-rx-list">
               {rxItems.map((rx, i) => (
-                <li key={i} className="profile-activity__medical-rx-item">{rx}</li>
+                <li key={i} className="profile-activity__medical-rx-item">
+                  {rx}
+                </li>
               ))}
             </ul>
           </div>
@@ -62,8 +81,12 @@ const MedicalDetailPanel = ({ item }) => {
 
         {item.treatmentOrders && (
           <div className="profile-activity__medical-section">
-            <p className="profile-activity__medical-section-label">Chỉ định điều trị</p>
-            <p className="profile-activity__medical-notes">{item.treatmentOrders}</p>
+            <p className="profile-activity__medical-section-label">
+              Chỉ định điều trị
+            </p>
+            <p className="profile-activity__medical-notes">
+              {item.treatmentOrders}
+            </p>
           </div>
         )}
       </div>
@@ -75,9 +98,7 @@ const ActivityDetailPanel = ({ item }) => {
   if (!item) return <></>;
 
   if (item.type === "medical_records") {
-    return (
-      <MedicalDetailPanel item={item} />
-    );
+    return <MedicalDetailPanel item={item} />;
   }
 
   return (
@@ -92,16 +113,24 @@ const ActivityDetailPanel = ({ item }) => {
 
       <div className="profile-activity__detail-body">
         <div className="profile-activity__status-row">
-          <span className={`profile-activity__pill ${getStatusClassName(item.status)}`}>
+          <span
+            className={`profile-activity__pill ${getStatusClassName(item.status)}`}
+          >
             {getStatusLabel(item.status)}
           </span>
         </div>
 
         <h3 className="profile-activity__detail-title">
-          {item.dateTimeLabel ?? (item.date && item.startTime ? `${item.date} ${item.startTime}` : item.date ?? "")}
+          {item.dateTimeLabel ??
+            (item.date && item.startTime
+              ? `${item.date} ${item.startTime}`
+              : (item.date ?? ""))}
         </h3>
         <p className="profile-activity__datetime">
-          {item.durationLabel ?? (item.startTime && item.endTime ? `${item.startTime} – ${item.endTime}` : "")}
+          {item.durationLabel ??
+            (item.startTime && item.endTime
+              ? `${item.startTime} – ${item.endTime}`
+              : "")}
         </p>
       </div>
     </div>

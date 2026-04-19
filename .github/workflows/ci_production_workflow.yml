@@ -1,0 +1,86 @@
+name: Luồng CI/CD của nhánh production
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ 'main' ]
+
+jobs:
+  build-app:
+    uses: ./.github/workflows/ci_app_build_pipeline.yml
+    secrets:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+  static-test:
+    needs: build-app
+    uses: ./.github/workflows/ci_code_static_pipeline.yml
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+
+  dynamic-test:
+    needs: static-test
+    uses: ./.github/workflows/ci_code_quality_pipeline.yml
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+
+  docker-scan:
+    needs: dynamic-test
+    uses: ./.github/workflows/ci_docker_image_scan.yml
+    secrets:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+
+  deploy:
+    needs: docker-scan
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/ci_docker_image_deploy.yml
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  production-workflow-report:
+    needs: [build-app, static-test, dynamic-test, docker-scan, deploy]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Tạo báo cáo tổng kết
+        env:
+          TEST_BUILD: ${{ needs.build-app.result }}
+          BACKEND_LINT: ${{ needs.static-test.result }}
+          FRONTEND_LINT: ${{ needs.static-test.result }}
+          BACKEND_SECURITY: ${{ needs.static-test.result }}
+          FRONTEND_SECURITY: ${{ needs.static-test.result }}
+          PYTEST_TEST: ${{ needs.dynamic-test.result }}
+          DOCKER_STATIC: ${{ needs.docker-scan.result }}
+          DEPLOY_BACKEND: ${{ needs.deploy.result || 'skipped' }}
+          DEPLOY_FRONTEND: ${{ needs.deploy.result || 'skipped' }}
+          CHECK_IMAGES: ${{ needs.deploy.result || 'skipped' }}
+        run: python .github/workflows/scripts/static_report_scripts.py
+      - name: Đẩy comment Lên Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const issueBody = fs.readFileSync('issue.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: issueBody
+            });

@@ -1,6 +1,7 @@
+import { getStatusClassName } from "@utils/profile-utils.js";
+
 import { BriefcaseIcon } from "@/assets/icons";
 import { getStatusLabel } from "@/configs/const";
-import { getStatusClassName } from "../../utils/profile-utils";
 
 const UpcomingActivityCard = ({ items = [] }) => {
   if (items.length === 0) {
@@ -10,7 +11,9 @@ const UpcomingActivityCard = ({ items = [] }) => {
           <div className="profile-activity__empty-icon">
             <BriefcaseIcon size={22} />
           </div>
-          <p className="profile-activity__empty-title">Không có lịch hẹn sắp tới</p>
+          <p className="profile-activity__empty-title">
+            Không có lịch hẹn sắp tới
+          </p>
           <p className="profile-activity__empty-desc">
             Lịch hẹn sắp tới sẽ hiển thị tại đây khi bạn đặt lịch
           </p>
@@ -22,15 +25,20 @@ const UpcomingActivityCard = ({ items = [] }) => {
   return (
     <div className="profile-activity__upcoming">
       {items.map((item) => {
-        const statusModifier = item.status === "confirmed" ? "--confirmed" : "--pending";
+        const statusModifier =
+          item.status === "confirmed" ? "--confirmed" : "--pending";
         return (
           <div
             key={item.id}
             className={`profile-activity__upcoming-card profile-activity__upcoming-card${statusModifier}`}
           >
             <div className="profile-activity__upcoming-header">
-              <span className="profile-activity__upcoming-title">{item.title}</span>
-              <span className={`profile-activity__pill ${getStatusClassName(item.status)}`}>
+              <span className="profile-activity__upcoming-title">
+                {item.title}
+              </span>
+              <span
+                className={`profile-activity__pill ${getStatusClassName(item.status)}`}
+              >
                 {getStatusLabel(item.status)}
               </span>
             </div>

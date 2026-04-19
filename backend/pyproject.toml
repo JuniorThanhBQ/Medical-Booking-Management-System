@@ -1,0 +1,88 @@
+[tool.importlinter]
+root_package = "src"
+
+[[tool.importlinter.contracts]]
+name = "Layered architecture"
+type = "layers"
+layers = [
+    "routers",
+    "views",
+    "services",
+    "repositories",
+    "models"
+]
+containers = [
+    "src.modules.users",
+    "src.modules.appointments",
+    "src.modules.doctors",
+    "src.modules.medical_records",
+    "src.modules.notification"
+]
+
+[[tool.importlinter.contracts]]
+name = "Service independence"
+type = "independence"
+modules = [
+    "src.modules.users.services",
+    "src.modules.appointments.services",
+    "src.modules.doctors.services",
+    "src.modules.medical_records.services",
+    "src.modules.notification.services"
+]
+
+
+[[tool.importlinter.contracts]]
+name = "Views independence"
+type = "independence"
+modules = [
+    "src.modules.users.views",
+    "src.modules.appointments.views",
+    "src.modules.doctors.views",
+    "src.modules.medical_records.views",
+    "src.modules.notification.views"
+]
+
+[tool.pylint.master]
+init-hook = "import sys; sys.path.insert(0, './')"
+
+[tool.pylint.main]
+ignore = ["venv"]
+jobs = 2
+
+[tool.pylint.messages_control]
+disable = [
+    "C0114", # missing-module-docstring
+    "C0115", # missing-class-docstring
+    "C0116", # missing-function-docstring
+    "C0103", # invalid-name
+    "R0903", # too-few-public-methods
+    "W0718", # broad-exception-caught
+    "R0801",
+    "W1203", # logging-fstring-interpolation
+    "E1102",
+    "C0121", # singleton-comparison
+    "I1101"
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.design]
+max-args = 7
+max-positional-arguments = 7
+max-attributes=8
+max-locals = 17
+max-returns = 8
+max-branches = 13
+max-statements = 50
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "Run", "_"]
+
+[tool.pylint.reports]
+output-format = "colorized"
+reports = false
+score = false
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=src --cov-report=term-missing --cov-fail-under=40"

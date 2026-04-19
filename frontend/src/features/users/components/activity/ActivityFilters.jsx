@@ -19,4 +19,3 @@ const ActivityFilters = ({ filters, activeKey, onChange }) => {
 };
 
 export default ActivityFilters;
-

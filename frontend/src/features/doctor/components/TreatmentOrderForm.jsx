@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-
 export default function TreatmentOrderForm({ value, onChange, disabled }) {
   const [expanded, setExpanded] = useState(Boolean(value));
 

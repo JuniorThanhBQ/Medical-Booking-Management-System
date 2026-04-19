@@ -2,28 +2,26 @@ from flask import Blueprint
 from flask_restx import Api
 
 from src.modules.appointments.routers import appointments_namespace
-from src.modules.auth_profiles.routers import auth_namespace
-from src.modules.doctors.routers import doctors_namespace
+from src.modules.doctors.routers import doctors_namespace, public_namespace
 from src.modules.medical_records.routers import medical_records_namespace
 from src.modules.notification.routers import notification_namespace
-from src.modules.public.routers import public_namespace
-
-api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
+from src.modules.users.routers import auth_namespace
 
 authorizations = {
     'api_key': {
         'type': 'apiKey',
         'in': 'header',
         'name': 'Authorization',
-        'description': "Công thức là Bearer <your_token>"
+        'description': "Bearer <token>"
     }
 }
 
+api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
 api = Api(
     api_v1,
     version='3.0.0',
     title='Medical Appointment B3 API',
-    description='Tài liệu tổng hợp tất cả các phân hệ',
+    description='Tài liệu tổng hợp APIs trong hệ thống',
     authorizations=authorizations,
     doc='/docs'
 )

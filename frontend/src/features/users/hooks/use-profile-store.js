@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { AuthApis, endpoints } from "@/configs/Apis";
-import { getStoredUser } from "@/utils/auth-helpers";
-import { setUser as persistUser } from "@/repository/local-storage-repository";
+
+import { endpoints } from "@/configs/apis";
 
 const PROFILE_UPDATE_FIELDS = [
   "email",
@@ -26,7 +25,10 @@ const splitFullName = (name = "") => {
 
 const mapApiUserToStoreUser = (apiUser = {}) => {
   const profile = apiUser.profile || {};
-  const fullName = [apiUser.firstName, apiUser.lastName].filter(Boolean).join(" ").trim();
+  const fullName = [apiUser.firstName, apiUser.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
   const resolvedName = fullName || apiUser.name || "User";
 
   return {
@@ -46,6 +48,7 @@ const normalizeProfilePayload = (data = {}) => {
   const payload = {
     ...data,
     dayOfBirth: data.dayOfBirth || data.dateOfBirth || "",
+    gender: data.gender ? data.gender.toUpperCase() : data.gender,
   };
 
   if ((!payload.firstName || !payload.lastName) && payload.name) {
@@ -63,28 +66,25 @@ const normalizeProfilePayload = (data = {}) => {
 };
 
 export const useProfileStore = create((set) => ({
-  user: getStoredUser(),
+  user: null,
   loading: false,
 
   setUser: (user) => {
-    persistUser(user);
     set({ user });
   },
 
   updateAvatar: (avatarUrl) =>
     set((state) => {
       const updatedUser = { ...state.user, avatar: avatarUrl };
-      persistUser(updatedUser);
       return { user: updatedUser };
     }),
 
-  getProfile: async (token) => {
+  getProfile: async (api) => {
     set({ loading: true });
 
     try {
-      const res = await AuthApis(token).get(endpoints.auth_current_user);
+      const res = await api.get(endpoints["auth_current_user"]);
       const mappedUser = mapApiUserToStoreUser(res.data?.user);
-      persistUser(mappedUser);
       set({ user: mappedUser });
       return mappedUser;
     } catch (err) {
@@ -95,12 +95,12 @@ export const useProfileStore = create((set) => ({
     }
   },
 
-  updateProfile: async (token, data) => {
+  updateProfile: async (api, data) => {
     set({ loading: true });
 
     try {
       const payload = normalizeProfilePayload(data);
-      const res = await AuthApis(token).patch(endpoints.auth_current_user, payload);
+      const res = await api.patch(endpoints["auth_current_user"], payload);
       const patchedUser = mapApiUserToStoreUser(res.data?.data);
 
       set((state) => {
@@ -108,8 +108,6 @@ export const useProfileStore = create((set) => ({
           ...state.user,
           ...patchedUser,
         };
-
-        persistUser(updatedUser);
 
         return { user: updatedUser };
       });

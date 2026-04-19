@@ -1,46 +1,59 @@
-import { useEffect } from 'react';
-import { useProfileStore } from '../hooks/use-profile-store';
-import ProfileSidebar from '../components/ProfileSidebar';
-import ProfileCard from '../components/ProfileCard';
-import EditProfileForm from '../components/EditProfileForm';
-import Navbar from '../components/Navbar';
-import { getUserToken } from '@/utils/auth-helpers';
-import '@/assets/css/users/profile.css';
+import "@css/users/profile.css";
 
-export const TABS = { PROFILE: 'profile', ACTIVITY: 'activity' };
+import { TABS } from "@configs/const";
+import { useEffect } from "react";
+
+import useAuth from "@/contexts/auth/AuthContext";
+
+import EditProfileForm from "../components/EditProfileForm";
+import Navbar from "../components/Navbar";
+import ProfileCard from "../components/ProfileCard";
+import ProfileSidebar from "../components/ProfileSidebar";
+import { useProfileStore } from "../hooks/use-profile-store";
 
 const ProfilePage = () => {
-  const { user, updateAvatar, getProfile, updateProfile } = useProfileStore();
-
-  useEffect(() => {
-    const token = getUserToken();
-    if (!token) return;
-
-    getProfile(token);
-  }, [getProfile]);
+  const { user: contextUser, api } = useAuth();
+  const {
+    updateProfile,
+    getProfile,
+    user: profileUser,
+    loading,
+  } = useProfileStore();
 
   const handleSave = async (updatedData) => {
-    const token = getUserToken();
-    if (!token) return;
+    if (!api) return;
 
-    await updateProfile(token, {
-      ...updatedData,
-      avatar: user?.avatar,
-    });
+    await updateProfile(api, updatedData);
   };
 
-  const handleAvatarChange = (avatarUrl) => {
-    updateAvatar(avatarUrl);
+  const handleAvatarChange = async (avatarUrl) => {
+    if (!api) return;
+
+    await updateProfile(api, { avatar: avatarUrl });
   };
+
+  useEffect(() => {
+    if (api && !profileUser) {
+      getProfile(api);
+    }
+  }, [api, profileUser, getProfile]);
+
+  const userData = profileUser || contextUser;
 
   const profileData = {
-    ...user,
-    name: [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() || user?.name || 'User',
-    dateOfBirth: user?.dayOfBirth || user?.dateOfBirth || '',
-    phone: user?.phone || '',
-    email: user?.email || '',
-    gender: user?.gender || '',
-    avatar: user?.avatar || '',
+    ...userData,
+    name:
+      [userData?.firstName, userData?.lastName]
+        .filter(Boolean)
+        .join(" ")
+        .trim() ||
+      userData?.name ||
+      "User",
+    dateOfBirth: userData?.dayOfBirth || userData?.dateOfBirth || "",
+    phone: userData?.phone || "",
+    email: userData?.email || "",
+    gender: userData?.gender || "",
+    avatar: userData?.avatar || "",
   };
 
   return (
@@ -54,7 +67,11 @@ const ProfilePage = () => {
           <h1 className="profile-main__title">Hồ sơ</h1>
 
           <div className="profile-content">
-            <ProfileCard profile={profileData} onAvatarChange={handleAvatarChange} />
+            <ProfileCard
+              profile={profileData}
+              onAvatarChange={handleAvatarChange}
+              loading={loading}
+            />
             <EditProfileForm profile={profileData} onSave={handleSave} />
           </div>
         </main>

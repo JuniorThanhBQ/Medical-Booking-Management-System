@@ -1,0 +1,94 @@
+name: Build image và kiểm tra bảo mật qua trivy. 
+
+on:
+  workflow_call:
+    secrets:
+        VITE_API_URL:
+          required: true
+
+jobs:
+  docker-build-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Lint Backend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./backend/Dockerfile
+          failure-threshold: error 
+
+      - name: Lint Frontend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./frontend/Dockerfile
+          failure-threshold: error
+
+      - name: Đánh giá syntax và check build
+        run: |
+          if [ -f .env.example ]; 
+            then cp .env.example .env; 
+          else 
+            touch .env;
+          fi
+          docker compose config -q
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
+          docker build --check ./backend
+          docker build --check ./frontend
+
+      - name: Cài môi trường build 
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./backend/Dockerfile
+          load: true 
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: backend:scan
+
+      - name: Quét backend image đã build
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'backend:scan'
+          format: 'table'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          load: true
+          build-args: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: frontend:scan
+
+      - name: Quét frontend image đã build 
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'frontend:scan'
+          format: 'table'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      - name: Chạy Docker Compose
+        env:
+          BACKEND_IMAGE: backend:scan
+          FRONTEND_IMAGE: frontend:scan
+        run: |
+          if [ -f .env.example ]; 
+            then cp .env.example .env; 
+          else 
+            touch .env;
+          fi
+          docker compose -f docker-compose.yml up -d --wait
+          docker compose down -v
+          

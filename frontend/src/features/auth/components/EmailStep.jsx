@@ -1,8 +1,4 @@
-function isValidEmail(value) {
-  const v = value.trim();
-  if (!v) return false;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-}
+import { isValidEmail } from "@utils/validation";
 
 export default function EmailStep({
   email,
@@ -18,8 +14,11 @@ export default function EmailStep({
   return (
     <form className="auth-form" onSubmit={onSubmit} noValidate>
       <div className="auth-field">
-        <label className="auth-field__label">Email</label>
+        <label className="auth-field__label" htmlFor="email_input">
+          Email
+        </label>
         <input
+          id="email_input"
           className={`auth-field__input${showError ? " auth-field__input--error" : ""}`}
           type="email"
           inputMode="email"

@@ -1,19 +1,24 @@
+import "@css/users/search-card.css";
+
 import { useState } from "react";
 
 const SearchCard = ({ onSearch, searching }) => {
   const [query, setQuery] = useState("");
+  const [searchType, setSearchType] = useState("all");
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (onSearch) {
-      onSearch({ query: query.trim() });
+      onSearch({
+        query: query.trim(),
+        type: searchType,
+      });
     }
   };
 
   return (
     <form className="search-card" onSubmit={handleSubmit}>
-      {/* Header */}
       <div className="search-card__header">
         <h3 className="search-card__title">Đặt lịch khám ngay</h3>
         <p className="search-card__desc">
@@ -21,10 +26,52 @@ const SearchCard = ({ onSearch, searching }) => {
         </p>
       </div>
 
-      {/* Search input */}
+      <div className="search-card__type-selector">
+        <label
+          className={`search-card__type-label ${searchType === "all" ? "active" : ""}`}
+        >
+          <input
+            type="radio"
+            name="searchType"
+            value="all"
+            checked={searchType === "all"}
+            onChange={(e) => setSearchType(e.target.value)}
+          />
+          Tất cả
+        </label>
+        <label
+          className={`search-card__type-label ${searchType === "doctor" ? "active" : ""}`}
+        >
+          <input
+            type="radio"
+            name="searchType"
+            value="doctor"
+            checked={searchType === "doctor"}
+            onChange={(e) => setSearchType(e.target.value)}
+          />
+          Bác sĩ
+        </label>
+        <label
+          className={`search-card__type-label ${searchType === "specialty" ? "active" : ""}`}
+        >
+          <input
+            type="radio"
+            name="searchType"
+            value="specialty"
+            checked={searchType === "specialty"}
+            onChange={(e) => setSearchType(e.target.value)}
+          />
+          Chuyên khoa
+        </label>
+      </div>
+
       <div className="search-card__field-wrap">
         <div className="search-card__input-group">
-          <svg className="search-card__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            className="search-card__icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <path
               d="M11 5a6 6 0 1 1-4.243 1.757A5.984 5.984 0 0 1 11 5m0-2a8 8 0 1 0 5.657 2.343A7.999 7.999 0 0 0 11 3Z"
               fill="currentColor"
@@ -40,7 +87,13 @@ const SearchCard = ({ onSearch, searching }) => {
             name="query"
             className="search-card__input"
             type="text"
-            placeholder="Ví dụ: Tim mạch, Da liễu, Nguyễn Văn A..."
+            placeholder={
+              searchType === "doctor"
+                ? "Nhập họ tên bác sĩ tại đây..."
+                : searchType === "specialty"
+                  ? "Ví dụ: Tim mạch, Da liễu..."
+                  : "Ví dụ: Tim mạch, Da liễu..."
+            }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoComplete="off"
@@ -87,7 +140,6 @@ const SearchCard = ({ onSearch, searching }) => {
           )}
         </button>
       </div>
-
     </form>
   );
 };

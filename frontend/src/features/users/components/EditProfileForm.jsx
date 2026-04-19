@@ -1,49 +1,55 @@
-import { useState, useEffect } from 'react';
-import { SUPPORTED_COUNTRIES, GENDER_OPTIONS } from '@/configs/const';
-import { splitName, splitBirthday, formatProfileUpdate, MONTH_OPTIONS } from '../utils/profile-utils';
+import {
+  formatProfileUpdate,
+  MONTH_OPTIONS,
+  splitBirthday,
+  splitName,
+} from "@utils/profile-utils.js";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import { GENDER_OPTIONS, SUPPORTED_COUNTRIES } from "@/configs/const";
 
 const EditProfileForm = ({ profile, onSave }) => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    birthDay: '',
-    birthMonth: '',
-    birthYear: '',
-    gender: '',
-  });
+  const initialFormData = useMemo(() => {
+    const { firstName, lastName } = splitName(profile?.name || "");
+    const { day, month, year } = splitBirthday(
+      profile?.dayOfBirth || profile?.dateOfBirth || "",
+    );
 
-  useEffect(() => {
-    const { firstName, lastName } = splitName(profile?.name || '');
-    const { day, month, year } = splitBirthday(profile?.dayOfBirth || profile?.dateOfBirth || '');
-
-    setFormData({
+    return {
       firstName,
       lastName,
-      phone: profile?.phone || '',
-      email: profile?.email || '',
+      phone: profile?.phone || "",
+      email: profile?.email || "",
       birthDay: day,
       birthMonth: month,
       birthYear: year,
-      gender: profile?.gender || '',
-    });
+      gender: profile?.gender || "",
+    };
   }, [profile]);
+
+  const [formData, setFormData] = useState(null);
+  const currentFormData = formData ?? initialFormData;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...(prev ?? initialFormData), [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedProfile = formatProfileUpdate(formData);
-    await onSave({
-      ...updatedProfile,
-      dayOfBirth: updatedProfile.dateOfBirth,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-    });
+    try {
+      const updatedProfile = formatProfileUpdate(currentFormData);
+      await onSave({
+        ...updatedProfile,
+        dayOfBirth: updatedProfile.dateOfBirth,
+        firstName: currentFormData.firstName,
+        lastName: currentFormData.lastName,
+      });
+      toast.info("Đã ghi nhận thông tin.");
+    } catch {
+      toast.error("Đã xảy ra lỗi khi lưu thay đổi!");
+    }
   };
 
   return (
@@ -56,7 +62,7 @@ const EditProfileForm = ({ profile, onSave }) => {
               type="text"
               name="firstName"
               className="profile-form__input"
-              value={formData.firstName}
+              value={currentFormData.firstName}
               onChange={handleChange}
             />
           </div>
@@ -66,7 +72,7 @@ const EditProfileForm = ({ profile, onSave }) => {
               type="text"
               name="lastName"
               className="profile-form__input"
-              value={formData.lastName}
+              value={currentFormData.lastName}
               onChange={handleChange}
             />
           </div>
@@ -87,7 +93,7 @@ const EditProfileForm = ({ profile, onSave }) => {
               name="phone"
               className="profile-form__input"
               style={{ flex: 1 }}
-              value={formData.phone}
+              value={currentFormData.phone}
               onChange={handleChange}
             />
           </div>
@@ -96,10 +102,11 @@ const EditProfileForm = ({ profile, onSave }) => {
         <div className="profile-form__group">
           <label className="profile-form__label">Địa chỉ email</label>
           <input
+            disabled
             type="email"
             name="email"
             className="profile-form__input"
-            value={formData.email}
+            value={currentFormData.email}
             onChange={handleChange}
           />
         </div>
@@ -112,7 +119,7 @@ const EditProfileForm = ({ profile, onSave }) => {
               name="birthDay"
               placeholder="Ngày"
               className="profile-form__input"
-              value={formData.birthDay}
+              value={currentFormData.birthDay}
               onChange={handleChange}
               min="1"
               max="31"
@@ -120,7 +127,7 @@ const EditProfileForm = ({ profile, onSave }) => {
             <select
               name="birthMonth"
               className="profile-form__select"
-              value={formData.birthMonth}
+              value={currentFormData.birthMonth}
               onChange={handleChange}
             >
               <option value="">Tháng</option>
@@ -135,7 +142,7 @@ const EditProfileForm = ({ profile, onSave }) => {
               name="birthYear"
               placeholder="Năm"
               className="profile-form__input"
-              value={formData.birthYear}
+              value={currentFormData.birthYear}
               onChange={handleChange}
               min="1900"
               max={new Date().getFullYear()}
@@ -148,7 +155,7 @@ const EditProfileForm = ({ profile, onSave }) => {
           <select
             name="gender"
             className="profile-form__select"
-            value={formData.gender}
+            value={currentFormData.gender}
             onChange={handleChange}
           >
             <option value="">Chọn</option>

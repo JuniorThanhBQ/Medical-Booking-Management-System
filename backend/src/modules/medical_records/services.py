@@ -1,135 +1,156 @@
-from src.extensions import db
-from src.modules.appointments.models import Appointment, StatusRole
+from src.modules.appointments.models import StatusRole
 from src.modules.medical_records.models import MedicalRecord, MedicalRecordType
 from src.utils.handle_db_errors import handle_db_errors
+from src.utils.medical_records.formatter_utils import format_medical_record
+from src.utils.medical_records.record_utils import \
+    check_record_access_permission
 
 
-@handle_db_errors
-def get_detail_medical_record_service(current_user, record_id):
-    record = MedicalRecord.query.get(int(record_id))
-    if not record:
-        return {"message": "Phiếu khám không tồn tại"}, "NOT_FOUND"
+class MedicalRecordService:
+    def __init__(self, medical_record_repository, appointment_repository):
+        self.medical_record_repository = medical_record_repository
+        self.appointment_repository = appointment_repository
 
-    role_name = current_user.role.name
-    profile_id = current_user.profile.id if current_user.profile else None
+    @handle_db_errors
+    def create_medical_record_service(self, current_user, appointment_id, data):
+        if current_user.role.name != "DOCTOR":
+            return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
 
-    if role_name == "PATIENT" and record.patient_profile_id != profile_id:
-        return {"message": "Không có quyền truy cập"}, "FORBIDDEN"
+        appointment = self.appointment_repository.get_appointment_by_id(appointment_id)
+        if not appointment:
+            return {"message": "Lịch hẹn không tồn tại"}, "NOT_FOUND"
 
-    if role_name == "DOCTOR" and record.doctor_profile_id != profile_id:
-        return {"message": "Không có quyền truy cập"}, "FORBIDDEN"
+        if appointment.doctor_profile_id != current_user.profile.id:
+            return {"message": "Không có quyền trên lịch hẹn này"}, "FORBIDDEN"
 
-    appointment = record.appointment
-    doctor_user = record.doctor.user
-    patient_user = record.patient.user
-    specialty = record.doctor.specialty
+        if appointment.medical_record:
+            return {"message": "Lịch hẹn này đã có hồ sơ bệnh án."}, "BAD_REQUEST"
 
-    result = {
-        "id": str(record.id),
-        "type": specialty.cta_label.name if specialty and specialty.cta_label else None,
-        "appointmentId": str(appointment.id) if appointment else None,
-        "patientName": f"{patient_user.last_name} {patient_user.first_name}",
-        "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
-        "specialty": specialty.name if specialty else None,
-        "status": appointment.status.name if appointment and appointment.status else None,
-        "diagnosis": record.diagnosis,
-        "notes": record.note,
-        "prescriptionText": record.prescription_text,
-        "treatmentOrders": record.treatment_orders,
-        "createdAt": record.created_date.isoformat() + "Z" if record.created_date else None,
-        "updatedAt": record.updated_date.isoformat() + "Z" if record.updated_date else None,
-    }
-    return result, "SUCCESS"
+        payload_status = data.get("status", "DONE")
+        if payload_status not in ["DONE", "FOLLOW_UP"]:
+            return {"message": "Trạng thái không hợp lệ"}, "BAD_REQUEST"
 
+        record = MedicalRecord(
+            doctor_profile_id=appointment.doctor_profile_id,
+            patient_profile_id=appointment.patient_profile_id,
+            type=MedicalRecordType[payload_status],
+            diagnosis=data.get("diagnosis", ""),
+            prescription_text=data.get("prescriptionText", ""),
+            treatment_orders=data.get("treatmentOrders", ""),
+            note=data.get("notes", "")
+        )
 
-@handle_db_errors
-def create_medical_record_service(current_user, appointment_id, data):
-    if current_user.role.name != "DOCTOR":
-        return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
+        self.medical_record_repository.add_instance(record)
+        self.medical_record_repository.flush_session()
 
-    appointment = Appointment.query.get(int(appointment_id))
-    if not appointment:
-        return {"message": "Lịch hẹn không tồn tại"}, "NOT_FOUND"
+        appointment.medical_record_id = record.id
+        appointment.status = StatusRole.COMPLETED
 
-    if appointment.doctor_profile_id != current_user.profile.id:
-        return {"message": "Không có quyền trên lịch hẹn này"}, "FORBIDDEN"
+        self.medical_record_repository.commit_session()
 
-    if appointment.medical_record:
-        return {"message": "Lịch hẹn này đã có hồ sơ bệnh án."}, "BAD_REQUEST"
+        result = {
+            "id": record.id,
+            "diagnosis": record.diagnosis,
+            "prescriptionText": record.prescription_text,
+            "treatmentOrders": record.treatment_orders,
+            "notes": record.note,
+            "status": record.type.name
+        }
 
-    payload_status = data.get("status", "DONE")
-    if payload_status not in ["DONE", "FOLLOW_UP"]:
-        return {"message": "Trạng thái không hợp lệ"}, "BAD_REQUEST"
+        return result, "SUCCESS"
 
-    record = MedicalRecord(
-        doctor_profile_id=appointment.doctor_profile_id,
-        patient_profile_id=appointment.patient_profile_id,
-        type=MedicalRecordType[payload_status],
-        diagnosis=data.get("diagnosis", ""),
-        prescription_text=data.get("prescriptionText", ""),
-        treatment_orders=data.get("treatmentOrders", ""),
-        note=data.get("notes", "")
-    )
+    @handle_db_errors
+    def update_medical_record_service(self, current_user, record_id, data):
+        if current_user.role.name != "DOCTOR":
+            return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
 
-    db.session.add(record)
-    db.session.flush()
+        record = self.medical_record_repository.get_medical_record_by_id(record_id)
+        if not record:
+            return {"message": "Phiếu khám không tồn tại"}, "NOT_FOUND"
 
-    appointment.medical_record_id = record.id
-    appointment.status = StatusRole.COMPLETED
+        if record.doctor_profile_id != current_user.profile.id:
+            return {"message": "Không có quyền chỉnh sửa"}, "FORBIDDEN"
 
-    db.session.commit()
+        field_mapping = {
+            "diagnosis": "diagnosis",
+            "prescriptionText": "prescription_text",
+            "treatmentOrders": "treatment_orders",
+            "notes": "note"
+        }
 
-    result = {
-        "id": record.id,
-        "diagnosis": record.diagnosis,
-        "prescriptionText": record.prescription_text,
-        "treatmentOrders": record.treatment_orders,
-        "notes": record.note,
-        "status": record.type.name
-    }
+        for payload_key, model_attr in field_mapping.items():
+            if payload_key in data:
+                setattr(record, model_attr, data[payload_key])
 
-    return result, "SUCCESS"
+        payload_status = data.get("status")
+        if payload_status in ["DONE", "FOLLOW_UP"]:
+            record.type = MedicalRecordType[payload_status]
+            if record.appointment:
+                record.appointment.status = StatusRole.COMPLETED
 
+        self.medical_record_repository.commit_session()
 
-@handle_db_errors
-def update_medical_record_service(current_user, record_id, data):
-    if current_user.role.name != "DOCTOR":
-        return {"message": "Chỉ bác sĩ mới có quyền này"}, "FORBIDDEN"
+        result = {
+            "id": record.id,
+            "diagnosis": record.diagnosis,
+            "prescriptionText": record.prescription_text,
+            "treatmentOrders": record.treatment_orders,
+            "notes": record.note,
+            "status": record.type.name if record.type else None
+        }
 
-    record = MedicalRecord.query.get(int(record_id))
-    if not record:
-        return {"message": "Phiếu khám không tồn tại"}, "NOT_FOUND"
+        return result, "SUCCESS"
 
-    if record.doctor_profile_id != current_user.profile.id:
-        return {"message": "Không có quyền chỉnh sửa"}, "FORBIDDEN"
+    @handle_db_errors
+    def get_detail_medical_record_service(self, current_user, record_id):
+        record = self.medical_record_repository.get_medical_record_by_id(record_id)
+        if not record:
+            return {"message": "Phiếu khám không tồn tại"}, "NOT_FOUND"
 
-    if "diagnosis" in data:
-        record.diagnosis = data["diagnosis"]
+        if not check_record_access_permission(current_user, record):
+            return {"message": "Không có quyền truy cập"}, "FORBIDDEN"
 
-    if "prescriptionText" in data:
-        record.prescription_text = data["prescriptionText"]
+        result = format_medical_record(record)
+        result.update({
+            "notes": record.note,
+            "prescriptionText": record.prescription_text,
+            "treatmentOrders": record.treatment_orders,
+            "updatedAt": record.updated_date.isoformat() + "+07:00" if record.updated_date else None,
+        })
 
-    if "treatmentOrders" in data:
-        record.treatment_orders = data["treatmentOrders"]
+        return result, "SUCCESS"
 
-    if "notes" in data:
-        record.note = data["notes"]
+    @handle_db_errors
+    def get_list_medical_record_service(self, current_user, args):
+        role_name = current_user.role.name
 
-    payload_status = data.get("status")
-    if payload_status in ["DONE", "FOLLOW_UP"]:
-        record.type = MedicalRecordType[payload_status]
-        if record.appointment:
-            record.appointment.status = StatusRole.COMPLETED
+        if role_name == "RECEPTIONIST":
+            return {"message": "Lễ tân không thể xem danh sách hồ sơ khám bệnh"}, "FORBIDDEN"
 
-    db.session.commit()
+        profile_id = current_user.profile.id if current_user.profile else None
 
-    result = {
-        "id": record.id,
-        "diagnosis": record.diagnosis,
-        "prescriptionText": record.prescription_text,
-        "treatmentOrders": record.treatment_orders,
-        "notes": record.note,
-        "status": record.type.name if record.type else None
-    }
+        if role_name in ["PATIENT", "DOCTOR"] and not profile_id:
+            return {"message": "Tài khoản chưa có hồ sơ để xem bệnh án"}, "FORBIDDEN"
 
-    return result, "SUCCESS"
+        page = int(args.get("page", 1))
+        limit = int(args.get("limit", 10))
+
+        paginated_records = self.medical_record_repository.get_medical_records_by_role(
+            role_name=role_name,
+            profile_id=profile_id,
+            page=page,
+            limit=limit
+        )
+
+        items = [format_medical_record(record) for record in paginated_records.items]
+
+        result = {
+            "items": items,
+            "meta": {
+                "total": paginated_records.total,
+                "pages": paginated_records.pages,
+                "currentPage": paginated_records.page,
+                "perPage": paginated_records.per_page
+            }
+        }
+        return result, "SUCCESS"

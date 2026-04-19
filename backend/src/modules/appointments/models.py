@@ -1,6 +1,7 @@
 import enum
 
-from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy import (Column, DateTime, Enum, ForeignKey, Integer, String,
+                        UniqueConstraint)
 from sqlalchemy.orm import backref, relationship
 
 from src.modules.doctors.models import Base
@@ -11,6 +12,7 @@ class StatusRole(enum.Enum):
     APPROVED = 2
     PENDING = 3
     CANCEL = 4
+    SKIPPED = 5
 
 
 class Appointment(Base):
@@ -24,6 +26,9 @@ class Appointment(Base):
     medical_record_id = Column(
         Integer, ForeignKey("medical_record.id", ondelete="SET NULL"), nullable=True
     )
+    medical_service_id = Column(
+        Integer, ForeignKey("medical_services.id", ondelete="RESTRICT"), nullable=False
+    )
     doctor = relationship("DoctorProfile", backref=backref("appointments"), lazy=True)
     patient = relationship("PatientProfile", backref=backref("appointments"), lazy=True)
     medical_record = relationship(
@@ -31,6 +36,23 @@ class Appointment(Base):
         backref=backref("appointment", uselist=False),
         lazy=True
     )
+    medical_service = relationship(
+        "MedicalService",
+        backref=backref("appointments"),
+        lazy=True
+    )
 
     def __str__(self):
         return self.name
+
+
+class BookingLock(Base):
+    __tablename__ = "booking_lock"
+
+    doctor_name = Column(String(255), nullable=False)
+    appointment_date = Column(DateTime, nullable=False)
+    service_name = Column(String(255), nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint('doctor_name', 'appointment_date', name='unique_doctor_time_lock'),
+    )
