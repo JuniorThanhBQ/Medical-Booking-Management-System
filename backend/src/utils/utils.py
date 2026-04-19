@@ -2,7 +2,7 @@ import datetime
 import re
 import unicodedata
 
-from flask import make_response, jsonify
+from flask import make_response
 
 from src.modules.users.models import GenderRole
 
@@ -63,7 +63,7 @@ def set_auth_cookie(response, refresh_token):
 
 def handle_auth_refresh_response(data, status, success_code=200, refresh_token=None):
     response_data = format_api_response(data, status, success_code=success_code)
-    res = make_response(jsonify(response_data))
+    res = make_response(response_data)
 
     if status == "SUCCESS" and refresh_token:
         set_auth_cookie(res, refresh_token)

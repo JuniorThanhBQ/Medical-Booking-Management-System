@@ -14,7 +14,10 @@ const fetchNewToken = async () => {
   const res = await axios.post(
     `${BASE_URL}${endpoints["auth_refresh"]}`,
     {},
-    { withCredentials: true },
+    { withCredentials: true,
+      xsrfCookieName: 'csrf_token',
+      xsrfHeaderName: 'X-CSRFToken'
+    },
   );
   return res.data.access_token;
 };

@@ -23,6 +23,14 @@
   padding: 10px;
 }
 
+.services__empty-state {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--lp-muted, #555555);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
 .services__grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);

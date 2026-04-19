@@ -82,50 +82,58 @@ export default function ServicesSection() {
       <div className="services__wrap lp-container">
         <h2 className="services__title">Và nhiều hơn nữa</h2>
 
-        <div className="services__grid" style={getGridStyle()}>
-          {services.map((svc, index) => {
-            const visual = getVisualProps(svc.specialtyId, index);
-
-            return (
-              <article key={svc.id} className="service-card">
-                <div className="service-card__icon-wrap">
-                  {renderIconWrap(visual)}
-                </div>
-                <h3 className="service-card__name">{svc.name}</h3>
-                <p className="service-card__desc">{svc.description}</p>
-                <button
-                  type="button"
-                  className="service-card__badge service-card__badge--live btn-detail"
-                  onClick={() => handleViewDetail(svc.id)}
-                  disabled={isLoadingDetail}
-                >
-                  Xem chi tiết
-                </button>
-              </article>
-            );
-          })}
-        </div>
-
-        {totalPages > 1 && (
-          <div className="services__pagination">
-            <button
-              onClick={handlePrev}
-              disabled={currentPage === 1 || isTransitioning}
-              className="services__pagination-btn"
-            >
-              &lt;
-            </button>
-            <span className="services__pagination-text">
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={handleNext}
-              disabled={currentPage === totalPages || isTransitioning}
-              className="services__pagination-btn"
-            >
-              &gt;
-            </button>
+        {!services || services.length === 0 ? (
+          <div className="services__empty-state" style={{ textAlign: "center", padding: "3rem 0", color: "#666" }}>
+            <p>Chưa có dịch vụ nào trong hệ thống.</p>
           </div>
+        ) : (
+          <>
+            <div className="services__grid" style={getGridStyle()}>
+              {services.map((svc, index) => {
+                const visual = getVisualProps(svc.specialtyId, index);
+
+                return (
+                  <article key={svc.id} className="service-card">
+                    <div className="service-card__icon-wrap">
+                      {renderIconWrap(visual)}
+                    </div>
+                    <h3 className="service-card__name">{svc.name}</h3>
+                    <p className="service-card__desc">{svc.description}</p>
+                    <button
+                      type="button"
+                      className="service-card__badge service-card__badge--live btn-detail"
+                      onClick={() => handleViewDetail(svc.id)}
+                      disabled={isLoadingDetail}
+                    >
+                      Xem chi tiết
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="services__pagination">
+                <button
+                  onClick={handlePrev}
+                  disabled={currentPage === 1 || isTransitioning}
+                  className="services__pagination-btn"
+                >
+                  &lt;
+                </button>
+                <span className="services__pagination-text">
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages || isTransitioning}
+                  className="services__pagination-btn"
+                >
+                  &gt;
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         <ServiceDetailModal

@@ -7,23 +7,23 @@ on:
     branches-ignore: [ 'main' ]
 
 jobs:
-  build:
-    uses: ./.github/workflows/pipelines/1-app-build.yml
+  build-app:
+    uses: ./.github/workflows/pipelines/ci_app_build_pipeline.yml
     secrets: inherit
 
   static-test:
     needs: build
-    uses: ./.github/workflows/pipelines/2-static-test.yml
+    uses: ./.github/workflows/pipelines/ci_code_static_pipeline.yml
     secrets: inherit
 
   dynamic-test:
     needs: static-test
-    uses: ./.github/workflows/pipelines/3-dynamic-test.yml
+    uses: ./.github/workflows/pipelines/ci_code_quality_pipeline.yml
     secrets: inherit
 
   docker-scan:
     needs: dynamic-test
-    uses: ./.github/workflows/pipelines/4-docker-scan.yml
+    uses: ./.github/workflows/pipelines/ci_docker_image_scan.yml
     secrets: inherit
 
   dev-workflow-report:

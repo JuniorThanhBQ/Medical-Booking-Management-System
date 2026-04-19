@@ -7,10 +7,7 @@ fi
 
 if [ "$1" = "gunicorn" ]; then
     flask --app src.index:app db upgrade
-
-    if [ "$FLASK_MODE" = "development" ]; then
-        python src/fixtures/fixtures.py
-    fi
+    python src/fixtures/fixtures.py
 fi
 
 exec "$@"

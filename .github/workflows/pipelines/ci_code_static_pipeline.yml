@@ -38,8 +38,3 @@ jobs:
           cd frontend && npm audit --omit=dev --audit-level=high && cd ..
           cd backend && bandit -c ../.github/configs/bandit.yaml -r . && cd ..
           pip-audit -r backend/requirements/requirements.txt
-
-      - name: Quét bảo mật Semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: "p/default"

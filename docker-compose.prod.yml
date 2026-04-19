@@ -16,6 +16,7 @@ services:
       - /tmp
     environment:
       - FLASK_MODE=production
+      - TMPDIR=/tmp
     deploy:
       resources:
         limits:

@@ -41,7 +41,8 @@ class Config:
     SERVER_NAME = os.getenv('SERVER_NAME', 'localhost:8000')
 
     EMAIL_VALIDATOR = os.getenv('EMAIL_VALIDATOR')
-    FRONTEND_URL = os.getenv('FRONTEND_URL')
+    FRONTEND_URL = os.getenv('FRONTEND_URL') or "https://resonate-proponent-thrower.ngrok-free.dev"
+    WTF_CSRF_TRUSTED_ORIGINS = ['https://resonate-proponent-thrower.ngrok-free.dev']
 
 
 class DevelopmentConfig(Config):

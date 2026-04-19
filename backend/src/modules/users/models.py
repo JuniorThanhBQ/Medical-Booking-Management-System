@@ -1,6 +1,6 @@
 import datetime
-from zoneinfo import ZoneInfo
 import enum
+from zoneinfo import ZoneInfo
 
 from flask_login import UserMixin
 from sqlalchemy import (Boolean, Column, Date, DateTime, Enum, ForeignKey,
