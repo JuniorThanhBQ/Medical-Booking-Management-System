@@ -20,7 +20,8 @@
             </div>
         {% endif %}
     {% endwith %}
-    <form method="POST" action="{{ url_for('login_view') }}">
+    <form method="{{ 'POST' }}" action="{{ url_for('login_view') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div>
             <label for="email_field">Email</label>
             <input type="text" id="email_field" name="email" placeholder="Nhập email" required>

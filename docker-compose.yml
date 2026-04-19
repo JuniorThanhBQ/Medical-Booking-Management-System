@@ -43,6 +43,8 @@ services:
     networks:
       - frontend-network
       - backend-network
+    volumes:
+      - shared_tmp_volume:/app/shared_tmp
 
   db:
     restart: unless-stopped

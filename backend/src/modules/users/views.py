@@ -1,7 +1,7 @@
 import re
 
 from dependency_injector.wiring import Provide, inject
-from flask import current_app, make_response, request
+from flask import current_app, make_response, request, jsonify
 from flask_restx import Resource, fields
 
 from src.containers import AppContainer
@@ -202,7 +202,7 @@ class LogoutAPI(Resource):
     @auth_namespace.doc(security='api_key')
     def post(self):
         data, status = {"message": "Đăng xuất thành công"}, "SUCCESS"
-        response = make_response(format_api_response(data, status), 200)
+        response = make_response(jsonify(format_api_response(data, status)), 200)
         if status == "SUCCESS":
             response.delete_cookie("refresh_token")
 

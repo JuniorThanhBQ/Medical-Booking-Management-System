@@ -9,7 +9,6 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 --reload --access-logfile - --error-logfile - src.index:app
     volumes:
       - ./backend/src:/app/src
-      - ./shared_tmp:/app/shared_tmp
 
   db:
     restart: unless-stopped

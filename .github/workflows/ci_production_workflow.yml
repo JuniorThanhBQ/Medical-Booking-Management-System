@@ -1,0 +1,73 @@
+name: Luồng CI/CD của nhánh production
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ 'main' ]
+
+jobs:
+  build:
+    uses: ./.github/workflows/pipelines/1-app-build.yml
+    secrets: inherit
+
+  static-test:
+    needs: build
+    uses: ./.github/workflows/pipelines/2-static-test.yml
+    secrets: inherit
+
+  dynamic-test:
+    needs: static-test
+    uses: ./.github/workflows/pipelines/3-dynamic-test.yml
+    secrets: inherit
+
+  docker-scan:
+    needs: dynamic-test
+    uses: ./.github/workflows/pipelines/4-docker-scan.yml
+    secrets: inherit
+
+  deploy:
+    needs: docker-scan
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/pipelines/5-deploy.yml
+    secrets: inherit
+
+  production-workflow-report:
+    needs: [build, static-test, dynamic-test, docker-scan, deploy]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Tạo báo cáo tổng kết
+        env:
+          TEST_BUILD: ${{ needs.build.result }}
+          BACKEND_LINT: ${{ needs.static-test.result }}
+          FRONTEND_LINT: ${{ needs.static-test.result }}
+          BACKEND_SECURITY: ${{ needs.static-test.result }}
+          FRONTEND_SECURITY: ${{ needs.static-test.result }}
+          PYTEST_TEST: ${{ needs.dynamic-test.result }}
+          DOCKER_STATIC: ${{ needs.docker-scan.result }}
+          DEPLOY_BACKEND: ${{ needs.deploy.result || 'skipped' }}
+          DEPLOY_FRONTEND: ${{ needs.deploy.result || 'skipped' }}
+          CHECK_IMAGES: ${{ needs.deploy.result || 'skipped' }}
+        run: python .github/workflows/scripts/static_report_scripts.py
+      - name: Đẩy comment Lên Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const issueBody = fs.readFileSync('issue.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: issueBody
+            });
+            

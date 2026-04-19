@@ -1,6 +1,7 @@
 import "@css/notification/notification-item.css";
 
 import { useNotificationItem } from "@features/notification/hooks/use-notification-item";
+import DOMPurify from "dompurify";
 
 const NotificationItem = ({ notification, onClose }) => {
   const { isDeleting, handleClick, handleDelete, formatDate, getTypeIcon } =
@@ -13,7 +14,7 @@ const NotificationItem = ({ notification, onClose }) => {
     >
       <div
         className="notification-icon"
-        dangerouslySetInnerHTML={{ __html: getTypeIcon(notification.type) }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(getTypeIcon(notification.type)) }}
       />
 
       <div className="notification-content">
