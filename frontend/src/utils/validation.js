@@ -1,7 +1,6 @@
 const EMAIL_REGEX = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#_\-?])[A-Za-z\d@#_\-?]{9,}$/;
-const XSS_REGEX = /<[^>]*>/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9\s])\S{9,}$/;
+const XSS_REGEX = /<[^>]{0,2000}>/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 export function containsXss(value) {

@@ -2,6 +2,9 @@ name: Build ứng dụng frontend và backend thủ công
 
 on:
   workflow_call:
+    secrets:
+        VITE_API_URL:
+          required: true
 
 jobs:
   app-build-check:

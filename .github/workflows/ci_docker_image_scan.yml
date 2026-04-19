@@ -2,6 +2,9 @@ name: Build image và kiểm tra bảo mật qua trivy.
 
 on:
   workflow_call:
+    secrets:
+        VITE_API_URL:
+          required: true
 
 jobs:
   docker-build-check:

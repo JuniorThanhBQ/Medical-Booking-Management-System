@@ -11,7 +11,7 @@
 
 | Thành viên         | MSSV       | Công việc | Link Commit/PR | 
 |--------------------|------------|-----------|----------------| 
-| Văn Trung Thành    | 2351050164 | Hoàn tất refactor frontend và backend. Thống nhất và hoàn hiện chức năng còn thiếu. Thực hiện release phiên bản v2.0.0 (Productionable). Kết thúc phát triển ứng dụng, chuyển sang theo dõi và bảo trì trên production | [abc123](link) | 
+| Văn Trung Thành    | 2351050164 | Hoàn tất refactor frontend và backend. Thống nhất và hoàn hiện chức năng còn thiếu. Thực hiện release phiên bản v2.0.0 (Productionable). Kết thúc phát triển ứng dụng, chuyển sang theo dõi và bảo trì trên production | [377f730](https://github.com/JuniorThanhBQ/Medical-Appointment-B3-8/pull/136/changes/377f730fada48ce87b90e1a92182a70427c668d2) | 
 | Nguyễn Thanh Phong | 2351050133 | Công việc không commit: Cập nhật và bổ sung chương 3, 4 trong báo cáo. Đề xuất một số thay đổi trong giai đoạn triển khai thiết kế (design và implementation). Cân nhắc một số thuật toán đặt lịch time-slot | (Tuần này không commit để tập trung vào báo cáo và một bạn đảm nhiệm CI/CD toàn phần) | 
 | Trương Hưng Phát   | 2351010154 | Công việc không commit: Cập nhật và bổ sung chương 1, 2 trong báo cáo. Viết lại user stories phù hợp bối cảnh nghiệp vụ thực tế và kiểm tra văn phong chính tả. | (Tuần này không commit để tập trung vào báo cáo và một bạn đảm nhiệm CI/CD toàn phần) | 
 

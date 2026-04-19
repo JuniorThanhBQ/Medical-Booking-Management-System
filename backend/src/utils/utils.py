@@ -7,8 +7,8 @@ from flask import make_response
 from src.modules.users.models import GenderRole
 
 EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
-PASSWORD_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#_\-?])[A-Za-z\d@#_\-?]{8,}$")
-XSS_REGEX = re.compile(r"<[^>]*>")
+PASSWORD_REGEX = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9\s])\S{9,}$")
+XSS_REGEX = re.compile(r"<[^>]{0,2000}>")
 
 
 def validate_email_password(email, password):

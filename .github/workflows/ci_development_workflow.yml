@@ -9,12 +9,12 @@ on:
 jobs:
   build-app:
     uses: ./.github/workflows/ci_app_build_pipeline.yml
-    secrets: inherit
+    secrets:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
   static-test:
     needs: build-app
     uses: ./.github/workflows/ci_code_static_pipeline.yml
-    secrets: inherit
     permissions:
       issues: write
       pull-requests: write
@@ -23,7 +23,6 @@ jobs:
   dynamic-test:
     needs: static-test
     uses: ./.github/workflows/ci_code_quality_pipeline.yml
-    secrets: inherit
     permissions:
       issues: write
       pull-requests: write
@@ -32,7 +31,8 @@ jobs:
   docker-scan:
     needs: dynamic-test
     uses: ./.github/workflows/ci_docker_image_scan.yml
-    secrets: inherit
+    secrets:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
     permissions:
       issues: write
       pull-requests: write

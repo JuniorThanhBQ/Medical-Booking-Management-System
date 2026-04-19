@@ -2,6 +2,11 @@ name: Deploy frontend and backend images to registry
 
 on:
   workflow_call:
+    secrets:
+        DOCKER_USERNAME:
+          required: true
+        DOCKER_PASSWORD:
+          required: true
 
 jobs:
   build-and-push:
