@@ -11,7 +11,7 @@
 
 | Thành viên         | MSSV       | Công việc | Link Commit/PR | 
 |--------------------|------------|-----------|----------------| 
-| Văn Trung Thành    | 2351050164 | Đang làm  | [abc123](link) | 
+| Văn Trung Thành    | 2351050164 | Hoàn tất báo cáo tổng kết và tổ chức họp nghiệm thu | [abc123](link) | 
 | Nguyễn Thanh Phong | 2351050133 | Đang làm  | [def456](link) | 
 | Trương Hưng Phát   | 2351010154 | Đang làm  | [ghi789](link) | 
 
@@ -19,33 +19,33 @@
 
 ## 2. Tiến độ tổng thể
 
-| Hạng mục           | Trạng thái    | %  | 
-|--------------------|---------------|----| 
-| Phân tích yêu cầu  | Đang làm      | 0% | 
-| Thiết kế kiến trúc | Chưa bắt đầu | 0% | 
-| Backend API        | Chưa bắt đầu | 0% | 
-| Frontend UI        | Chưa bắt đầu | 0% | 
-| Docker             | Chưa bắt đầu | 0% | 
-| Testing            | Chưa bắt đầu | 0% | 
+| Hạng mục           | Trạng thái    | %    | 
+|--------------------|---------------|------| 
+| Phân tích yêu cầu  | Đã hoàn thành | 100% | 
+| Thiết kế kiến trúc | Đã hoàn thành | 100% | 
+| Backend API        | Đã hoàn thành | 100% | 
+| Frontend UI        | Đã hoàn thành | 100% | 
+| Docker             | Đã hoàn thành | 100% | 
+| Testing            | Không hoàn thành | 80%  | 
 
-**Tổng tiến độ: 0%**
+**Tổng tiến độ: 96%**
 
 --- 
 
-## 3. Kế hoạch tuần tới
+## 3. Kế hoạch trước 28/04/2026
 
 | Thành viên         | Công việc dự kiến | 
 |--------------------|-------------------| 
-| Văn Trung Thành    | ...               | 
-| Nguyễn Thanh Phong | ...               | 
-| Trương Hưng Phát   | ...               | 
+| Văn Trung Thành    | Tổng kết đồ án và sản phẩm    | 
+| Nguyễn Thanh Phong | Tổng kết đồ án và sản phẩm    | 
+| Trương Hưng Phát   | Tổng kết đồ án và sản phẩm    | 
 
 --- 
 
 ## 4. Khó khăn / Cần hỗ trợ
 
-- [ ] [Mô tả khó khăn nếu có]
-- [ ] [Câu hỏi cần GV giải đáp nếu có]
+- [ ] [Nhóm không có khó khăn cần giải đáp]
+- [ ] [Nhóm không có câu hỏi giành cho giảng viên]
 
 --- 
 
