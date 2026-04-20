@@ -46,7 +46,10 @@ export default function AppRoute() {
           path="/appointments/:appointmentId"
           element={<AppointmentDetailPage />}
         />
-
+        <Route
+          path="/appointments/:appointmentId/patient-profile"
+          element={<PatientProfilePage />}
+        />
         <Route
           element={
             <RoleRoute allowedRoles={["RECEPTIONIST", "PATIENT", "ADMIN"]} />
@@ -79,10 +82,6 @@ export default function AppRoute() {
           <Route
             path="/receptionist/appointments/:appointmentId"
             element={<ReceptionistAppointmentDetailPage />}
-          />
-          <Route
-            path="/appointments/:appointmentId/patient-profile"
-            element={<PatientProfilePage />}
           />
         </Route>
       </Route>

@@ -50,7 +50,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   production-workflow-report:
-    needs: [build-app, static-test, dynamic-test, docker-scan, deploy]
+    needs: [build-app, scan-env-exposed, static-test, dynamic-test, docker-scan, deploy]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:

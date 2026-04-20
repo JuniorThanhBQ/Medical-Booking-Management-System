@@ -46,7 +46,7 @@ jobs:
       contents: read
 
   dev-workflow-report:
-    needs: [build-app, static-test, dynamic-test, docker-scan]
+    needs: [build-app, scan-env-exposed, static-test, dynamic-test, docker-scan]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
