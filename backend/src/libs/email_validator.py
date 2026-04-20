@@ -6,7 +6,7 @@ def verify_email_existence(api_key=None, email=None):
     if not api_key or not email:
         return False
 
-    url = "https://emailreputation.abstractapi.com/v2/"
+    url = "https://emailreputation.abstractapi.com/v1/"
 
     params = {
         "api_key": api_key,
