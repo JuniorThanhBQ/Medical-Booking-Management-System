@@ -1,0 +1,745 @@
+basePath: /api/v2
+consumes:
+  - application/json
+definitions:
+  AppointmentRequest:
+    properties:
+      appointmentDate:
+        description: Thời gian hẹn (ISO 8601)
+        type: string
+      doctorId:
+        description: ID của bác sĩ
+        type: integer
+      medicalServiceId:
+        description: ID của dịch vụ y tế
+        type: integer
+      note:
+        description: Ghi chú hoặc triệu chứng ban đầu
+        type: string
+    required:
+      - appointmentDate
+      - doctorId
+      - medicalServiceId
+    type: object
+  CreateMedicalRecordRequest:
+    properties:
+      diagnosis:
+        description: Chẩn đoán ban đầu
+        type: string
+      notes:
+        description: Ghi chú của bác sĩ
+        type: string
+      prescriptionText:
+        description: Nội dung đơn thuốc
+        type: string
+      status:
+        default: DONE
+        description: Trạng thái (DONE hoặc FOLLOW_UP)
+        type: string
+      treatmentOrders:
+        description: Yêu cầu điều trị/xét nghiệm
+        type: string
+    type: object
+  EmailValidatorInput:
+    properties:
+      email:
+        type: string
+    required:
+      - email
+    type: object
+  LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    required:
+      - email
+      - password
+      - role
+    type: object
+  PatchAppointmentRequest:
+    properties:
+      appointmentDate:
+        description: Thời gian hẹn mới (ISO 8601)
+        type: string
+      note:
+        description: Cập nhật ghi chú
+        type: string
+      status:
+        description: Trạng thái mới (APPROVED, COMPLETED, CANCEL, PENDING)
+        type: string
+    type: object
+  PatchUserInput:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      dayOfBirth:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      gender:
+        type: string
+      lastName:
+        type: string
+      medicalHistory:
+        type: string
+      phone:
+        type: string
+    type: object
+  ReceptionistAppointmentRequest:
+    properties:
+      address:
+        type: string
+      appointmentDate:
+        description: ISO 8601 format
+        type: string
+      birthday:
+        description: YYYY-MM-DD
+        type: string
+      doctorId:
+        description: ID của bác sĩ
+        type: integer
+      firstName:
+        type: string
+      gender:
+        description: MALE, FEMALE, or OTHER
+        type: string
+      lastName:
+        type: string
+      medicalServiceId:
+        description: ID của dịch vụ y tế
+        type: integer
+      note:
+        description: Ghi chú khám bệnh
+        type: string
+      phone:
+        type: string
+    required:
+      - address
+      - appointmentDate
+      - birthday
+      - doctorId
+      - firstName
+      - gender
+      - lastName
+      - medicalServiceId
+      - phone
+    type: object
+  RegisterInput:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      dayOfBirth:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      gender:
+        type: string
+      lastName:
+        type: string
+      medicalHistory:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+      - dayOfBirth
+      - email
+      - firstName
+      - gender
+      - lastName
+      - password
+      - phone
+    type: object
+  ScheduleChangeRequest:
+    properties:
+      newWorkSchedule:
+        $ref: "#/definitions/WorkScheduleDetail"
+    required:
+      - newWorkSchedule
+    type: object
+  TransactionLockRequest:
+    properties:
+      appointmentDate:
+        type: string
+      doctorName:
+        type: string
+      serviceName:
+        type: string
+    required:
+      - appointmentDate
+      - doctorName
+    type: object
+  UpdateMedicalRecordRequest:
+    properties:
+      diagnosis:
+        description: Chẩn đoán của bác sĩ
+        type: string
+      notes:
+        description: Ghi chú thêm
+        type: string
+      prescriptionText:
+        description: Thông tin đơn thuốc
+        type: string
+      status:
+        description: Trạng thái hồ sơ (DONE, FOLLOW_UP)
+        type: string
+      treatmentOrders:
+        description: Yêu cầu điều trị/Xét nghiệm
+        type: string
+    type: object
+  WorkScheduleDetail:
+    properties:
+      description:
+        description: Mô tả chi tiết
+        type: string
+      end_time:
+        description: Giờ kết thúc (HH:MM:SS)
+        type: string
+      start_time:
+        description: Giờ bắt đầu (HH:MM:SS)
+        type: string
+      title:
+        description: Tiêu đề lịch
+        example: Lịch làm việc mùa hè
+        type: string
+      work_date:
+        description: Danh sách các ngày trong tuần
+        items:
+          type: string
+        type: array
+    required:
+      - end_time
+      - start_time
+    type: object
+host: localhost:8000
+info:
+  description: Tài liệu tổng hợp APIs trong hệ thống
+  title: Medical Appointment B3 API
+  version: 3.0.0
+paths:
+  /appointments:
+    get:
+      operationId: get_appointment_list_create_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+    post:
+      operationId: post_appointment_list_create_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/AppointmentRequest"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+  /appointments/receptionist-appointments:
+    post:
+      operationId: post_receptionist_appointment_create_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/ReceptionistAppointmentRequest"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+  /appointments/transaction-locked:
+    post:
+      operationId: post_transaction_lock_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionLockRequest"
+      responses:
+        "200":
+          description: Success
+      tags:
+        - appointments
+  /appointments/transaction-unlocked:
+    post:
+      operationId: post_transaction_unlock_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionLockRequest"
+      responses:
+        "200":
+          description: Success
+      tags:
+        - appointments
+  /appointments/{appointment_id}:
+    delete:
+      operationId: delete_appointment_retrieve_update_delete_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+    get:
+      operationId: get_appointment_retrieve_update_delete_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+    parameters:
+      - in: path
+        name: appointment_id
+        required: true
+        type: integer
+    patch:
+      operationId: patch_appointment_retrieve_update_delete_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/PatchAppointmentRequest"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+  /appointments/{appointment_id}/patient-profile:
+    get:
+      operationId: get_patient_retrieve_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - appointments
+    parameters:
+      - in: path
+        name: appointment_id
+        required: true
+        type: integer
+  /auth/current-user:
+    get:
+      operationId: get_retrieve_current_user_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - auth
+    patch:
+      operationId: patch_retrieve_current_user_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/PatchUserInput"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - auth
+  /auth/email-validator:
+    post:
+      operationId: post_email_validator_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/EmailValidatorInput"
+      responses:
+        "200":
+          description: Success
+      tags:
+        - auth
+  /auth/email-verification:
+    post:
+      operationId: post_verify_email_api
+      responses:
+        "200":
+          description: Success
+      tags:
+        - auth
+  /auth/login:
+    post:
+      operationId: post_login_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/LoginInput"
+      responses:
+        "200":
+          description: Success
+      tags:
+        - auth
+  /auth/logout:
+    post:
+      operationId: post_logout_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - auth
+  /auth/refresh:
+    post:
+      operationId: post_refresh_token_api
+      responses:
+        "200":
+          description: Success
+      tags:
+        - auth
+  /auth/register:
+    post:
+      operationId: post_register_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/RegisterInput"
+      responses:
+        "200":
+          description: Success
+      tags:
+        - auth
+  /doctors/my-schedule:
+    get:
+      operationId: get_retrieve_my_schedule_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - doctors
+  /doctors/schedule-requests:
+    post:
+      operationId: post_schedule_request_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/ScheduleChangeRequest"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - doctors
+  /medical-records:
+    get:
+      operationId: get_medical_record_list_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - medical_records
+  /medical-records/appointments/{appointment_id}:
+    parameters:
+      - in: path
+        name: appointment_id
+        required: true
+        type: integer
+    post:
+      operationId: post_create_medical_record_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/CreateMedicalRecordRequest"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - medical_records
+  /medical-records/{medical_record_id}:
+    get:
+      operationId: get_medical_record_retrieve_update_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - medical_records
+    parameters:
+      - in: path
+        name: medical_record_id
+        required: true
+        type: integer
+    patch:
+      operationId: patch_medical_record_retrieve_update_api
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateMedicalRecordRequest"
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - medical_records
+  /notifications:
+    get:
+      operationId: get_notification_list_api
+      parameters:
+        - default: 1
+          description: Số trang hiện tại
+          in: query
+          name: page
+          type: integer
+        - default: 10
+          description: Số thông báo trên 1 trang
+          in: query
+          name: per_page
+          type: integer
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - notifications
+    patch:
+      operationId: patch_notification_list_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - notifications
+  /notifications/{notification_id}:
+    delete:
+      operationId: delete_notification_detail_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - notifications
+    get:
+      operationId: get_notification_detail_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - notifications
+    parameters:
+      - in: path
+        name: notification_id
+        required: true
+        type: integer
+    patch:
+      operationId: patch_notification_detail_api
+      responses:
+        "200":
+          description: Success
+      security:
+        - api_key: []
+      tags:
+        - notifications
+  /public/doctors:
+    get:
+      operationId: get_public_doctor_list_api
+      parameters:
+        - description: Tên bác sĩ cần tìm
+          in: query
+          name: keywords
+          type: string
+        - description: mã chuyên khoa
+          in: query
+          name: specialtyId
+          type: string
+        - description: Các ngày làm việc
+          in: query
+          name: workDates
+          type: string
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+  /public/doctors-registration:
+    post:
+      operationId: post_public_doctor_register_api
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+  /public/doctors/{doctor_id}:
+    get:
+      operationId: get_public_doctor_retrieve_api
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+    parameters:
+      - in: path
+        name: doctor_id
+        required: true
+        type: integer
+  /public/doctors/{doctor_id}/time-slots:
+    get:
+      operationId: get_public_doctor_slot_list_api
+      parameters:
+        - description: "Ngày muốn xem lịch. Định dạng: YYYY-MM-DD"
+          in: query
+          name: date
+          type: string
+        - description: Mã dịch vụ y tế
+          in: query
+          name: serviceId
+          type: string
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+    parameters:
+      - in: path
+        name: doctor_id
+        required: true
+        type: integer
+  /public/medical-services:
+    get:
+      operationId: get_public_medical_service_list_api
+      parameters:
+        - description: Tên dịch vụ cần tìm
+          in: query
+          name: keywords
+          type: string
+        - description: ID Chuyên khoa
+          in: query
+          name: specialtyId
+          type: string
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+  /public/medical-services/{service_id}:
+    get:
+      operationId: get_public_medical_service_retrieve_api
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+    parameters:
+      - in: path
+        name: service_id
+        required: true
+        type: integer
+  /public/specialties:
+    get:
+      operationId: get_public_specialty_list_api
+      parameters:
+        - description: Tên chuyên khoa cần lọc
+          in: query
+          name: keywords
+          type: string
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+  /public/specialties/{specialty_id}:
+    get:
+      operationId: get_public_specialty_retrieve_api
+      responses:
+        "200":
+          description: Success
+      tags:
+        - public
+    parameters:
+      - in: path
+        name: specialty_id
+        required: true
+        type: integer
+produces:
+  - application/json
+responses:
+  MaskError:
+    description: When any error occurs on mask
+  ParseError:
+    description: When a mask can't be parsed
+securityDefinitions:
+  api_key:
+    description: Bearer <token>
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+  - description: API tài khoản người dùng
+    name: auth
+  - description: Dữ liệu công khai
+    name: public
+  - description: Các API lịch hẹn
+    name: appointments
+  - description: Các API hồ sơ bệnh án
+    name: medical_records
+  - description: Quản lý bác sĩ
+    name: doctors
+  - description: Thông báo hệ thống
+    name: notifications

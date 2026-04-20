@@ -12,7 +12,7 @@ function App() {
         expand={false}
         richColors
         visibleToasts={3}
-        duration={3000}
+        duration={2500}
         pauseWhenPageIsHidden
         closeButton
         offset="8px"

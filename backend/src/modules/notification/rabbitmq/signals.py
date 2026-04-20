@@ -13,7 +13,7 @@ from src.modules.notification.rabbitmq.tasks import reminder_email_task
 
 def hook_after_commit(_session, notification_list):
     for notification_id in notification_list:
-        jitter = secrets.SystemRandom().randint(1, 10)
+        jitter = secrets.SystemRandom().randint(1, 4)
         reminder_email_task.apply_async(
             args=[notification_id],
             countdown=jitter

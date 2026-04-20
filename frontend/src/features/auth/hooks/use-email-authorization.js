@@ -12,9 +12,9 @@ const getAuthPageMeta = (authStep, mode, role) => {
 
   if (authStep === "email") {
     return {
-      title: "Xác thực",
+      title: "Xin chào",
       subtitle: role
-        ? `Đã chọn vai trò ${roleLabel}. Vui lòng nhập email để tiếp tục.`
+        ? `Bạn đã chọn vai trò ${roleLabel}. Vui lòng nhập email để tiếp tục.`
         : "Nhập email để tiếp tục.",
     };
   }

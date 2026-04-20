@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from src import create_app, login
 from src.extensions import db
 from src.modules.users.models import User
+from src.routes import api
 from src.utils.utils import check_xss_violation, validate_email_password
 
 app = create_app()
@@ -65,6 +66,9 @@ def health_check():
         "message": "Backend đang chạy"
     }), 200
 
+@app.route("/export-api-json")
+def export():
+    return api.__schema__
 
 if __name__ == "__main__":
     app.run(host=app.config.get("HOST"), port=app.config.get("PORT"), debug=app.config.get("DEBUG"))

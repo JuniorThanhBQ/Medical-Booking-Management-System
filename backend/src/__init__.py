@@ -13,7 +13,7 @@ from src.admin import init_admin
 from src.containers import AppContainer
 from src.extensions import cache, celery_app, db, login, mail, migrate
 from src.middlewares.middlewares import middlewares
-from src.routes import api_v1
+from src.routes import api_v2
 
 load_dotenv(find_dotenv())
 
@@ -89,7 +89,7 @@ def create_app():
     init_celery(app, celery_app)
     container = AppContainer()
     app.container = container
-    app.register_blueprint(api_v1)
+    app.register_blueprint(api_v2)
 
     cloudinary.config(
         cloud_name=app.config.get("CLOUDINARY_API_NAME"),
