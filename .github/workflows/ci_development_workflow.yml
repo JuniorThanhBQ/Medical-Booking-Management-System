@@ -15,6 +15,9 @@ jobs:
   scan-env-exposed:
     needs: build-app
     uses: ./.github/workflows/ci_secret_scanning_pipeline.yml
+    permissions:
+      pull-requests: read
+      contents: read
 
   static-test:
     needs: scan-env-exposed
