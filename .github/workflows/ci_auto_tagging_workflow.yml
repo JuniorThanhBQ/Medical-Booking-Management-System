@@ -1,0 +1,43 @@
+name: Tagging phiên bản tự động
+
+on:
+  push:
+    branches: [ 'main', 'release' ]
+  pull_request:
+    branches: [ 'main', 'release', 'develop' ]
+
+jobs:
+  commit-lint-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kiểm tra thông tin tag trong commit 
+        run: |
+          CONTENT="${{ github.event.pull_request.title || github.event.head_commit.message }}"
+          REGEX="(feature|rework|refactor|docs|patch|hotfix|fix|enhancement|documentation|chore|feat|release|other)"
+          
+          if [[ ! $CONTENT =~ $REGEX ]]; then
+            echo "Thiếu một trong các từ khoá tag quy định"
+            exit 1
+          fi
+
+  tag-version-update:
+    needs: commit-lint-tag
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Đẩy phiên bản SemVer
+        id: tag_version
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          MAJOR_STRING_TOKEN: "release"
+          MINOR_STRING_TOKEN: "feature,feat,enhancement"
+          PATCH_STRING_TOKEN: "fix,patch,hotfix,rework,refactor,docs,documentation,chore,other"
+          DEFAULT_BUMP: patch

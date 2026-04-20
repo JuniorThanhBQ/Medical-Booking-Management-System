@@ -11,6 +11,9 @@ jobs:
     uses: ./.github/workflows/ci_app_build_pipeline.yml
     secrets:
       VITE_API_URL: ${{ secrets.VITE_API_URL }}
+  
+  scan-env-exposed:
+    uses: ./.github/workflows/ci_secret_scanning_pipeline.yml
 
   static-test:
     needs: build-app
@@ -67,6 +70,7 @@ jobs:
           BACKEND_SECURITY: ${{ needs.static-test.result }}
           FRONTEND_SECURITY: ${{ needs.static-test.result }}
           PYTEST_TEST: ${{ needs.dynamic-test.result }}
+          SCAN_ENV_EXPOSED: ${{ needs.scan-env-exposed.result }}
           DOCKER_STATIC: ${{ needs.docker-scan.result }}
           DEPLOY_BACKEND: ${{ needs.deploy.result || 'skipped' }}
           DEPLOY_FRONTEND: ${{ needs.deploy.result || 'skipped' }}
