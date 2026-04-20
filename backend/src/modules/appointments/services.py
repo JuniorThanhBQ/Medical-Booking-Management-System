@@ -171,6 +171,8 @@ class AppointmentService:
                 {
                     "id": str(appointment.id),
                     "name": appointment.name,
+                    "doctorId": appointment.doctor_profile_id,
+                    "medicalServiceId": appointment.medical_service_id,
                     "patientName": f"{patient_user.last_name} {patient_user.first_name}",
                     "doctorName": f"{doctor_user.last_name} {doctor_user.first_name}",
                     "status": appointment.status.name if appointment.status else None,

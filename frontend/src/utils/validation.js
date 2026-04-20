@@ -27,11 +27,26 @@ export function isValidPassword(value) {
 
 export function getPasswordErrors(value) {
   const errors = [];
-  if (!value || value.length < 9) errors.push("Ít nhất 9 ký tự");
-  if (!/[a-z]/.test(value)) errors.push("Ít nhất 1 chữ thường");
-  if (!/[A-Z]/.test(value)) errors.push("Ít nhất 1 chữ hoa");
-  if (!/\d/.test(value)) errors.push("Ít nhất 1 chữ số");
-  if (!/[@#_\-?]/.test(value)) errors.push("Ít nhất 1 ký tự đặc biệt (@#_-?)");
+
+  if (!value || value.length < 9) {
+    errors.push("Ít nhất 9 ký tự");
+  }
+  if (/\s/.test(value)) {
+    errors.push("Không được chứa khoảng trắng");
+  }
+  if (!/[a-z]/.test(value)) {
+    errors.push("Ít nhất 1 chữ thường");
+  }
+  if (!/[A-Z]/.test(value)) {
+    errors.push("Ít nhất 1 chữ hoa");
+  }
+  if (!/\d/.test(value)) {
+    errors.push("Ít nhất 1 chữ số");
+  }
+  if (!/[^a-zA-Z0-9\s]/.test(value)) {
+    errors.push("Ít nhất 1 ký tự đặc biệt");
+  }
+
   return errors;
 }
 

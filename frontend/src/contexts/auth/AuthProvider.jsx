@@ -2,6 +2,7 @@ import { apis as api, endpoints } from "@configs/apis";
 import { BASE_URL } from "@configs/apis";
 import axios from "axios";
 import { useEffect, useMemo, useReducer, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { AuthContext } from "./AuthContext";
@@ -133,7 +134,7 @@ const initializeUser = async (dispatch, accessTokenRef) => {
   }
 };
 
-const createAuthActions = (dispatch) => ({
+const createAuthActions = (dispatch, navigate) => ({
   login: async (email, password, role) => {
     try {
       const response = await api.post(endpoints["auth_login"], {
@@ -201,11 +202,13 @@ const createAuthActions = (dispatch) => ({
     } finally {
       localStorage.removeItem("isAuth");
       dispatch({ type: "LOGOUT" });
+      navigate("/");
     }
   },
 });
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(authReducer, initialState);
   const accessTokenRef = useRef(state.accessToken);
 
@@ -225,7 +228,7 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const authActions = useMemo(() => createAuthActions(dispatch), []);
+  const authActions = useMemo(() => createAuthActions(dispatch, navigate), [navigate]);
 
   return (
     <AuthContext.Provider value={{ ...state, ...authActions, api }}>

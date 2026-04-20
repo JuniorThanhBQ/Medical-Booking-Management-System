@@ -197,14 +197,20 @@ class RefreshTokenAPI(Resource):
 
 
 class LogoutAPI(Resource):
-    method_decorators = [auth_required]
-
     @auth_namespace.doc(security='api_key')
     def post(self):
         data, status = {"message": "Đăng xuất thành công"}, "SUCCESS"
-        response = make_response(format_api_response(data, status), 200)
+        api_res, status_code = format_api_response(data, status)
+        response = make_response(api_res, status_code)
         if status == "SUCCESS":
-            response.delete_cookie("refresh_token")
+            response.delete_cookie(
+                "refresh_token",
+                path="/",
+                domain=None,
+                samesite='Strict',
+                secure=True,
+                httponly=True
+            )
 
         return response
 

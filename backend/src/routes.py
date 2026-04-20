@@ -16,9 +16,9 @@ authorizations = {
     }
 }
 
-api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
+api_v2 = Blueprint("api_v2", __name__, url_prefix="/api/v2")
 api = Api(
-    api_v1,
+    api_v2,
     version='3.0.0',
     title='Medical Appointment B3 API',
     description='Tài liệu tổng hợp APIs trong hệ thống',

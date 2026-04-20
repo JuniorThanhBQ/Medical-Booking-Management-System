@@ -27,7 +27,7 @@
 
         {% if current_user.is_authenticated %}
             {% if current_user.role and current_user.role.name == 'ADMIN' %}
-                <a href="/api/v1/docs">Trang API</a>
+                <a href="/api/v2/docs">Trang API</a>
                 <a href="{{ url_for('admin.index') }}" class="nav-login">Trang Quản trị</a>
             {% else %}
                 <a href="{{ url_for('logout_view') }}" class="nav-login">Đăng xuất</a>

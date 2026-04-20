@@ -2,14 +2,14 @@ import pytest
 from flask import Flask, jsonify
 
 from src.extensions import db
-from src.routes import api_v1
+from src.routes import api_v2
 
 
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     app.config["SECRET_KEY"] = "fake-testing-secret-key"
-    app.register_blueprint(api_v1)
+    app.register_blueprint(api_v2)
     db.init_app(app)
 
     @app.route("/")

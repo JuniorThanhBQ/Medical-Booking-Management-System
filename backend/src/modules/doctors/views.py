@@ -3,6 +3,7 @@ from flask import request
 from flask_restx import Resource, fields
 
 from src.containers import AppContainer
+from src.extensions import cache
 from src.middlewares.auth import auth_required
 from src.modules.doctors import doctors_namespace, public_namespace
 from src.utils.utils import check_xss_violation, format_api_response
@@ -61,6 +62,7 @@ class ScheduleRequestAPI(Resource):
 class PublicSpecialtyListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên chuyên khoa cần lọc'})
     @inject
+    @cache.cached(timeout=60, query_string=True)
     def get(self, doctor_service=Provide[AppContainer.doctor_app.service]):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("limit", 4, type=int)
@@ -85,6 +87,7 @@ class PublicSpecialtyRetrieveAPI(Resource):
 class PublicMedicalServiceListAPI(Resource):
     @public_namespace.doc(params={'keywords': 'Tên dịch vụ cần tìm', 'specialtyId': 'ID Chuyên khoa'})
     @inject
+    @cache.cached(timeout=60, query_string=True)
     def get(self, doctor_service=Provide[AppContainer.doctor_app.service]):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("limit", 5, type=int)
@@ -112,6 +115,7 @@ class PublicDoctorListAPI(Resource):
         , 'specialtyId': 'mã chuyên khoa'
         , 'workDates': 'Các ngày làm việc'})
     @inject
+    @cache.cached(timeout=60, query_string=True)
     def get(self, doctor_service=Provide[AppContainer.doctor_app.service]):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("limit", 4, type=int)
@@ -139,6 +143,7 @@ class PublicDoctorSlotListAPI(Resource):
     @public_namespace.doc(params={'date': 'Ngày muốn xem lịch. Định dạng: YYYY-MM-DD',
                                   'serviceId': 'Mã dịch vụ y tế'})
     @inject
+    @cache.cached(timeout=60, query_string=True)
     def get(self, doctor_id, doctor_service=Provide[AppContainer.doctor_app.service]):
         date_str = request.args.get("date")
         service_id = request.args.get("serviceId", type=int)
