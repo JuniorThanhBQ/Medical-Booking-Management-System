@@ -11,6 +11,6 @@ export const getAppointmentDetail = async (api, appointmentId) => {
 };
 
 export const getMedicalRecordDetail = async (api, medicalRecordId) => {
-  const res = await api.get(`/api/v1/medical-records/${medicalRecordId}`);
+  const res = await api.get(endpoints.medical_record_detail(medicalRecordId));
   return res.data;
 };

@@ -1,6 +1,8 @@
 services:
   frontend:
     restart: always
+    environment:
+      - NODE_ENV=production
     deploy:
       resources:
         limits:

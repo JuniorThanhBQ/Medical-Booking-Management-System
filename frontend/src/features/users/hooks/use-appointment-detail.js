@@ -81,7 +81,7 @@ export const useAppointmentDetail = () => {
   const statusInfo = getStatusDisplay(appointment?.status);
   const handleGoBack = () => navigate(-1);
   const handleViewPatientProfile = () =>
-    navigate(`appointments/${id}/patient-profile`);
+    navigate(`/appointments/${id}/patient-profile`);
   const handleRetry = () => window.location.reload();
 
   return {

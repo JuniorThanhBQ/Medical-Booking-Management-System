@@ -11,9 +11,16 @@ jobs:
     uses: ./.github/workflows/ci_app_build_pipeline.yml
     secrets:
       VITE_API_URL: ${{ secrets.VITE_API_URL }}
+  
+  scan-env-exposed:
+    needs: build-app
+    uses: ./.github/workflows/ci_secret_scanning_pipeline.yml
+    permissions:
+      pull-requests: read
+      contents: read
 
   static-test:
-    needs: build-app
+    needs: scan-env-exposed
     uses: ./.github/workflows/ci_code_static_pipeline.yml
     permissions:
       issues: write
@@ -39,7 +46,7 @@ jobs:
       contents: read
 
   dev-workflow-report:
-    needs: [build-app, static-test, dynamic-test, docker-scan]
+    needs: [build-app, scan-env-exposed, static-test, dynamic-test, docker-scan]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
@@ -58,6 +65,7 @@ jobs:
           FRONTEND_LINT: ${{ needs.static-test.result }}
           BACKEND_SECURITY: ${{ needs.static-test.result }}
           FRONTEND_SECURITY: ${{ needs.static-test.result }}
+          SCAN_ENV_EXPOSED: ${{ needs.scan-env-exposed.result }}
           PYTEST_TEST: ${{ needs.dynamic-test.result }}
           DOCKER_STATIC: ${{ needs.docker-scan.result }}
           DEPLOY_BACKEND: 'skipped'

@@ -2,11 +2,14 @@ import "@css/receptionist/appointment-card.css";
 
 import { useAppointmentCard } from "@features/receptionist/hooks/use-appointment-card";
 
+import { APPOINTMENT_STATUS_LABELS } from "@/configs/const";
+
 const AppointmentCard = ({
   appointment,
   onUpdateStatus,
   onDelete,
   onViewDetail,
+  onOpenTimeModal,
 }) => {
   const {
     showActions,
@@ -39,7 +42,7 @@ const AppointmentCard = ({
             <span
               className={`appointment-card__status status--${appointment.status.toLowerCase()}`}
             >
-              {appointment.status}
+              {APPOINTMENT_STATUS_LABELS[appointment.status] || appointment.status}
             </span>
           </div>
         </div>
@@ -56,7 +59,7 @@ const AppointmentCard = ({
           className="appointment-card__actions-trigger"
           onClick={toggleActions}
         >
-          {showActions ? "✕ Đóng chỉnh sửa" : "⚙ Quản lý lịch hẹn"}
+          {showActions ? "Đóng chỉnh sửa" : "Quản lý lịch hẹn"}
         </button>
 
         {showActions && (
@@ -68,10 +71,11 @@ const AppointmentCard = ({
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
               >
-                <option value="PENDING">&#128336; PENDING</option>
-                <option value="APPROVED">&#9989; APPROVED</option>
-                <option value="COMPLETED">&#10004; COMPLETED</option>
-                <option value="CANCEL">&#10060; CANCEL</option>
+                {Object.entries(APPOINTMENT_STATUS_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -86,10 +90,19 @@ const AppointmentCard = ({
               />
             </div>
 
-            <div className="appointment-card__footer">
+            <div className="appointment-card__footer" style={{ flexWrap: "wrap", gap: "8px" }}>
               <button className="btn btn--primary" onClick={handleUpdate}>
-                Cập nhật
+                Lưu trạng thái
               </button>
+
+              <button
+                className="btn btn--secondary"
+                onClick={onOpenTimeModal}
+                style={{ backgroundColor: "#f0ad4e", color: "#fff", border: "none" }}
+              >
+                Sửa ngày giờ
+              </button>
+
               <button
                 className="btn btn--danger"
                 onClick={() => onDelete(appointment.id)}
