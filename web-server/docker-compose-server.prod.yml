@@ -26,12 +26,9 @@ services:
   backend:
     image: juniorthanh09/medical-appointment-b3-8-backend:latest
     restart: always
-    read_only: true
-    tmpfs:
-      - /tmp
     environment:
       - FLASK_MODE=production
-      - TMPDIR=/tmp
+      - TZ=Asia/Ho_Chi_Minh
     env_file:
       - .env
     depends_on:
@@ -76,6 +73,7 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
+      - TZ=Asia/Ho_Chi_Minh
     deploy:
       resources:
         limits:
@@ -113,6 +111,8 @@ services:
     image: juniorthanh09/medical-appointment-b3-8-backend:latest
     restart: always
     command: celery -A src.celery_worker.celery_app beat --loglevel=info -s /tmp/celerybeat-schedule
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
     env_file:
       - .env
     depends_on:
@@ -138,6 +138,8 @@ services:
     image: juniorthanh09/medical-appointment-b3-8-backend:latest
     restart: always
     command: celery -A src.celery_worker.celery_app worker --loglevel=info
+    environment:
+      - TZ=Asia/Ho_Chi_Minh
     env_file:
       - .env
     depends_on:

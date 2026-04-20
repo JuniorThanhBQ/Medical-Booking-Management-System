@@ -42,6 +42,7 @@ class ComprehensiveReport:
             return "**Chưa chạy**"
 
         checks = {
+            "Kiểm tra bảo toàn .env": os.environ.get("SCAN_ENV_EXPOSED"),
             "Kiểm tra format Backend": os.environ.get("BACKEND_LINT"),
             "Kiểm tra format Frontend": os.environ.get("FRONTEND_LINT"),
             "Kiểm tra bảo mật Backend": os.environ.get("BACKEND_SECURITY"),
