@@ -3,6 +3,7 @@ from src.modules.users.admin import AdminModelView
 
 
 class AppointmentModelView(AdminModelView):
+    can_export = True
     column_searchable_list = ['name']
     column_filters = ['status', 'appointment_date']
     form_excluded_columns = ['created_date', 'updated_date', 'notifications', 'medical_record']

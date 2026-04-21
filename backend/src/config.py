@@ -20,7 +20,10 @@ class Config:
 
     CACHE_TYPE = "RedisCache"
     CACHE_REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
-    CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", "240"))
+    CACHE_REDIS_HOST = os.getenv("CACHE_REDIS_HOST", "redis")
+    CACHE_REDIS_PORT = os.getenv("CACHE_REDIS_PORT", "6379")
+    CACHE_REDIS_DB = os.getenv("CACHE_REDIS_DB", "0")
+    CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", "500"))
     REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
     RABBITMQ_USERNAME = os.getenv("RABBITMQ_USERNAME", "guest")
