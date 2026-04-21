@@ -228,6 +228,9 @@ class AppointmentService:
     @handle_db_errors
     def get_patient_profile_service(self, current_user, appointment_id):
         if current_user.role.name not in ["DOCTOR", "RECEPTIONIST"]:
+            if current_user.role.name in ["PATIENT"]:
+                return {"message": "Bạn vui lòng xem ở tab hồ sơ."}, "FORBIDDEN"
+
             return {"message": "Chỉ bác sĩ hoặc lễ tân mới có quyền này"}, "FORBIDDEN"
 
         appointment = self.appointment_repository.get_appointment_by_id(appointment_id)

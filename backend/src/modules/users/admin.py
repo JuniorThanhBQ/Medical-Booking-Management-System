@@ -1,8 +1,8 @@
 import datetime
+import enum
 
 from flask import flash
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.model import InlineFormAdmin
 from flask_admin.model.typefmt import BASE_FORMATTERS
 from werkzeug.security import generate_password_hash
 from wtforms import FileField
@@ -11,6 +11,36 @@ from src.libs.cloudinary import cloudinary_upload_process
 from src.modules.users.models import PatientProfile, Profile, User
 
 account_profile_label = 'Tài khoản và hồ sơ'
+
+GLOBAL_TRANSLATIONS = {
+    'DOCTOR': 'Bác sĩ',
+    'RECEPTIONIST': 'Lễ tân',
+    'PATIENT': 'Bệnh nhân',
+    'ADMIN': 'Quản trị viên',
+    'MALE': 'Nam',
+    'FEMALE': 'Nữ',
+    'OTHER': 'Khác',
+    'NOT_SET': 'Chưa gán',
+    'APPROVED': 'Chấp thuận',
+    'PENDING': 'Đang chờ',
+    'COMPLETED': 'Hoàn thành',
+    'CANCEL': 'Đã hủy',
+    'DONE': 'Đã khám',
+    'FOLLOW_UP': 'Tái khám',
+    'NONE': 'Không gửi mail',
+    'SENT': 'Đã gửi mail',
+    'FAILED': 'Gửi mail thất bại',
+    'SYSTEM': 'Hệ thống',
+    'APPOINTMENT': 'Lịch hẹn',
+    'REMINDER': 'Nhắc lịch',
+}
+
+
+def enum_formatter(_view, value):
+    if value is None:
+        return ""
+
+    return GLOBAL_TRANSLATIONS.get(value.name, value.value)
 
 
 def vn_datetime_formatter(_view, value):
@@ -30,26 +60,15 @@ CUSTOM_FORMATTERS = dict(BASE_FORMATTERS)
 
 CUSTOM_FORMATTERS.update({
     datetime.datetime: vn_datetime_formatter,
-    datetime.date: vn_date_formatter
+    datetime.date: vn_date_formatter,
+    enum.Enum: enum_formatter
 })
 
 ModelView.column_type_formatters = CUSTOM_FORMATTERS
 
 
-class ProfileInline(InlineFormAdmin):
-    form_excluded_columns = ['created_date', 'updated_date']
-    form_choices = {
-        'profile_type': [
-            ('profile', 'Hồ sơ chung'),
-            ('doctor', 'Bác sĩ'),
-            ('patient', 'Bệnh nhân')
-        ]
-    }
-
-
 class AdminModelView(ModelView):
     form_excluded_columns = ['created_date', 'updated_date']
-
 
 
 class UserModelView(AdminModelView):
@@ -58,8 +77,6 @@ class UserModelView(AdminModelView):
     column_filters = ['role', 'is_active']
     form_excluded_columns = (AdminModelView.form_excluded_columns +
                              ['profile', 'audit_log', 'notifications'])
-
-    inline_models = [ProfileInline(Profile)]
 
     def on_model_change(self, form, model, is_created):
         if form.password.data:

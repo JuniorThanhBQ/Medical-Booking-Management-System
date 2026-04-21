@@ -1,7 +1,7 @@
 import pytest
 from flask import Flask, jsonify
 
-from src.extensions import db
+from src.extensions import db, cache, mail
 from src.routes import api_v2
 
 
@@ -11,6 +11,8 @@ def create_app():
     app.config["SECRET_KEY"] = "fake-testing-secret-key"
     app.register_blueprint(api_v2)
     db.init_app(app)
+    cache.init_app(app)
+    mail.init_app(app)
 
     @app.route("/")
     def index():
@@ -44,6 +46,7 @@ def test_session(test_app):
         yield db.session
         db.session.rollback()
         db.session.remove()
+
 
 @pytest.fixture
 def test_client(test_app):
