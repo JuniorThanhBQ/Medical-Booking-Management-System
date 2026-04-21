@@ -42,7 +42,7 @@ jobs:
           context: ./frontend
           push: true
           build-args: |
-            VITE_API_URL=""
+            VITE_API_URL=
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: |

@@ -3,6 +3,7 @@ from src.modules.users.admin import AdminModelView
 
 
 class MedicalRecordModelView(AdminModelView):
+    can_export = True
     column_searchable_list = ['diagnosis']
     column_filters = ['type']
     form_excluded_columns = ['created_date', 'updated_date']

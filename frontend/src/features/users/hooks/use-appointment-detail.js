@@ -23,7 +23,8 @@ export const useAppointmentDetail = () => {
       setLoading(true);
       try {
         const data = await getAppointmentDetail(api, id);
-        if (!mounted) return;
+        if (!mounted) 
+          return;
         setAppointment(data);
         setError("");
       } catch (err) {

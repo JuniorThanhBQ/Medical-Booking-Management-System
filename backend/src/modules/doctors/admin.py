@@ -41,7 +41,7 @@ class SpecialtyModelView(AdminModelView):
 
 
 class MedicalServiceModelView(AdminModelView):
-    form_excluded_columns = ['created_date', 'updated_date']
+    form_excluded_columns = ['created_date', 'updated_date', 'appointments']
 
 
 def doctor(admin, db):

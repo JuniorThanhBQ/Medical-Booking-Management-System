@@ -6,7 +6,7 @@ export const getAppointments = async (api, params = {}) => {
 };
 
 export const getAppointmentDetail = async (api, appointmentId) => {
-  const res = await api.get(`${endpoints.appointments}/${appointmentId}`);
+  const res = await api.get(endpoints.appointment_detail(appointmentId));
   return res.data;
 };
 
