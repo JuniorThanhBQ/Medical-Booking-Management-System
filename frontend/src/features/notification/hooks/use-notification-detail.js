@@ -1,4 +1,3 @@
-import { ROLE } from "@configs/const";
 import useNotification from "@contexts/notifications/NotificationContext";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -53,11 +52,7 @@ export const useNotificationDetail = () => {
 
   const handleViewAppointment = () => {
     if (!appointmentId) return;
-    if (contextUser?.role === ROLE.Doctor) {
-      navigate(`/doctor/exam/${appointmentId}`);
-    } else {
-      navigate(`/appointments/${appointmentId}`);
-    }
+    navigate(`/appointments/${appointmentId}`);
   };
 
   const handleGoBack = () => {

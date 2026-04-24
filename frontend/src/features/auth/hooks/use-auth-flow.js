@@ -201,7 +201,7 @@ export function useAuthFlow({ role, onAuthenticated, onBackToRoleSelect }) {
 
     try {
       setLoading(true);
-      await handleAuth({
+      const result = await handleAuth({
         mode,
         email,
         password,
@@ -220,7 +220,7 @@ export function useAuthFlow({ role, onAuthenticated, onBackToRoleSelect }) {
       }
 
       toast.success("Đăng nhập thành công!");
-      onAuthenticated?.({ token: null, user: null });
+      onAuthenticated?.({ token: null, user: result?.user ?? null });
     } catch (err) {
       const message = resolveErrorMessage(err);
       setError(message);

@@ -24,7 +24,10 @@ const EditProfileForm = ({ profile, onSave }) => {
       birthDay: day,
       birthMonth: month,
       birthYear: year,
-      gender: profile?.gender || "",
+      // Backend stores gender in uppercase (MALE/FEMALE/OTHER) but the
+      // <select> options use lowercase values — normalize so the current
+      // gender is actually selected instead of falling back to "Chọn".
+      gender: (profile?.gender || "").toLowerCase(),
     };
   }, [profile]);
 
