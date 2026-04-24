@@ -101,10 +101,17 @@ export const useExamStore = create((set, get) => ({
       api,
       appointmentDetail.medicalRecordId,
     );
+    // Lock the form if either the medical record or the appointment is
+    // marked done — appointment status is the authoritative completion flag
+    // once the doctor confirms "Hoàn tất khám".
+    const completed =
+      record?.status === "DONE" ||
+      appointmentDetail?.status === "COMPLETED" ||
+      appointmentDetail?.status === EXAM_STATUS.COMPLETED;
     patchExamination(set, {
       formData: toExamFormData(record),
       history: toRecordHistory(record),
-      isCompleted: record?.status === "DONE",
+      isCompleted: completed,
     });
 
     return { appointmentDetail, record };
