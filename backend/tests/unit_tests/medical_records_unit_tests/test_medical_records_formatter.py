@@ -1,31 +1,32 @@
 from tests.test_base import test_app
 from src.utils.medical_records.formatter_utils import format_medical_record
 
+from types import SimpleNamespace
 from datetime import datetime
 
 def make_record():
     now = datetime(2026, 4, 1, 10, 0)
 
-    return {
-        "id": 123,
-        "diagnosis": "dx",
-        "created_date": now,
+    return SimpleNamespace(
+        id=123,
+        diagnosis="dx",
+        created_date=now,
 
-        "appointment": {
-            "id": 2,
-            "medical_service": {"name": "Service"},
-            "status": {"name": "COMPLETED"}
-        },
+        appointment=SimpleNamespace(
+            id=2,
+            medical_service=SimpleNamespace(name="Service"),
+            status=SimpleNamespace(name="COMPLETED")
+        ),
 
-        "doctor": {
-            "user": {"first_name": "Dr", "last_name": "Who"},
-            "specialty": {"name": "Tim mạch"}
-        },
+        doctor=SimpleNamespace(
+            user=SimpleNamespace(first_name="Dr", last_name="Who"),
+            specialty=SimpleNamespace(name="Tim mạch")
+        ),
 
-        "patient": {
-            "user": {"first_name": "An", "last_name": "Nguyen"}
-        }
-    }
+        patient=SimpleNamespace(
+            user=SimpleNamespace(first_name="An", last_name="Nguyen")
+        )
+    )
 
 def test_format_medical_record():
     r = make_record()

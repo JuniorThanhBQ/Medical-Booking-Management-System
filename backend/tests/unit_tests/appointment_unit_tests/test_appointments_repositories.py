@@ -12,6 +12,7 @@ def test_create_and_get_patient_profile(test_session):
     db.session.flush()
 
     found = repo.get_patient_profile_by_details('First', 'Last', '012345', GenderRole.MALE, birthday, 'Addr')
+
     assert found is not None
     assert found.phone == '012345'
 

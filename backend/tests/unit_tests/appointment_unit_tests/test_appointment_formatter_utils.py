@@ -1,25 +1,26 @@
 from datetime import datetime
+from types import SimpleNamespace
 
 from src.utils.appointment.formatter_utils import (
     parse_appointment_datetime,
     format_appointment,
 )
 
+
 def make_appointment(dt=None):
     now = dt or datetime(2026, 4, 1, 9, 30, 0)
-    ms = {'name': 'Khám tổng quát'}
-    status = {'name': 'PENDING'}
-    return {
-        'id': 1,
-        'medical_service': ms,
-        'name': 'Checkup',
-        'patient_profile': {'first_name': 'An', 'last_name': 'Nguyễn'},
-        'appointment_date': now,
-        'status': status,
-        'note': 'note',
-        'created_date': now,
-        'updated_date': now,
-    }
+
+    return SimpleNamespace(
+        id=1,
+        medical_service=SimpleNamespace(name='Khám tổng quát'),
+        name='Checkup',
+        patient_profile=SimpleNamespace(first_name='An', last_name='Nguyễn'),
+        appointment_date=now,
+        status=SimpleNamespace(name='PENDING'),
+        note='note',
+        created_date=now,
+        updated_date=now,
+    )
 
 
 def test_parse_appointment_datetime_valid():
@@ -39,7 +40,12 @@ def test_parse_appointment_datetime_invalid():
 
 def test_format_appointment_defaults():
     appt = make_appointment()
-    doctor = {'first_name': 'B', 'last_name': 'C'}
+
+    doctor = SimpleNamespace(
+        first_name='B',
+        last_name='C'
+    )
+
     out = format_appointment(appointment=appt, doctor=doctor)
 
     assert out['id'] == 1

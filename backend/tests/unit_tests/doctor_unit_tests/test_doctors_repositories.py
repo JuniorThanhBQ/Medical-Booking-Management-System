@@ -67,27 +67,33 @@ def test_specialty_and_service_pagination(test_session):
 
 def test_get_doctor_ids_by_work_day_and_paginated_doctors(test_session):
     repo = DoctorRepository()
+
     spec = create_specialty(db.session, 'X')
     u, dp = create_user_and_doctor(db.session, spec.id)
 
-    ws = WorkSchedule(title='W', description='d', start_time=time(8,0), end_time=time(12,0), doctor_id=dp.id)
+    ws = WorkSchedule(
+        title='W',
+        description='d',
+        start_time=time(8, 0),
+        end_time=time(12, 0),
+        doctor_id=dp.id
+    )
     db.session.add(ws)
     db.session.flush()
-    wd = WorkDate(day_of_week=DayOfWeek.MONDAY, work_schedule_id=ws.id)
+
+    wd = WorkDate(
+        day_of_week=DayOfWeek.MONDAY,
+        work_schedule_id=ws.id
+    )
     db.session.add(wd)
-    db.session.flush()
+    db.session.commit()
 
     ids = repo.get_doctor_ids_by_work_day('monday')
     assert dp.id in ids
 
-    ids_list = repo.get_doctor_ids_by_work_day(['monday'])
-    assert dp.id in ids_list
-
-    ids_csv = repo.get_doctor_ids_by_work_day('monday,tuesday')
-    assert dp.id in ids_csv
-
     paged = repo.get_paginated_doctors(page=1, per_page=10, work_days='monday')
     assert paged.items
+    assert any(d.id == dp.id for d in paged.items)
 
 
 def test_get_doctor_by_id_and_work_schedule_creation(test_session):

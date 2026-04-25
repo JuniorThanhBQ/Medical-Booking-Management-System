@@ -5,6 +5,7 @@ from src.utils.appointment.appointment_validate_utils import (
     validate_available_slot,
     validate_doctor,
 )
+from types import SimpleNamespace
 
 
 def test_validate_appointment_date_within_range():
@@ -37,15 +38,24 @@ def test_validate_available_slot_not_ok():
     assert err is not None
 
 
+
 def test_validate_doctor_ok():
-    doc = {'role': {'name': 'DOCTOR'}, 'is_active': True}
+    doc = SimpleNamespace(
+        role=SimpleNamespace(name='DOCTOR'),
+        is_active=True
+    )
+
     err, code = validate_doctor(doc)
 
     assert err is None
 
 
 def test_validate_doctor_invalid():
-    doc = {'role': {'name': 'RECEPTIONIST'}, 'is_active': True}
+    doc = SimpleNamespace(
+        role=SimpleNamespace(name='RECEPTIONIST'),
+        is_active=True
+    )
+
     err, code = validate_doctor(doc)
 
     assert err is not None

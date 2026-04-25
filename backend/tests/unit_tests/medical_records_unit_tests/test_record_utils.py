@@ -4,22 +4,20 @@ from src.utils.medical_records.record_utils import \
     check_record_access_permission
 
 
+from types import SimpleNamespace
+
 def make_user(role_name, profile_id=None):
-    return {
-        "role": {
-            "name": role_name
-        },
-        "profile": {
-            "id": profile_id
-        } if profile_id is not None else None
-    }
+    return SimpleNamespace(
+        role=SimpleNamespace(name=role_name),
+        profile=SimpleNamespace(id=profile_id) if profile_id is not None else None
+    )
 
 
 def make_record(patient_profile_id=None, doctor_profile_id=None):
-    return {
-        "patient_profile_id": patient_profile_id,
-        "doctor_profile_id": doctor_profile_id
-    }
+    return SimpleNamespace(
+        patient_profile_id=patient_profile_id,
+        doctor_profile_id=doctor_profile_id
+    )
 
 
 def test_patient_access_allowed():
