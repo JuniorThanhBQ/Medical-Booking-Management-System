@@ -46,7 +46,7 @@ services:
 
   db:
     restart: unless-stopped
-    image: mysql:8.0-debian
+    image: mysql:8.0
     healthcheck:
       test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "USE $DB_NAME; SELECT 1;"]
       interval: 10s
