@@ -1,4 +1,4 @@
-# ADR-008: Triển khai web server qua Ngrok tunnel thay vì VPS/PAAS
+# ADR-007: Triển khai web server qua Ngrok tunnel thay vì VPS/PAAS
 
 ## Trạng thái
 Accepted
