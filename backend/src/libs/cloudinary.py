@@ -1,5 +1,4 @@
 import logging
-
 import cloudinary.uploader
 
 logger = logging.getLogger('flask_logger')

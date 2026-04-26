@@ -9,11 +9,13 @@ export default function PrivateRoute() {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       toast.info("Vui lòng đăng nhập để truy cập trang này.");
     }
   }, [isLoading, isAuthenticated]);
+
 
   if (isLoading) {
     return (
@@ -23,10 +25,12 @@ export default function PrivateRoute() {
     );
   }
 
+
   if (!isAuthenticated) {
     const returnUrl = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/auth?returnUrl=${returnUrl}`} replace />;
   }
+
 
   return <Outlet />;
 }

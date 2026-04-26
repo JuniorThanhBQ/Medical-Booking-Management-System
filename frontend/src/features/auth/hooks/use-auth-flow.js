@@ -35,6 +35,7 @@ const validateProfile = (profile) => {
   return null;
 };
 
+
 const validatePassword = (mode, password) => {
   if (mode === "register") {
     const passwordErrors = getPasswordErrors(password);
@@ -44,6 +45,7 @@ const validatePassword = (mode, password) => {
   }
   return !password.trim() ? "Vui lòng nhập mật khẩu." : null;
 };
+
 
 const handleAuth = async ({
   mode,
@@ -76,6 +78,7 @@ const handleAuth = async ({
   return result;
 };
 
+
 const processEmailCheck = async (email, role) => {
   if (!isValidEmail(email)) return null;
 
@@ -107,6 +110,7 @@ const resolveErrorMessage = (err) => {
     "Đã xảy ra lỗi. Vui lòng thử lại."
   );
 };
+
 
 export function useAuthFlow({ role, onAuthenticated, onBackToRoleSelect }) {
   const navigate = useNavigate();
