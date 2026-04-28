@@ -9,18 +9,22 @@ export function containsXss(value) {
 
 export function isValidEmail(value) {
   const v = value.trim();
-  if (!v) return false;
+  if (!v)
+    return false;
 
-  if (containsXss(v)) return false;
+  if (containsXss(v))
+    return false;
 
   return EMAIL_REGEX.test(v);
 }
 
 export function isValidPassword(value) {
   const v = value.trim();
-  if (!v) return false;
+  if (!v)
+    return false;
 
-  if (containsXss(v)) return false;
+  if (containsXss(v))
+    return false;
 
   return PASSWORD_REGEX.test(v);
 }

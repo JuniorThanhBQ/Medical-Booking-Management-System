@@ -21,13 +21,16 @@ def format_appointment(appointment=None, doctor=None, patient_user=None, patient
 
     return {
         "id": appointment.id,
-        "service": appointment.medical_service.name if appointment.medical_service else None,
+        "service": appointment.medical_service.name
+            if appointment.medical_service else None,
         "name": appointment.name,
         "patientName": patient_name,
-        "doctorName": f"{doctor.last_name} {doctor.first_name}" if doctor else None,
+        "doctorName": f"{doctor.last_name} {doctor.first_name}"
+            if doctor else None,
         "specialty": specialty if specialty else None,
         "appointmentDate": appointment.appointment_date.isoformat() + "+07:00",
-        "status": appointment.status.name if appointment.status else None,
+        "status": appointment.status.name
+            if appointment.status else None,
         "note": appointment.note,
         "createdAt": appointment.created_date.isoformat() + "+07:00",
         "updatedAt": appointment.updated_date.isoformat() + "+07:00",

@@ -16,11 +16,13 @@ export default function AuthPage() {
   const { role, setRole, resetRole } = useRoleSelection();
   const { handleAuthenticated } = useAuthRedirect();
 
+
   const handleRoleSelect = (selectedRole) => {
     const selectedOption = OPTIONS.find((option) => option.id === selectedRole);
     toast.success(`${selectedOption?.title || selectedRole} đã được chọn.`);
     setRole(selectedRole);
   };
+
 
   if (role) {
     return (
@@ -31,6 +33,7 @@ export default function AuthPage() {
       />
     );
   }
+
 
   return (
     <div className="signin-page">

@@ -1,22 +1,18 @@
 import { isValidEmail } from "@utils/validation";
 
 export default function EmailStep({
-  email,
-  touchedEmail,
-  loading,
-  error,
-  onEmailChange,
-  onBlur,
-  onSubmit,
+  email, touchedEmail, loading, error,
+  onEmailChange, onBlur, onSubmit,
 }) {
   const showError = touchedEmail && !isValidEmail(email);
+
 
   return (
     <form className="auth-form" onSubmit={onSubmit} noValidate>
       <div className="auth-field">
-        <label className="auth-field__label" htmlFor="email_input">
-          Email
-        </label>
+        <label className="auth-field__label" htmlFor="email_input"> Email </label>
+
+
         <input
           id="email_input"
           className={`auth-field__input${showError ? " auth-field__input--error" : ""}`}
@@ -30,12 +26,14 @@ export default function EmailStep({
           onBlur={onBlur}
           required
         />
+
+
         {showError && (
-          <p className="auth-field__error" role="alert">
-            Vui lòng nhập email hợp lệ.
-          </p>
+          <p className="auth-field__error" role="alert"> Vui lòng nhập email hợp lệ.</p>
         )}
+
       </div>
+
 
       {error && (
         <p className="auth-field__error" role="alert">
@@ -43,13 +41,12 @@ export default function EmailStep({
         </p>
       )}
 
-      <button
-        className="auth-form__submit"
-        type="submit"
-        disabled={loading || !email}
-      >
+
+      <button className="auth-form__submit" type="submit" disabled={loading || !email}>
         {loading ? "Đang kiểm tra..." : "Tiếp tục"}
       </button>
+
+
     </form>
   );
 }

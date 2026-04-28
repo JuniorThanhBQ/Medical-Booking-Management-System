@@ -32,6 +32,7 @@ export default function EmailAuthorizationPage({
     subtitle,
   } = useEmailAuthorization({ role, onAuthenticated, onBackToRoleSelect });
 
+
   const stepForms = {
     profile: (
       <ProfileStep
@@ -72,6 +73,7 @@ export default function EmailAuthorizationPage({
       />
     ),
   };
+
 
   return (
     <div className="auth-page">

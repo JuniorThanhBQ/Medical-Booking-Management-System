@@ -1,30 +1,22 @@
-import pytest
+from tests.test_base import test_app, test_client
 
-from tests.test_base import test_app
+def test_index_status_code_200(test_client):
+    res = test_client.get("/")
 
-
-@pytest.fixture
-def client(test_app):
-    return test_app.test_client()
-
-
-def test_index_status_code_200(client):
-    response = client.get("/")
-
-    assert response.status_code == 200
-    assert response.data.decode("utf-8") == "OK"
+    assert res.status_code == 200
+    assert res.data.decode("utf-8") == "OK"
 
 
-def test_index_not_found(client):
-    response = client.get("/non-existent-page")
+def test_index_not_found(test_client):
+    res = test_client.get("/non-existent-page")
 
-    assert response.status_code == 404
+    assert res.status_code == 404
 
 
-def test_health_status_200(client):
-    response = client.get("/health")
-    json_data = response.get_json()
+def test_health_status_200(test_client):
+    res = test_client.get("/health")
+    data = res.get_json()
 
-    assert response.status_code == 200
-    assert json_data["status"] == "good"
-    assert json_data["message"] == "Backend đã chạy"
+    assert res.status_code == 200
+    assert data["status"] == "good"
+    assert data["message"] == "Backend đã chạy"
