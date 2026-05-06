@@ -13,9 +13,10 @@ jobs:
       - name: Kiểm tra thông tin tag trong commit 
         run: |
           CONTENT="${{ github.event.pull_request.title || github.event.head_commit.message }}"
-          REGEX="(feature|rework|refactor|docs|patch|hotfix|fix|enhancement|documentation|chore|feat|release|other)"
+          CONTENT_LOWER=$(echo "$CONTENT" | tr '[:upper:]' '[:lower:]')
+          REGEX="(feature|rework|refactor|docs|patch|hotfix|fix|build|enhancement|documentation|chore|feat|release|other)"
           
-          if [[ ! $CONTENT =~ $REGEX ]]; then
+          if [[ ! $CONTENT_LOWER =~ $REGEX ]]; then
             echo "Thiếu một trong các từ khoá tag quy định"
             exit 1
           fi
