@@ -23,4 +23,5 @@ def validate_available_slot(appointment_datetime=None, available_slots=None):
 def validate_doctor(doctor):
     if not doctor or doctor.role.name != "DOCTOR" or not doctor.is_active:
         return {"message": "Bác sĩ không hợp lệ"}, "ERROR_BAD_REQUEST"
+
     return None, None

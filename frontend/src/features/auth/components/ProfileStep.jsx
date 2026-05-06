@@ -1,12 +1,9 @@
 import { FIELDS, GENDER_OPTIONS } from "@configs/const";
 export default function ProfileStep({
-  email,
-  profile,
-  loading,
-  error,
-  onProfileChange,
-  onSubmit,
+  email, profile, loading, error,
+  onProfileChange, onSubmit,
 }) {
+
   const renderField = (field) => (
     <div className="auth-field" key={field.key}>
       <label className="auth-field__label">{field.label}</label>
@@ -20,6 +17,7 @@ export default function ProfileStep({
     </div>
   );
 
+
   return (
     <form className="auth-form" onSubmit={onSubmit} noValidate>
       <div className="auth-field">
@@ -31,6 +29,7 @@ export default function ProfileStep({
           disabled
         />
       </div>
+
 
       {FIELDS.map(renderField)}
 
@@ -51,15 +50,19 @@ export default function ProfileStep({
         </select>
       </div>
 
+
       {error && (
         <p className="auth-field__error" role="alert">
           {error}
         </p>
       )}
 
+
       <button className="auth-form__submit" type="submit" disabled={loading}>
         {loading ? "Đang xử lý..." : "Tiếp tục"}
       </button>
+
+
     </form>
   );
 }

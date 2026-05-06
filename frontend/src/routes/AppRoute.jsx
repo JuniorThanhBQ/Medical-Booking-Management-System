@@ -65,6 +65,7 @@ export default function AppRoute() {
           />
         </Route>
 
+
         <Route element={<RoleRoute allowedRoles={["DOCTOR", "ADMIN"]} />}>
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/doctor/today" element={<TodayPatientsPage />} />
@@ -73,6 +74,7 @@ export default function AppRoute() {
             element={<ExaminationPage />}
           />
         </Route>
+
 
         <Route element={<RoleRoute allowedRoles={["RECEPTIONIST", "ADMIN"]} />}>
           <Route

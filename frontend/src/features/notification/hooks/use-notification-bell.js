@@ -7,15 +7,18 @@ export const useNotificationBell = () => {
   const { accessToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
+
   const toggleDropdown = () => {
     if (accessToken) {
       setIsOpen(!isOpen);
     }
   };
 
+
   const handleClose = () => {
     setIsOpen(false);
   };
+
 
   return {
     unreadCount,
@@ -23,4 +26,6 @@ export const useNotificationBell = () => {
     toggleDropdown,
     handleClose,
   };
+
+
 };

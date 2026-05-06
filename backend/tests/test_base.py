@@ -25,6 +25,8 @@ def create_app():
             "message": "Backend đã chạy"
         }), 200
 
+
+
     return app
 
 
@@ -35,19 +37,15 @@ def test_app():
     with app.app_context():
         db.create_all()
         yield app
+
         db.session.remove()
         db.drop_all()
         db.engine.dispose()
 
-
-@pytest.fixture
-def test_session(test_app):
-    with test_app.app_context():
-        yield db.session
-        db.session.rollback()
-        db.session.remove()
-
-
 @pytest.fixture
 def test_client(test_app):
     return test_app.test_client()
+
+@pytest.fixture
+def test_session(test_app):
+    yield db.session
