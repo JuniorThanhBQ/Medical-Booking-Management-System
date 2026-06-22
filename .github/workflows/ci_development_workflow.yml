@@ -1,86 +1,86 @@
-name: Luồng CI/CD của các nhánh phát triển
+# name: Luồng CI/CD của các nhánh phát triển
 
-on:
-  push:
-    branches-ignore: [ 'main' ]
-  pull_request:
-    branches-ignore: [ 'main' ]
+# on:
+#   push:
+#     branches-ignore: [ 'main' ]
+#   pull_request:
+#     branches-ignore: [ 'main' ]
 
-jobs:
-  build-app:
-    uses: ./.github/workflows/ci_app_build_pipeline.yml
-    secrets:
-      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+# jobs:
+#   build-app:
+#     uses: ./.github/workflows/ci_app_build_pipeline.yml
+#     secrets:
+#       VITE_API_URL: ${{ secrets.VITE_API_URL }}
   
-  scan-env-exposed:
-    needs: build-app
-    uses: ./.github/workflows/ci_secret_scanning_pipeline.yml
-    permissions:
-      pull-requests: read
-      contents: read
+#   scan-env-exposed:
+#     needs: build-app
+#     uses: ./.github/workflows/ci_secret_scanning_pipeline.yml
+#     permissions:
+#       pull-requests: read
+#       contents: read
 
-  static-test:
-    needs: scan-env-exposed
-    uses: ./.github/workflows/ci_code_static_pipeline.yml
-    permissions:
-      issues: write
-      pull-requests: write
-      contents: read
+#   static-test:
+#     needs: scan-env-exposed
+#     uses: ./.github/workflows/ci_code_static_pipeline.yml
+#     permissions:
+#       issues: write
+#       pull-requests: write
+#       contents: read
 
-  dynamic-test:
-    needs: static-test
-    uses: ./.github/workflows/ci_code_quality_pipeline.yml
-    permissions:
-      issues: write
-      pull-requests: write
-      contents: read
+#   dynamic-test:
+#     needs: static-test
+#     uses: ./.github/workflows/ci_code_quality_pipeline.yml
+#     permissions:
+#       issues: write
+#       pull-requests: write
+#       contents: read
 
-  docker-scan:
-    needs: dynamic-test
-    uses: ./.github/workflows/ci_docker_image_scan.yml
-    secrets:
-      VITE_API_URL: ${{ secrets.VITE_API_URL }}
-    permissions:
-      issues: write
-      pull-requests: write
-      contents: read
+#   docker-scan:
+#     needs: dynamic-test
+#     uses: ./.github/workflows/ci_docker_image_scan.yml
+#     secrets:
+#       VITE_API_URL: ${{ secrets.VITE_API_URL }}
+#     permissions:
+#       issues: write
+#       pull-requests: write
+#       contents: read
 
-  dev-workflow-report:
-    needs: [build-app, scan-env-exposed, static-test, dynamic-test, docker-scan]
-    if: always() && github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - name: Tạo báo cáo tổng kết
-        env:
-          TEST_BUILD: ${{ needs.build-app.result }}
-          BACKEND_LINT: ${{ needs.static-test.result }}
-          FRONTEND_LINT: ${{ needs.static-test.result }}
-          BACKEND_SECURITY: ${{ needs.static-test.result }}
-          FRONTEND_SECURITY: ${{ needs.static-test.result }}
-          SCAN_ENV_EXPOSED: ${{ needs.scan-env-exposed.result }}
-          PYTEST_TEST: ${{ needs.dynamic-test.result }}
-          DOCKER_STATIC: ${{ needs.docker-scan.result }}
-          DEPLOY_BACKEND: 'skipped'
-          DEPLOY_FRONTEND: 'skipped'
-          CHECK_IMAGES: 'skipped'
-        run: python .github/workflows/scripts/static_report_scripts.py
-      - name: Đẩy comment Lên Pull Request
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const issueBody = fs.readFileSync('issue.md', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: issueBody
-            });
+#   dev-workflow-report:
+#     needs: [build-app, scan-env-exposed, static-test, dynamic-test, docker-scan]
+#     if: always() && github.event_name == 'pull_request'
+#     runs-on: ubuntu-latest
+#     permissions:
+#       issues: write
+#       contents: read
+#       pull-requests: write
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.13'
+#       - name: Tạo báo cáo tổng kết
+#         env:
+#           TEST_BUILD: ${{ needs.build-app.result }}
+#           BACKEND_LINT: ${{ needs.static-test.result }}
+#           FRONTEND_LINT: ${{ needs.static-test.result }}
+#           BACKEND_SECURITY: ${{ needs.static-test.result }}
+#           FRONTEND_SECURITY: ${{ needs.static-test.result }}
+#           SCAN_ENV_EXPOSED: ${{ needs.scan-env-exposed.result }}
+#           PYTEST_TEST: ${{ needs.dynamic-test.result }}
+#           DOCKER_STATIC: ${{ needs.docker-scan.result }}
+#           DEPLOY_BACKEND: 'skipped'
+#           DEPLOY_FRONTEND: 'skipped'
+#           CHECK_IMAGES: 'skipped'
+#         run: python .github/workflows/scripts/static_report_scripts.py
+#       - name: Đẩy comment Lên Pull Request
+#         uses: actions/github-script@v7
+#         with:
+#           script: |
+#             const fs = require('fs');
+#             const issueBody = fs.readFileSync('issue.md', 'utf8');
+#             github.rest.issues.createComment({
+#               issue_number: context.issue.number,
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               body: issueBody
+#             });

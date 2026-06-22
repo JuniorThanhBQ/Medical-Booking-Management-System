@@ -1,18 +1,22 @@
-# Hệ thống đặt lịch khám bệnh trực tuyến (Medical Appointment B3)
+# Hệ thống quản lý đặt lịch khám chữa bệnh (Medical Booking Management System - MBMS)
 
-## 1. Mô tả dự án
+## I. Mô tả dự án
+### 1. Giới thiệu
+Dự án hệ thống quản lý đặt lịch khám chữa bệnh (Medical Booking Management System - MBMS), tiền thân là ứng dụng đặt lịch khám bệnh trực tuyến (Medical Appointment B3). Hướng đi của nhóm phát triển là một PWA (Progressive Web App) và một NA (Native App - Android Focusing) hoạt động tốt ngoài thực tế, đáp ứng các nghiệp vụ quản lý liên quan đến "booking" cho phòng khám/bệnh viện cụ thể. 
+    
+### 2. Mục tiêu (Old)
 Mục tiêu là hệ thống đặt lịch khám trực tuyến cho phòng khám hoặc bệnh viện: Bệnh nhân và lễ tân đặt lịch theo slot thời gian thông qua tìm kiếm bác sĩ, chuyên khoa và được xem hồ sơ bệnh nhân trong phạm vi nghiệp vụ. Bác sĩ quản lý lịch làm việc và hồ sơ người bệnh được phụ trách. Bên cạnh đó, hệ thống tự động thông báo và nhắc lịch hẹn và admin quản lý thông tin bác sĩ và chuyên khoa.
 
 ## 2. Thành viên nhóm
 
-| MSSV | Họ và tên | Vai trò | Đảm nhiệm |
-| :--- | :--- | :--- | :--- |
-| **2351050164** | Văn Trung Thành | Nhóm trưởng | DevOps |
-| **2351050133** | Nguyễn Thanh Phong | Thành viên | Backend |
-| **2351010154** | Trương Hưng Phát | Thành viên | Frontend |
+| MSSV | Họ và tên | Đảm nhiệm |
+| :--- | :--- | :--- | 
+| **2351050164** | Văn Trung Thành | # | 
+| **2351050133** | Nguyễn Thanh Phong | # | 
+| # | # | # | # |
 
-## 3. Công nghệ sử dụng
-
+## 3. Công nghệ sử dụng (Old)
+ 
 ### Các công nghệ chính
 | Container | Công nghệ | Phiên bản |
 | :--- | :--- | :--- |
@@ -26,7 +30,7 @@ Mục tiêu là hệ thống đặt lịch khám trực tuyến cho phòng khám
 - **Container:** Docker (v29.3.0) và Docker Compose (v5.1.0)
 - **Version control:** Git (Latest) và GitHub
 
-## 4. Kiến trúc hệ thống
+## 4. Kiến trúc hệ thống (Old)
 Hệ thống được thiết kế dựa trên mẫu kiến trúc Client–Server với phong cách kiến trúc là REST. Bốn đặc tính được chọn là sự phù hợp chức năng, bảo mật, độ tin cậy và hiệu suất. 
 
 Trong đó, hệ thống có 5 containers chính và hai containers phụ được định nghĩa và chạy lệnh qua docker-compose.yml. 
@@ -37,7 +41,7 @@ Client-side (Browser) → API Server → Redis: lấy link cloudinary/payload í
 **Mô hình C4 - Container**
 ![b3_client_server_ architecture_image](docs/architecture/c4-container.png)
 
-## 5. Cài đặt và vận hành
+## 5. Cài đặt và vận hành (Old)
 
 ### Yêu cầu hệ thống
 - Docker Desktop
@@ -68,7 +72,7 @@ Client-side (Browser) → API Server → Redis: lấy link cloudinary/payload í
     ```
 4.  **Lấy URL:** Truy cập http://localhost:7000/status để lấy URL của web app.
 
-## 6. Thông tin truy cập
+## 6. Thông tin truy cập (Old)
 Các port bên dưới có thể thay đổi tùy cấu hình trong file .env
 
 - **Frontend (Local):** [http://localhost:81](http://localhost:81)
@@ -76,7 +80,7 @@ Các port bên dưới có thể thay đổi tùy cấu hình trong file .env
 - **RabbitMQ Management (Local):** [http://localhost:15672](http://localhost:15672)
 - **Web app (Production):** [https://resonate-proponent-thrower.ngrok-free.dev](https://resonate-proponent-thrower.ngrok-free.dev) (Tùy thuộc vào ngrok)
 
-## 7. Demo
+## 7. Demo (Old)
 
 **Demo:** [Medical-Appointment-Demo](https://drive.google.com/drive/u/0/folders/1DxsuBUrXGs3e7ExIcdaz8nEen7Jye9QF)
 
