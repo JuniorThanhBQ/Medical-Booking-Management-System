@@ -4,16 +4,20 @@
 ### 1. Giới thiệu
 Dự án hệ thống quản lý đặt lịch khám chữa bệnh (Medical Booking Management System - MBMS), tiền thân là ứng dụng đặt lịch khám bệnh trực tuyến (Medical Appointment B3). Hướng đi của nhóm phát triển là một PWA (Progressive Web App) và một NA (Native App - Android Focusing) hoạt động tốt ngoài thực tế, đáp ứng các nghiệp vụ quản lý liên quan đến "booking" cho phòng khám/bệnh viện cụ thể. 
     
-### 2. Mục tiêu (Old)
-Mục tiêu là hệ thống đặt lịch khám trực tuyến cho phòng khám hoặc bệnh viện: Bệnh nhân và lễ tân đặt lịch theo slot thời gian thông qua tìm kiếm bác sĩ, chuyên khoa và được xem hồ sơ bệnh nhân trong phạm vi nghiệp vụ. Bác sĩ quản lý lịch làm việc và hồ sơ người bệnh được phụ trách. Bên cạnh đó, hệ thống tự động thông báo và nhắc lịch hẹn và admin quản lý thông tin bác sĩ và chuyên khoa.
+### 2. Mục tiêu
+Có ba mục tiêu lớn mà nhóm phát triển muốn đạt được:
+1. Đáp ứng được các tiêu chỉ nghiệp vụ cần thiết của một hệ thống "Booking" nói chung. Phát triển các chức năng giải quyết thoả đáng yêu cầu nghiệp vụ quản lý "Booking" của một phòng khám / bệnh viện cụ thể.
+2. Hệ thống hoạt động tốt trong môi trường thực tế, kết quả của dự án dự kiến là sản phẩm dạng PWA | NA cho phép người dùng tiềm năng sử dụng thử với các bước cài đặt đơn giản.
+3. Phát triển ứng dụng theo hướng AI-driven development (AIDD) và Scrum.   
+
 
 ## 2. Thành viên nhóm
 
-| MSSV | Họ và tên | Đảm nhiệm |
-| :--- | :--- | :--- | 
-| **2351050164** | Văn Trung Thành | # | 
-| **2351050133** | Nguyễn Thanh Phong | # | 
-| # | # | # | # |
+| MSSV | Họ và tên | Vai trò | Công việc cụ thể |
+| :--- | :--- | :--- | :--- |
+| **2351050164** | Văn Trung Thành | # | # |
+| **2351050133** | Nguyễn Thanh Phong | # | # | 
+| # | # | # | # | # |
 
 ## 3. Công nghệ sử dụng (Old)
  
