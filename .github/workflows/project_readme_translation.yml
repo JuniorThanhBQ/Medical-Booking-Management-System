@@ -16,6 +16,6 @@ jobs:
         if: |
           contains(github.event.comment.body, '/gpt-translate') || 
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@master
+        uses: 3ru/gpt-translate@6f81acc9116f18f15c4529dee2f58c5fb5fcbb8d
         with:
           apikey: ${{ secrets.OPENAI_API_KEY }}
