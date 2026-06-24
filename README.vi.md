@@ -2,39 +2,39 @@
 
 ## I. Mô tả dự án
 ### 1. Giới thiệu
-Dự án hệ thống quản lý đặt lịch khám chữa bệnh (Medical Booking Management System - MBMS), tiền thân là ứng dụng đặt lịch khám bệnh trực tuyến (Medical Appointment B3). Hướng đi của nhóm phát triển là một PWA (Progressive Web App) và một NA (Native App - Android Focusing) hoạt động tốt ngoài thực tế, đáp ứng các nghiệp vụ quản lý liên quan đến "booking" cho phòng khám/bệnh viện cụ thể. 
+Dự án hệ thống quản lý đặt lịch khám chữa bệnh (Medical Booking Management System - MBMS), tiền thân là ứng dụng đặt lịch khám bệnh trực tuyến (Medical Appointment B3). Hướng đi của nhóm phát triển là một PWA (Progressive Web App) và một NA (Native App - Android Focusing) hoạt động tốt ngoài thực tế, đáp ứng các nghiệp vụ quản lý liên quan đến "booking" cho phòng khám/bệnh viện cụ thể.
     
 ### 2. Mục tiêu
 Có ba mục tiêu lớn mà nhóm phát triển muốn đạt được:
 1. Đáp ứng được các tiêu chỉ nghiệp vụ cần thiết của một hệ thống "Booking" nói chung. Phát triển các chức năng giải quyết thoả đáng yêu cầu nghiệp vụ quản lý "Booking" của một phòng khám / bệnh viện cụ thể.
 2. Hệ thống hoạt động tốt trong môi trường thực tế, kết quả của dự án dự kiến là sản phẩm dạng PWA | NA cho phép người dùng tiềm năng sử dụng thử với các bước cài đặt đơn giản.
-3. Phát triển ứng dụng theo hướng AI-driven development (AIDD) và Scrum.   
+3. Phát triển ứng dụng theo hướng AI-driven development (AIDD) và Scrum.
 
 
-## 2. Thành viên nhóm
+## II. Nhóm phát triển
 
 | MSSV | Họ và tên | Vai trò | Công việc cụ thể |
 | :--- | :--- | :--- | :--- |
-| **2351050164** | Văn Trung Thành | # | # |
-| **2351050133** | Nguyễn Thanh Phong | # | # | 
+| **2351050164** | Văn Trung Thành | Product Owner - Team members | Quản lý quy trình phát triển ứng dụng và nội dung QA - QC của dự án. Đảm nhiệm mảng back-end và CI/CD |
+| **2351050133** | Nguyễn Thanh Phong | Scrum master - Team members | Quản lý thiết kế, chức năng và giao diện ứng dụng đảm bảo tính khả dụng. Đảm nhiệm mảng front-end và End-User | 
 | # | # | # | # | # |
 
-## 3. Công nghệ sử dụng (Old)
+## III. Công nghệ sử dụng
  
 ### Các công nghệ chính
-| Container | Công nghệ | Phiên bản |
-| :--- | :--- | :--- |
-| **Backend** | Flask + Flask-RESTX | Flask >= 3.1.3, Flask-RESTX >= 1.3.2 |
-| **Frontend** | React + Vite | React >= 19.2.4, Vite >= 7.3.1 |
-| **Database** | MySQL debian | Mysql:8.0-debian |
-| **Message Queue** | RabbitMQ | rabbitmq:4.0-management |
-| **Cache** | Redis | Redis:7-alpine |
+| Container | Công nghệ | Phiên bản | Lý do sử dụng |
+| :--- | :--- | :--- | :--- | 
+| **Backend** | # | # | # |
+| **Frontend** | # | # | # |
+| **Database** | PostgreSQL | # | # |
+| # | # | # | # |
 
 ### Các công nghệ khác
 - **Container:** Docker (v29.3.0) và Docker Compose (v5.1.0)
 - **Version control:** Git (Latest) và GitHub
+- **AI Agents**: Claude Agents (Free Version)
 
-## 4. Kiến trúc hệ thống (Old)
+## IV. Kiến trúc hệ thống (Old)
 Hệ thống được thiết kế dựa trên mẫu kiến trúc Client–Server với phong cách kiến trúc là REST. Bốn đặc tính được chọn là sự phù hợp chức năng, bảo mật, độ tin cậy và hiệu suất. 
 
 Trong đó, hệ thống có 5 containers chính và hai containers phụ được định nghĩa và chạy lệnh qua docker-compose.yml. 
@@ -45,7 +45,7 @@ Client-side (Browser) → API Server → Redis: lấy link cloudinary/payload í
 **Mô hình C4 - Container**
 ![b3_client_server_ architecture_image](docs/architecture/c4-container.png)
 
-## 5. Cài đặt và vận hành (Old)
+## V. Cài đặt và vận hành (Old)
 
 ### Yêu cầu hệ thống
 - Docker Desktop
@@ -76,7 +76,7 @@ Client-side (Browser) → API Server → Redis: lấy link cloudinary/payload í
     ```
 4.  **Lấy URL:** Truy cập http://localhost:7000/status để lấy URL của web app.
 
-## 6. Thông tin truy cập (Old)
+## VI. Thông tin truy cập (Old)
 Các port bên dưới có thể thay đổi tùy cấu hình trong file .env
 
 - **Frontend (Local):** [http://localhost:81](http://localhost:81)
@@ -84,11 +84,11 @@ Các port bên dưới có thể thay đổi tùy cấu hình trong file .env
 - **RabbitMQ Management (Local):** [http://localhost:15672](http://localhost:15672)
 - **Web app (Production):** [https://resonate-proponent-thrower.ngrok-free.dev](https://resonate-proponent-thrower.ngrok-free.dev) (Tùy thuộc vào ngrok)
 
-## 7. Demo (Old)
+## VII. Demo (Old)
 
 **Demo:** [Medical-Appointment-Demo](https://drive.google.com/drive/u/0/folders/1DxsuBUrXGs3e7ExIcdaz8nEen7Jye9QF)
 
-## 8. Tài liệu chi tiết
+## VIII. Tài liệu chi tiết
 - [ADRs](docs/adrs/)
 - [API Documentation](docs/api/)
 - [Architecture](docs/architecture/)
