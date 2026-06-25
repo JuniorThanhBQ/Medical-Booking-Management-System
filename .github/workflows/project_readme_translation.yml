@@ -47,3 +47,5 @@ jobs:
             Please review the translation of `README.vi.md` into `README.md`.
           branch: "gemini-translate-readme"
           delete-branch: true
+          add-paths: |
+            README.md
