@@ -1,21 +1,27 @@
-# .github/workflows/gpt-translate.yml
-name: GPT Translate
+# .github/workflows/gemini-translate.yml
+name: Gemini Translate
 
 on:
   issue_comment:
     types: [ created ]
 
 jobs:
-  gpt_translate:
+  gemini_translate:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run GPT Translate
+      - name: Run Gemini Translate
         if: |
-          contains(github.event.comment.body, '/gpt-translate') || 
+          contains(github.event.comment.body, '/gemini-translate') || 
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@6f81acc9116f18f15c4529dee2f58c5fb5fcbb8d
+        uses: google-github-actions/run-gemini-cli@f77273f4c914e4bf38440cf36a0369cb64a37489
+        env:
+          GEMINI_CLI_TRUST_WORKSPACE: "true"
         with:
-          apikey: ${{ secrets.OPENAI_API_KEY }}
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          prompt: |
+            Read README.vi.md.
+            Translate it into English.
+            Save the result as README.md.
