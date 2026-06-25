@@ -17,6 +17,8 @@ jobs:
           contains(github.event.comment.body, '/gemini-translate') || 
           contains(github.event.comment.body, '/gt')
         uses: google-github-actions/run-gemini-cli@f77273f4c914e4bf38440cf36a0369cb64a37489
+        env:
+          GEMINI_CLI_TRUST_WORKSPACE: "true"
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           prompt: |
