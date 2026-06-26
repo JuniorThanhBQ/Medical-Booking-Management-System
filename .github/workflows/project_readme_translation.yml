@@ -1,21 +1,44 @@
-# .github/workflows/gemini-translate.yml
-name: Gemini Translate
+name: Translate README.vi.md into README.md with Gemini
 
 on:
   issue_comment:
     types: [ created ]
 
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write
+
 jobs:
   gemini_translate:
     runs-on: ubuntu-latest
+    if: |
+      contains(github.event.comment.body, '/gemini-translate-readme-vi')
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: React with eyes on the triggering comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -f content='eyes'
+
+      - name: Acknowledge request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="Tôi đã nhận được yêu cầu của bạn. Vui lòng kiểm tra tabs Actions để xem thông tin chi tiết!"
+
+      - name: Verify README.vi.md exists
+        run: test -f README.vi.md
+
       - name: Run Gemini Translate
-        if: |
-          contains(github.event.comment.body, '/gemini-translate') || 
-          contains(github.event.comment.body, '/gt')
+        id: gemini_translate
         uses: google-github-actions/run-gemini-cli@f77273f4c914e4bf38440cf36a0369cb64a37489
         env:
           GEMINI_CLI_TRUST_WORKSPACE: "true"
@@ -30,11 +53,17 @@ jobs:
             2. Do NOT include any conversational filler, greetings, or confirmations (e.g., do not say "Here is the translation").
             3. Do NOT wrap the final output in markdown code blocks (```).
             4. Strictly preserve the original markdown structure, formatting, links, and code blocks exactly as they are in the source file. Only the language should change.
-        
+
+      - name: Write Gemini output to README.md
+        env:
+          GEMINI_OUTPUT: ${{ steps.gemini_translate.outputs.summary }}
+        run: |
+          printf '%s' "$GEMINI_OUTPUT" > README.md
+
       - name: Verify README.md results from Gemini
         run: |
           ls -la
-          test -f README.md
+          test -s README.md
 
       - name: Create Pull Request for README update
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
