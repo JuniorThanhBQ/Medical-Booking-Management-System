@@ -42,7 +42,7 @@ mccabe==0.7.0
 mdurl==0.1.2
 ordered-set==4.1.0
 packaging==26.1
-pipdeptree==2.35.1
+pipdeptree==4.2.0
 platformdirs==4.9.6
 pluggy==1.6.0
 pycparser==3.0
