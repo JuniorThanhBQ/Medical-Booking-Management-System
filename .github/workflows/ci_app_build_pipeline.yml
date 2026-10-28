@@ -1,4 +1,4 @@
-name: Build ứng dụng frontend và backend thủ công
+name: Check build frontend and backend app
 
 on:
   workflow_call:
@@ -11,20 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup môi trường Node.js và Python
-        uses: actions/setup-node@v4
+      - name: Setup Node.js and Python Environments.
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '20'
+          node-version: '24.22.1'
           cache: 'npm'
           cache-dependency-path: './frontend/package-lock.json'
-      - uses: actions/setup-python@v5
+      
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
-          python-version: '3.13'
-          cache: 'pip'
+          python-version: "3.14"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      - name: Cài đặt và build frontend
+      - name: Build frontend
         working-directory: ./frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
@@ -32,13 +35,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Cài đặt và build backend
+      - name: Build backend
         working-directory: ./backend
         run: |
-          pip install -r requirements/requirements.txt
-          if [ -f .env.example ]; then 
-            cp .env.example .env; 
-          else 
-            touch .env; 
+          uv sync --all-packages --locked
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            touch .env
           fi
-          python -m compileall src/
+          uv run --no-sync python -m compileall src/

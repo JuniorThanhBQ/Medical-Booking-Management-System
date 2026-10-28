@@ -1,4 +1,4 @@
-name: Tagging phiên bản tự động
+name: Pull Request Auto Tagging
 
 on:
   push:
@@ -10,13 +10,13 @@ jobs:
   commit-lint-tag:
     runs-on: ubuntu-latest
     steps:
-      - name: Kiểm tra thông tin tag trong commit 
+      - name: Check commitlint regex in the commit message   
         run: |
           CONTENT="${{ github.event.pull_request.title || github.event.head_commit.message }}"
           REGEX="(feature|rework|refactor|docs|patch|hotfix|fix|enhancement|documentation|chore|feat|release|other)"
           
           if [[ ! $CONTENT =~ $REGEX ]]; then
-            echo "Thiếu một trong các từ khoá tag quy định"
+            echo "Missing one required tag in commit message!"
             exit 1
           fi
 
@@ -27,13 +27,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - name: Đẩy phiên bản SemVer
+      - name: Push SemVer Version
         id: tag_version
-        uses: anothrNick/github-tag-action@1.64.0
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8 # v1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
